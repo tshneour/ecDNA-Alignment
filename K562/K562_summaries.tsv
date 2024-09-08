@@ -1,0 +1,13 @@
+chrom1	pos1	chrom2	pos2	sv_type	read_support	features	orientation	pos1_flanking_coordinate	pos2_flanking_coordinate	homology_length	homology_sequence	sample
+chr9	133607146	chr22	23632741	interchromosomal	7	unknown	-+	133607147	23632740	5.0	GAGTG	K562_amplicon3_SV_summary.tsv
+chr9	134155523	chr13	108661410	interchromosomal	6	unknown	++	134155522	108661409	2.0	AT	K562_amplicon3_SV_summary.tsv
+chr13	81088032	chr13	81469934	inversion	4	ecDNA	--	81088033	81469935	3.0	AAC	K562_amplicon3_SV_summary.tsv
+chr13	81109413	chr13	90438706	deletion-like	3	ecDNA	+-	81109412	90438707	3.0	TGG	K562_amplicon3_SV_summary.tsv
+chr13	81470035	chr13	81470310	foldback	3	ecDNA	++	81470034	81470309	6.0	ATAAAA	K562_amplicon3_SV_summary.tsv
+chr13	90862773	chr13	90864806	deletion-like	3	ecDNA	+-	90862772	90864807			K562_amplicon3_SV_summary.tsv
+chr13	92474010	chr13	92475757	foldback	3		++	92474009	92475756	2.0	AA	K562_amplicon3_SV_summary.tsv
+chr13	94023407	chr13	108500972	deletion-like	3	unknown	+-	94023406	108500973			K562_amplicon3_SV_summary.tsv
+chr22	18953122	chr22	22935373	inversion	5	unknown	--	18953123	22935374			K562_amplicon3_SV_summary.tsv
+chr22	20950573	chr22	20953841	deletion-like	4	unknown	+-	20950572	20953842			K562_amplicon3_SV_summary.tsv
+chr22	23049707	chr22	23108069	deletion-like	2	unknown	+-	23049706	23108070			K562_amplicon3_SV_summary.tsv
+chr22	23049910	chr22	23107858	duplication-like	2	ecDNA	-+	23049911	23107857			K562_amplicon3_SV_summary.tsv
