@@ -11,6 +11,7 @@ options:
   --bam BAM   path to bamfile
 ```
 - AA_alignment.py
+Pipe the standard output to a file. "breakpoints.txt" is the one I used in this repository.
 ```
 usage: AA_alignment.py [-h] [--fa FA] [--aln ALN]
 
