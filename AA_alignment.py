@@ -6,7 +6,9 @@ import subprocess
 import re
 import argparse
 
-def check_features(ori):
+def check_features(ori, chr1, chr2):
+    if chr1 != chr2:
+        return "interchromosomal"
     if ori == "++":
         return "foldback"
     elif ori == "--":
@@ -195,7 +197,7 @@ if __name__ == "__main__":
         print("pos2", 2*"\t", second_pos if calc_ori[1] == "-" else second_end)
         print("orientation", "\t", calc_ori)
         print("Orientation is based on above order of breakpoint ends!")
-        print("features", "\t", check_features(calc_ori))
+        print("features", "\t", check_features(calc_ori, first_chr, second_chr))
         print("homology_length", "\t", hom_len)
         print("homology_sequence", "\t", hom_seq)
 
