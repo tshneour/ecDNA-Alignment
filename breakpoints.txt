@@ -56,7 +56,7 @@ chr2 		 chr22
 pos2 		 23632743
 orientation 	 -+
 Orientation is based on above order of breakpoint ends!
-features 	 duplication-like
+features 	 interchromosomal
 homology_length 	 5
 homology_sequence 	 GAGTG
 
@@ -119,7 +119,7 @@ chr2 		 chr9
 pos2 		 133607147
 orientation 	 +-
 Orientation is based on above order of breakpoint ends!
-features 	 deletion-like
+features 	 interchromosomal
 homology_length 	 5
 homology_sequence 	 GAGTG
 
@@ -182,7 +182,7 @@ chr2 		 chr9
 pos2 		 133607147
 orientation 	 +-
 Orientation is based on above order of breakpoint ends!
-features 	 deletion-like
+features 	 interchromosomal
 homology_length 	 5
 homology_sequence 	 GAGTG
 
@@ -245,7 +245,7 @@ chr2 		 chr22
 pos2 		 23632743
 orientation 	 -+
 Orientation is based on above order of breakpoint ends!
-features 	 duplication-like
+features 	 interchromosomal
 homology_length 	 5
 homology_sequence 	 GAGTG
 
@@ -309,7 +309,7 @@ chr2 		 chr9
 pos2 		 133607151
 orientation 	 +-
 Orientation is based on above order of breakpoint ends!
-features 	 deletion-like
+features 	 interchromosomal
 homology_length 	 -1
 homology_sequence 	 G
 
@@ -372,7 +372,7 @@ chr2 		 chr9
 pos2 		 134155525
 orientation 	 ++
 Orientation is based on above order of breakpoint ends!
-features 	 foldback
+features 	 interchromosomal
 homology_length 	 2
 homology_sequence 	 AT
 
@@ -435,7 +435,7 @@ chr2 		 chr9
 pos2 		 134155525
 orientation 	 ++
 Orientation is based on above order of breakpoint ends!
-features 	 foldback
+features 	 interchromosomal
 homology_length 	 2
 homology_sequence 	 AT
 
@@ -498,7 +498,7 @@ chr2 		 chr9
 pos2 		 134155525
 orientation 	 ++
 Orientation is based on above order of breakpoint ends!
-features 	 foldback
+features 	 interchromosomal
 homology_length 	 2
 homology_sequence 	 AT
 
