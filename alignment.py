@@ -186,13 +186,13 @@ def fetch_alignments(bamfile, chrom1, pos1, chrom2, pos2, sv_type, read_support,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Collect reads from the ends of a SV.")
-    parser.add_argument("--summaries", help="path to AA amplicon summaries file", type=str, default="./K562/K562_summaries.tsv")
+    parser.add_argument("--sum", help="path to AA amplicon summaries file", type=str, default="./K562/K562_summaries.tsv")
     parser.add_argument("--bam", help="path to bamfile", type=str, default="./K562/K562_hg19_cnvkit.cs.rmdup.bam")
     args = parser.parse_args()
     # Define the BAM file and positions
     bamfile = args.bam
     samfile = pysam.AlignmentFile(bamfile, "rb")
-    df = pd.read_csv(args.summaries, sep="\t")
+    df = pd.read_csv(args.sum, sep="\t")
     # Define output table
     output = pd.DataFrame()
     num_split = 0

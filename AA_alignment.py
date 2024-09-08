@@ -4,6 +4,7 @@ from Bio.Align import substitution_matrices
 import pandas as pd
 import subprocess
 import re
+import argparse
 
 def check_features(ori):
     if ori == "++":
@@ -62,8 +63,12 @@ def extract_affix(cigar):
     raise ValueError("Cigar string doesn't match (num1)S(num2)M or (num1)M(num2)S\n", cigar)
 
 if __name__ == "__main__":
-    fasta_file = "./hg19/hg19full.fa"
-    df = pd.read_csv("./alignments.tsv", sep="\t")
+    parser = argparse.ArgumentParser(description="Visualize split read junctions and calculate breakpoint details to compare with AA.")
+    parser.add_argument("--fa", help="path to hg19 fasta file", type=str, default="./hg19/hg19full.fa")
+    parser.add_argument("--aln", help="path to 'alignments.tsv' file from 'alignment.py' output", type=str, default="./alignments.tsv")
+    args = parser.parse_args()
+    fasta_file = args.fa
+    df = pd.read_csv(args.aln, sep="\t")
     # aligner = Align.PairwiseAligner(mode="global", open_gap_score = -10, extend_gap_score = -0.5, match_score = 1.0, mismatch_score = -1.0)
     aligner = Align.PairwiseAligner(mode="local", open_gap_score = -10, extend_gap_score = -5, match_score=2, mismatch_score=-2)
 
