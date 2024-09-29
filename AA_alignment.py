@@ -67,50 +67,47 @@ def extract_affix(cigar):
 
 def format_alignment(arr, query_start, ori):
     output = []
-    seq_len = 0  # Track sequence length for updating query_start on continuation sets
-    original_query_start = query_start  # Store the original starting query number
+    seq_len = 0 # Track sequence length
     ref_offset = 0  # Track the cumulative base count for the ref rows
 
     for i in range(0, len(arr), 4):  # Process each set of 3 rows
         if i >= len(arr) or arr[i].strip() == "":
             continue
 
-        # Process the first row (target -> query, update coordinates)
         first_row = arr[i]
         seq = first_row.split()[2]  # Extract the sequence part
-        seq_len = len(seq)  # Get the sequence length for adjusting query_start
-        end_number = query_start + seq_len - 1 if ori else query_start - seq_len + 1 # Corrected end number
+        seq_len = len(seq)
+        end_number = query_start + seq_len - 1 if ori else query_start - seq_len + 1 # Calculate end number depending on orientation
 
         first_row = f"query          {query_start} {seq} {end_number}"
 
-        # Process the second row (remove numbers but keep pipes aligned)
+        # Align second row
         second_row = arr[i+1]
-        query_sequence_start = first_row.index(seq) - 1 # Find where the sequence starts
+        query_sequence_start = first_row.index(seq) - 1
         pipes_only = ' ' * query_sequence_start + ''.join([ch if not ch.isdigit() else '' for ch in second_row.strip()])
 
-        # Process the third row (query -> ref, increment first number by 1)
+        # Change first number to 1-indexed
         third_row = arr[i+2]
         ref_start = ref_offset + 1
         ref_seq = third_row.split()[2]  # Extract the sequence part from third row
-        ref_len = len(ref_seq)  # Length of the sequence for calculating end number
+        ref_len = len(ref_seq)
         ref_end = ref_start + ref_len - 1  # Corrected end number for ref
 
         ref_row = f"ref            {ref_start} {ref_seq} {ref_end}"
 
-        # Ensure alignment of "ref" row to match the first character of the "query" row
+        # Since ref row number is always less than query, calculate extra space
         space_diff = first_row.index(seq) - ref_row.index(ref_seq)
         ref_row = " " * space_diff + ref_row.lstrip()
 
-        # Add formatted rows to output
         output.append(first_row)
         output.append(pipes_only)
         output.append(ref_row)
-        output.append('')  # Add blank line between sets
+        output.append('')
 
-        # Update query_start for the next set (increment by sequence length)
+        # Update query_start for the next set
         query_start = query_start + seq_len if ori else query_start - seq_len
 
-        # Update the ref_offset by the length of the ref sequence for next set
+        # Update the ref_offset for next set
         ref_offset += ref_len
 
     return "\n".join(output)
@@ -157,7 +154,6 @@ if __name__ == "__main__":
 
         first_chr = row["query_chrom"]
         first_ori = row["query_orientation"]
-        # first_aln = Seq(row["query_aln_sub"]) if row["orientation"][0]=="+" else Seq(row["query_aln_sub"]).reverse_complement()
         first_aln = row["query_aln_sub"]
         first_cigar = row["query_cigar"]
         first_pos = row["query_pos"]
@@ -166,7 +162,6 @@ if __name__ == "__main__":
 
         second_chr = second_row["query_chrom"]
         second_ori = second_row["query_orientation"]
-        # second_aln = Seq(second_row["query_aln_sub"]) if row["orientation"][1]=="+" else Seq(second_row["query_aln_sub"]).reverse_complement()
         second_aln = second_row["query_aln_sub"]
         second_cigar = second_row["query_cigar"]
         second_pos = second_row["query_pos"]
@@ -176,6 +171,7 @@ if __name__ == "__main__":
         primary_aln = row["query_aln_full"]
         primary_len = len(primary_aln)
 
+        # Check if near both breakpoint ends
         if not args.all:
             if not (((first_pos <= break_pos1 <= first_end) and (second_pos <= break_pos2 <= second_end)) or
                 ((first_pos <= break_pos2 <= first_end) and (second_pos <= break_pos1 <= second_end))):
@@ -245,6 +241,7 @@ if __name__ == "__main__":
         aln1_start = None
         aln2_start = None
 
+        # Decide start position on reference and orientation
         if pr_ori:
             aln1_start = first_pos
         else:
@@ -253,12 +250,12 @@ if __name__ == "__main__":
             else:
                 aln1_start = second_end - 1
         for aln in alignments1:
-            # print(aln)
             print(format_alignment(format(aln).split('\n'), aln1_start, pr_ori or (not pr_ori and sup_ori)))
 
         if hom_len < 0:
             print("Gap detected between donor sequences:", hom_seq)
         
+        # Decide start position on reference and orientation
         if not pr_ori:
             aln2_start = first_pos
         else:
@@ -267,7 +264,6 @@ if __name__ == "__main__":
             else:
                 aln2_start = second_end - 1
         for aln in alignments2:
-            # print(aln)
             print(format_alignment(format(aln).split('\n'), aln2_start, not pr_ori or (pr_ori and not sup_ori)))
         
         calc_ori = ("+" if pr_ori else "-") + ("+" if sup_ori else "-")
