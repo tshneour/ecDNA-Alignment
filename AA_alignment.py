@@ -42,33 +42,36 @@ def extract_region(fasta_file, region):
         raise Exception(f"Error: {result.stderr.strip()}")
 
 def reverse_complement(string):
+    if not string:
+        return None
     seq = Seq(string)
     rc = seq.reverse_complement()
     return str(rc)
 
-def extract_affix(cigar):
+def extract_suffix(cigar):
     # Pattern 1: (num1)S(num2)M
-    pattern1 = re.compile(r'^(\d+)[SH]')
-    # Pattern 2: (num1)M(num2)S
-    pattern2 = re.compile(r'(\d+)[SH]$')
+    pattern1 = re.compile(r'(\d+)[M]$')
+    pattern2 = re.compile(r'(\d+)[S]$')
+    pattern3 = re.compile(r'(\d+)[H]$')
 
     # Check for first pattern (num1)S(num2)M
     match1 = pattern1.search(cigar)
     if match1:
-        return False, match1.group(1)  # Return num1 (the number followed by S)
-    
-    # Check for second pattern (num1)M(num2)S
+        return False, match1.group(1)  # Return num1 (the number followed by S or H)
+    # Check for first pattern (num1)S(num2)M
     match2 = pattern2.search(cigar)
     if match2:
-        return True, match2.group(1)  # Return num2 (the number followed by S)
-    
+        return True, match2.group(1)  # Return num1 (the number followed by S or H)
+    # Check for first pattern (num1)S(num2)M
+    match3 = pattern3.search(cigar)
+    if match3:
+        return True, match3.group(1)  # Return num1 (the number followed by S or H)
     # If no pattern is matched
     raise ValueError("Cigar string doesn't match (num1)S(num2)M or (num1)M(num2)S\n", cigar)
 
-def format_alignment(arr, query_start, ori):
+def format_alignment(arr, query_start, ori, ref_chr, ref_offset=0):
     output = []
     seq_len = 0 # Track sequence length
-    ref_offset = 0  # Track the cumulative base count for the ref rows
 
     for i in range(0, len(arr), 4):  # Process each set of 3 rows
         if i >= len(arr) or arr[i].strip() == "":
@@ -79,7 +82,7 @@ def format_alignment(arr, query_start, ori):
         seq_len = len(seq)
         end_number = query_start + seq_len - 1 if ori else query_start - seq_len + 1 # Calculate end number depending on orientation
 
-        first_row = f"query          {query_start} {seq} {end_number}"
+        first_row = f"ref            {ref_chr}:{query_start} {seq} {end_number}"
 
         # Align second row
         second_row = arr[i+1]
@@ -93,7 +96,7 @@ def format_alignment(arr, query_start, ori):
         ref_len = len(ref_seq)
         ref_end = ref_start + ref_len - 1  # Corrected end number for ref
 
-        ref_row = f"ref            {ref_start} {ref_seq} {ref_end}"
+        ref_row = f"query          {" "*len(ref_chr)} {ref_start} {ref_seq} {ref_end}"
 
         # Since ref row number is always less than query, calculate extra space
         space_diff = first_row.index(seq) - ref_row.index(ref_seq)
@@ -112,21 +115,79 @@ def format_alignment(arr, query_start, ori):
 
     return "\n".join(output)
 
+def cor_sort(row1, row2):
+    chr1 = row1["query_chrom"]
+    pos1 = row1["query_pos"]
+    chr2 = row2["query_chrom"]
+    pos2 = row2["query_pos"]
+    chr_num1 = int(chr1[3:])
+    chr_num2 = int(chr2[3:])
+
+    if chr_num1 < chr_num2:
+        return row1, row2
+    elif chr_num1 > chr_num2:
+        return row2, row1
+    else:
+        if pos1 < pos2:
+            return row1, row2
+        elif pos1 > pos2:
+            return row2, row1
+        else:
+            raise ValueError("Identical read positions!")
+        
+def rev_cigar(cigar):
+    # Use regex to find all the ops of the form 'number+letter'
+    ops = re.findall(r'\d+[a-zA-Z]', cigar)
+    
+    reversed_ops = ops[::-1]
+    
+    # Join them back into a string
+    return ''.join(reversed_ops)
+
+def strand_to_AA(ori, l_ori, r_ori):
+    if ori == "++":
+        return "+-"
+    elif ori == "--":
+        return "-+"
+    elif ori == "+-":
+        return "++"
+    elif ori == "-+":
+        return "--"
+    
+    
+    # result = None
+    # if ori == "++":
+    #     result = "+-"
+    # elif ori == "--":
+    #     result = "-+"
+    # elif ori == "+-":
+    #     result = "++"
+    # elif ori == "-+":
+    #     result = "--"
+    
+    # if l_ori == "-" and r_ori == "+":
+    #     result = result.replace('-', '.')
+    #     result = result.replace('+', '-')
+    #     result = result.replace('.', '+')
+    
+    # return result
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Visualize split read junctions and calculate breakpoint details to compare with AA.")
     parser.add_argument("--fa", help="path to hg19 fasta file", type=str, default="./hg19/hg19full.fa")
     parser.add_argument("--aln", help="path to 'alignments.tsv' file from 'alignment.py' output", type=str, default="./alignments.tsv")
     parser.add_argument('--all', action='store_true', help="Show all split reads from at least one AA breakpoint end")
+    parser.add_argument('--lrs', action='store_true', help="Show only reads corresponding to low read support AA breakpoints")
     args = parser.parse_args()
     fasta_file = args.fa
     df = pd.read_csv(args.aln, sep="\t")
     # aligner = Align.PairwiseAligner(mode="global", open_gap_score = -10, extend_gap_score = -0.5, match_score = 1.0, mismatch_score = -1.0)
     aligner = Align.PairwiseAligner(mode="local", open_gap_score = -10, extend_gap_score = -5, match_score=2, mismatch_score=-2)
+    reg_size = 150
 
     it = iter(df.iterrows())
     for index, row in it:
-        homology = row["break_homology_seq"]
+        homology = row["AA_homology_seq"]
         if row["split"] == False:
             continue
         
@@ -139,143 +200,165 @@ if __name__ == "__main__":
         break_sv_type = row["break_sv_type"]
         break_read_support = row["break_read_support"]
         break_features = row["break_features"]
-        break_hom_len = row["break_homology_len"]
+        break_hom_len = row["AA_homology_len"]
 
         query_name = row["query_name"]
         query_is_proper = row["proper_pair"]
         query_read_num = row["read_num"]
 
-        second_row = next(it)[1]
+        next_row = next(it)[1]
 
-        if 'H' in row["query_cigar"]:
-            temp = row
-            row = second_row
-            second_row = temp
+        l_row, r_row = cor_sort(row, next_row)
 
-        first_chr = row["query_chrom"]
-        first_ori = row["query_orientation"]
-        first_aln = row["query_aln_sub"]
-        first_cigar = row["query_cigar"]
-        first_pos = row["query_pos"]
-        first_end = row["query_end"]
-        first_len = len(first_aln)
+        l_chr = l_row["query_chrom"]
+        l_ori = l_row["query_orientation"]
+        l_seq = l_row["query_aln_sub"]
+        l_cigar = l_row["query_cigar"]
+        l_start = l_row["query_pos"]
+        l_end = l_row["query_end"] - 1
+        l_len = len(l_seq)
 
-        second_chr = second_row["query_chrom"]
-        second_ori = second_row["query_orientation"]
-        second_aln = second_row["query_aln_sub"]
-        second_cigar = second_row["query_cigar"]
-        second_pos = second_row["query_pos"]
-        second_end = second_row["query_end"]
-        second_len = len(second_aln)
+        r_chr = r_row["query_chrom"]
+        r_ori = r_row["query_orientation"]
+        r_seq = r_row["query_aln_sub"]
+        r_cigar = r_row["query_cigar"]
+        r_start = r_row["query_pos"]
+        r_end = r_row["query_end"] - 1
+        r_len = len(r_seq)
 
-        primary_aln = row["query_aln_full"]
-        primary_len = len(primary_aln)
+        read_row = row if len(row["query_aln_full"]) == 100 else next_row
+        read_seq = read_row["query_aln_full"] if read_row["query_orientation"] == "+" else reverse_complement(read_row["query_aln_full"])
+        read_ori = read_row["query_orientation"]
 
         # Check if near both breakpoint ends
         if not args.all:
-            if not (((first_pos <= break_pos1 <= first_end) and (second_pos <= break_pos2 <= second_end)) or
-                ((first_pos <= break_pos2 <= first_end) and (second_pos <= break_pos1 <= second_end))):
+            if not ((break_chr1 == l_chr and break_chr2 == r_chr) or (break_chr1 == r_chr and break_chr2 == l_chr)):
+                continue
+            if not (((l_start - reg_size <= break_pos1 <= l_end + reg_size) and (r_start - reg_size <= break_pos2 <= r_end + reg_size)) or
+                ((l_start - reg_size <= break_pos2 <= l_end + reg_size) and (r_start - reg_size <= break_pos1 <= r_end + reg_size))):
                 continue
 
+        if args.lrs and break_read_support > 3:
+            continue
+        
+        l_aln_seq = l_seq
+        l_aln_cigar = l_cigar
+        l_aln_start = l_start
+        l_aln_end = l_end
+        r_aln_seq = r_seq
+        r_aln_cigar = r_cigar
+        r_aln_start = r_start
+        r_aln_end = r_end
+
+        if l_ori == "-":
+            l_aln_seq = reverse_complement(l_aln_seq)
+            l_aln_cigar = rev_cigar(l_aln_cigar)
+            temp = l_aln_start
+            l_aln_start = l_aln_end
+            l_aln_end = temp
+        if r_ori == "-":
+            r_aln_seq = reverse_complement(r_aln_seq)
+            r_aln_cigar = rev_cigar(r_aln_cigar)
+            temp = r_aln_start
+            r_aln_start = r_aln_end
+            r_aln_end = temp
         #Get orientation and number of clipped bases from both cigars
-        pr_ori, pr_affix = extract_affix(first_cigar)
-        sup_ori, sup_affix = extract_affix(second_cigar)
-        pr_affix = int(pr_affix)
-        sup_affix = int(sup_affix)
         hom_len = None
         hom_seq = None
 
         # Calculate homology length
-        if pr_ori:
-                sup_aln = reverse_complement(second_aln) if sup_ori else second_aln
-                sup_aln_len = len(sup_aln)
-                suffix_len = pr_affix
-                hom_len = (primary_len - suffix_len) - (primary_len - sup_aln_len)
-                if hom_len > 0:
-                    hom_seq = primary_aln[primary_len - sup_aln_len: primary_len - suffix_len]
-                elif hom_len < 0:
-                    hom_seq = primary_aln[primary_len - suffix_len: primary_len - sup_aln_len]
-        else:
-            sup_aln = second_aln if sup_ori else reverse_complement(second_aln)
-            sup_aln_len = len(sup_aln)
-            prefix_len = pr_affix
-            hom_len = sup_aln_len - prefix_len
-            if hom_len > 0:
-                hom_seq = primary_aln[prefix_len: sup_aln_len]
-            elif hom_len < 0:
-                hom_seq = primary_aln[sup_aln_len: prefix_len]
+        # read_seq
+        # l_aln_seq
+        # r_aln_seq
+        # l_len
+        # r_len
 
+        l_index = read_seq.index(l_aln_seq)
+        r_index = read_seq.index(r_aln_seq)
+
+        seq_list = [(l_index, l_index + l_len), (r_index, r_index + r_len)]
+        seq_list.sort(key = lambda x: x[0])
+        print(seq_list)
+
+        l_seq_end = seq_list[0][1]
+        r_seq_start = seq_list[1][0]
+        if l_seq_end > r_seq_start:
+            hom_seq = read_seq[r_seq_start:l_seq_end]
+            hom_len = len(hom_seq)
+        elif l_seq_end == r_seq_start:
+            hom_len = 0
+        else:
+            hom_seq = read_seq[l_seq_end:r_seq_start]
+            hom_len = -len(hom_seq)
+        
+        if read_row['query_orientation'] == "-":
+                hom_seq = reverse_complement(hom_seq)
         # Extract reference sequences such that both donor sequences meet in the middle
-        region1 = f"{first_chr}:{first_pos - (100 - first_len)}-{first_pos+first_len+9}" if pr_ori else f"{first_chr}:{first_pos - 10}-{first_pos+99}"
+        region1 = f"{l_chr}:{l_aln_start - (100 - l_len)}-{l_aln_end+10}" if l_ori == "+" else f"{l_chr}:{l_aln_end - 10}-{l_aln_start+ (100 - l_len)}"
         sequence1 = extract_region(fasta_file, region1)
-        region2 = f"{second_chr}:{second_pos-10}-{second_pos+99}" if ((not pr_ori and not sup_ori) or (pr_ori and not sup_ori)) else f"{second_chr}:{second_pos - (100 - second_len)}-{second_pos+second_len+9}"
+        region2 = f"{r_chr}:{r_aln_start - (100 - r_len)}-{r_aln_end+10}" if r_ori == "+" else f"{r_chr}:{r_aln_end - 10}-{r_aln_start+ (100 - r_len)}"
         sequence2 = extract_region(fasta_file, region2)
         
         # Reverse complement supplementary alignment if necessary to align with primary alignment
-        second_aln = reverse_complement(second_aln) if (pr_ori and sup_ori) or (not pr_ori and not sup_ori) else second_aln
-        sequence2 = reverse_complement(sequence2) if (pr_ori and sup_ori) or (not pr_ori and not sup_ori) else sequence2
-        full_reference = (sequence1 + sequence2).upper() if pr_ori else (sequence2 + sequence1).upper()
+        sequence1 = reverse_complement(sequence1) if l_ori == "-" else sequence1
+        sequence2 = reverse_complement(sequence2) if r_ori == "-" else sequence2
+        full_reference = (sequence1 + sequence2).upper()
         
         print("Fetched split read near AA breakpoint. Displaying breakpoint details:")
         print(row[0:4].T.to_string(header=False))
         print(row[4:10].T.to_string(header=False), "\n")
 
         print("Split read details:")
-        print("Full Raw Sequence:", primary_aln)
-        print(row[10:11].T.to_string(header=False))
-        print("Primary Alignment" if 'S' in first_cigar else "Supplementary Alignment")
-        print(row[13:20].T.to_string(header=False))
-        print("length", 3*"\t", first_len)
-        print("Raw Sequence", 2*"\t", row["query_aln_sub"], "\n")
+        print("Full Reference Sequence:", read_row["query_aln_full"])
+        print("Full Query Sequence:", read_seq)
+        print(l_row[10:11].T.to_string(header=False))
+        print("Left Alignment")
+        print(l_row[13:20].T.to_string(header=False).replace("query_pos", "ref_start").replace("query_end", "ref_end  "))
+        print("length", 3*"\t", l_len)
+        print("Reference Sequence", "\t", l_row["query_aln_sub"])
+        print("Query Sequence", 2*"\t", l_aln_seq, "\n")
 
-        print(second_row[10:11].T.to_string(header=False))
-        print("Primary Alignment" if 'S' in second_cigar else "Supplementary Alignment")
-        print(second_row[13:20].T.to_string(header=False))
-        print("length", 3*"\t", second_len)
-        print("Raw Sequence", 2*"\t", second_row["query_aln_sub"], "\n")
+        print(r_row[10:11].T.to_string(header=False))
+        print("Right Alignment")
+        print(r_row[13:20].T.to_string(header=False).replace("query_pos", "ref_start").replace("query_end", "ref_end  "))
+        print("length", 3*"\t", r_len)
+        print("Reference Sequence", "\t", r_row["query_aln_sub"])
+        print("Query Sequence", 2*"\t", r_aln_seq, "\n")
 
         print("Split Read Alignment Visualization:")
-        print("Primary first then Sup" if pr_ori else "Sup first then Primary")
-        alignments1 = aligner.align(full_reference, first_aln if pr_ori else second_aln)
-        alignments2 = aligner.align(full_reference, first_aln if not pr_ori else second_aln)
-        aln1_start = None
-        aln2_start = None
+        print("Left then Right alignment")
+        alignments1 = aligner.align(full_reference, l_aln_seq)
+        alignments2 = aligner.align(full_reference, r_aln_seq)
 
-        # Decide start position on reference and orientation
-        if pr_ori:
-            aln1_start = first_pos
-        else:
-            if sup_ori:
-                aln1_start = second_pos
-            else:
-                aln1_start = second_end - 1
+        if read_seq.index(l_aln_seq) != 0:
+            alignments1, alignments2 = alignments2, alignments1
+            l_chr, r_chr = r_chr, l_chr
+            l_aln_start, r_aln_start = r_aln_start, l_aln_start
+            l_ori, r_ori = r_ori, l_ori
+
         for aln in alignments1:
-            print(format_alignment(format(aln).split('\n'), aln1_start, pr_ori or (not pr_ori and sup_ori)))
+            print(format_alignment(format(aln).split('\n'), l_aln_start, l_ori == "+", l_chr))
 
-        if hom_len < 0:
+        if hom_len != None and hom_len < 0:
             print("Gap detected between donor sequences:", hom_seq)
         
-        # Decide start position on reference and orientation
-        if not pr_ori:
-            aln2_start = first_pos
-        else:
-            if not sup_ori:
-                aln2_start = second_pos
-            else:
-                aln2_start = second_end - 1
         for aln in alignments2:
-            print(format_alignment(format(aln).split('\n'), aln2_start, not pr_ori or (pr_ori and not sup_ori)))
+            print(format_alignment(format(aln).split('\n'), r_aln_start, r_ori == "+", r_chr, r_seq_start))
         
-        calc_ori = ("+" if pr_ori else "-") + ("+" if sup_ori else "-")
+        strand_ori = l_ori + r_ori
+        AA_ori = strand_to_AA(strand_ori, l_ori, r_ori)
+
         print("Calculated Breakpoint")
-        print("chr1", 2*"\t", first_chr)
-        print("pos1", 2*"\t", first_pos if calc_ori[0] == "-" else first_end)
-        print("chr2", 2*"\t", second_chr)
-        print("pos2", 2*"\t", second_pos if calc_ori[1] == "-" else second_end)
-        print("orientation", "\t", calc_ori)
+        print("chr1", 2*"\t", l_chr)
+        print("pos1", 2*"\t", l_start if l_ori == "-" else l_end)
+        print("chr2", 2*"\t", r_chr)
+        print("pos2", 2*"\t", r_start if r_ori == "+" else r_end)
+        print("Strand Orientation", "\t", strand_ori)
+        print("\"AA\" Orientation", "\t", AA_ori)
         print("Orientation is based on above order of breakpoint ends!")
-        print("features", "\t", check_features(calc_ori, first_chr, second_chr))
+        print("features", "\t", check_features(AA_ori, l_chr, r_chr))
         print("homology_length", "\t", hom_len)
         print("homology_sequence", "\t", hom_seq)
 
-        print("\n")
+        print(80*"-")
+        # orientations.append()

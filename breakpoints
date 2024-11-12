@@ -19,8 +19,8 @@ Left Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom                chr9
-ref_start             133607147
-ref_end               133607213
+query_pos             133607147
+query_end             133607213
 query_orientation             +
 query_cigar              34S66M
 length 			 66
@@ -32,8 +32,8 @@ Right Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom               chr22
-ref_start              23632704
-ref_end                23632743
+query_pos              23632704
+query_end              23632743
 query_orientation             +
 query_cigar              39M61H
 length 			 39
@@ -42,17 +42,17 @@ Query Sequence 		 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:133607147 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 133607185
-                              |||||||||||||||||||||||||||||||||||||||  
-        query               1 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 39
+ref            133607147 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 133607206
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 60
 
-ref            chr22:23632704 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 23632763
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      query                35 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 94
+ref            133607207 ATTGCA 133607212
+                         ||||||  
+       query          61 ATTGCA 66
 
-ref            chr22:23632764 ATTGCA 23632769
-                              ||||||  
-      query                95 ATTGCA 100
+ref            23632704 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 23632742
+                        |||||||||||||||||||||||||||||||||||||||  
+       query          1 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 39
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -87,8 +87,8 @@ Left Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom                chr9
-ref_start             133607147
-ref_end               133607191
+query_pos             133607147
+query_end             133607191
 query_orientation             -
 query_cigar              56H44M
 length 			 44
@@ -100,8 +100,8 @@ Right Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom               chr22
-ref_start              23632682
-ref_end                23632743
+query_pos              23632682
+query_end              23632743
 query_orientation             -
 query_cigar              61M39S
 length 			 61
@@ -110,17 +110,17 @@ Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:133607190 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
-                              ||||||||||||||||||||||||||||||||||||||||||||  
-        query               1 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 44
+ref            133607190 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
+                         ||||||||||||||||||||||||||||||||||||||||||||  
+        query          1 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 44
 
-ref            chr22:23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      query                40 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 99
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 60
 
-ref            chr22:23632682 C 23632682
-                              |  
-     query                100 C 100
+ref            23632682 C 23632682
+                        |  
+      query          61 C 61
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -155,8 +155,8 @@ Left Alignment
 proper_pair          Concordant
 read_num                      2
 query_chrom                chr9
-ref_start             133607147
-ref_end               133607178
+query_pos             133607147
+query_end             133607178
 query_orientation             -
 query_cigar              69H31M
 length 			 31
@@ -168,8 +168,8 @@ Right Alignment
 proper_pair          Concordant
 read_num                      2
 query_chrom               chr22
-ref_start              23632669
-ref_end                23632743
+query_pos              23632669
+query_end              23632743
 query_orientation             -
 query_cigar              74M26S
 length 			 74
@@ -178,17 +178,17 @@ Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCCC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:133607177 GTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
-                              |||||||||||||||||||||||||||||||  
-        query               1 GTTTGGGTATGGAAGCTGATAAAACCCACTC 31
+ref            133607177 GTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
+                         |||||||||||||||||||||||||||||||  
+        query          1 GTTTGGGTATGGAAGCTGATAAAACCCACTC 31
 
-ref            chr22:23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      query                27 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 86
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 60
 
-ref            chr22:23632682 CCCACACCCTGCCC 23632669
-                              ||||||||||||||  
-      query                87 CCCACACCCTGCCC 100
+ref            23632682 CCCACACCCTGCCC 23632669
+                        ||||||||||||||  
+      query          61 CCCACACCCTGCCC 74
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -223,8 +223,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom                chr9
-ref_start             133607147
-ref_end               133607218
+query_pos             133607147
+query_end             133607218
 query_orientation             -
 query_cigar              29S71M
 length 			 71
@@ -236,8 +236,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr22
-ref_start              23632709
-ref_end                23632743
+query_pos              23632709
+query_end              23632743
 query_orientation             -
 query_cigar              34M66H
 length 			 34
@@ -246,17 +246,17 @@ Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:133607217 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 133607158
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        query               1 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 60
+ref            133607217 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 133607158
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 60
 
-ref            chr9:133607157 AAAACCCACTC 133607147
-                              |||||||||||  
-       query               61 AAAACCCACTC 71
+ref            133607157 AAAACCCACTC 133607147
+                         |||||||||||  
+       query          61 AAAACCCACTC 71
 
-ref            chr22:23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 23632709
-                              ||||||||||||||||||||||||||||||||||  
-      query                67 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 100
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 23632709
+                        ||||||||||||||||||||||||||||||||||  
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 34
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -291,8 +291,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom                chr9
-ref_start             133607151
-ref_end               133607181
+query_pos             133607151
+query_end             133607181
 query_orientation             +
 query_cigar              70H30M
 length 			 30
@@ -304,8 +304,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr22
-ref_start              23632672
-ref_end                23632741
+query_pos              23632672
+query_end              23632741
 query_orientation             +
 query_cigar              69M31S
 length 			 69
@@ -314,18 +314,18 @@ Query Sequence 		 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:133607151 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 133607210
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        query               1 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 60
-
-ref            chr9:133607211 GCTGTGGAG 133607219
-                              |||||||||  
-       query               61 GCTGTGGAG 69
+ref            133607151 GGGTTTTATCAGCTTCCATACCCAAACAGA 133607180
+                         ||||||||||||||||||||||||||||||  
+        query          1 GGGTTTTATCAGCTTCCATACCCAAACAGA 30
 
 Gap detected between donor sequences: G
-ref            chr22:23632672 GGGTTTTATCAGCTTCCATACCCAAACAGA 23632701
-                              ||||||||||||||||||||||||||||||  
-      query                71 GGGTTTTATCAGCTTCCATACCCAAACAGA 100
+ref            23632672 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 23632731
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 60
+
+ref            23632732 GCTGTGGAG 23632740
+                        |||||||||  
+      query          61 GCTGTGGAG 69
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -360,8 +360,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom                chr9
-ref_start             134155484
-ref_end               134155525
+query_pos             134155484
+query_end             134155525
 query_orientation             -
 query_cigar              41M59H
 length 			 41
@@ -373,8 +373,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start             108661351
-ref_end               108661412
+query_pos             108661351
+query_end             108661412
 query_orientation             +
 query_cigar              61M39S
 length 			 61
@@ -383,17 +383,17 @@ Query Sequence 		 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:134155524 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 134155465
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        query               1 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 60
+ref            134155524 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGCAGACTGAGA 134155484
+                         |||||||||||||||.|||||||||||||||||||||||||  
+        query          1 ATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA 41
 
-ref            chr9:134155464 T 134155464
-                              |  
-       query               61 T 61
+ref            108661351 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 108661410
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 60
 
-ref            chr13:108661351 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGCAGACTGAGA 108661391
-                               |||||||||||||||.|||||||||||||||||||||||||  
-       query                60 ATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA 100
+ref            108661411 T 108661411
+                         |  
+       query          61 T 61
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -428,8 +428,8 @@ Left Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom                chr9
-ref_start             134155485
-ref_end               134155525
+query_pos             134155485
+query_end             134155525
 query_orientation             +
 query_cigar              40M60H
 length 			 40
@@ -441,8 +441,8 @@ Right Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom               chr13
-ref_start             108661350
-ref_end               108661412
+query_pos             108661350
+query_end             108661412
 query_orientation             -
 query_cigar              62M38S
 length 			 62
@@ -451,17 +451,17 @@ Query Sequence 		 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAATA
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:134155485 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 134155524
-                              ||||||||||||||||||||||||||||||||||||||||  
-        query               1 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 40
+ref            134155485 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 134155524
+                         ||||||||||||||||||||||||||||||||||||||||  
+        query          1 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 40
 
-ref            chr13:108661411 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 108661352
-                               ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                39 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 98
+ref            108661411 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 108661352
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 60
 
-ref            chr13:108661351 TA 108661350
-                               ||  
-       query                99 TA 100
+ref            108661351 TA 108661350
+                         ||  
+       query          61 TA 62
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -496,8 +496,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom                chr9
-ref_start             134155493
-ref_end               134155525
+query_pos             134155493
+query_end             134155525
 query_orientation             -
 query_cigar              32M68H
 length 			 32
@@ -509,8 +509,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start             108661342
-ref_end               108661412
+query_pos             108661342
+query_end             108661412
 query_orientation             +
 query_cigar              70M30S
 length 			 70
@@ -519,17 +519,17 @@ Query Sequence 		 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAA
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr9:134155524 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 134155465
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        query               1 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 60
+ref            134155524 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 134155493
+                         ||||||||||||||||||||||||||||||||  
+        query          1 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 32
 
-ref            chr9:134155464 AAATTATAAT 134155455
-                              ||||||||||  
-       query               61 AAATTATAAT 70
+ref            108661342 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 108661401
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 60
 
-ref            chr13:108661342 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 108661373
-                               ||||||||||||||||||||||||||||||||  
-       query                69 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 100
+ref            108661402 AAATTATAAT 108661411
+                         ||||||||||  
+       query          61 AAATTATAAT 70
 
 Calculated Breakpoint
 chr1 		 chr9
@@ -564,8 +564,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              81088033
-ref_end                81088098
+query_pos              81088033
+query_end              81088098
 query_orientation             -
 query_cigar              35S65M
 length 			 65
@@ -577,8 +577,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              81469935
-ref_end                81469973
+query_pos              81469935
+query_end              81469973
 query_orientation             +
 query_cigar              62H38M
 length 			 38
@@ -587,17 +587,17 @@ Query Sequence 		 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
+ref            81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
 
-ref            chr13:81088037 AAGTT 81088033
-                              |||||  
-      query                61 AAGTT 65
+ref            81088037 AAGTT 81088033
+                        |||||  
+      query          61 AAGTT 65
 
-ref            chr13:81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
-                              ||||||||||||||||||||||||||||||||||||||  
-      query                63 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 100
+ref            81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 38
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -632,8 +632,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              81088033
-ref_end                81088098
+query_pos              81088033
+query_end              81088098
 query_orientation             -
 query_cigar              35S65M
 length 			 65
@@ -645,8 +645,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              81469935
-ref_end                81469973
+query_pos              81469935
+query_end              81469973
 query_orientation             +
 query_cigar              62H38M
 length 			 38
@@ -655,17 +655,17 @@ Query Sequence 		 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
+ref            81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
 
-ref            chr13:81088037 AAGTT 81088033
-                              |||||  
-      query                61 AAGTT 65
+ref            81088037 AAGTT 81088033
+                        |||||  
+      query          61 AAGTT 65
 
-ref            chr13:81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
-                              ||||||||||||||||||||||||||||||||||||||  
-      query                63 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 100
+ref            81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 38
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -700,8 +700,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              81109377
-ref_end                81109415
+query_pos              81109377
+query_end              81109415
 query_orientation             -
 query_cigar              38M62H
 length 			 38
@@ -713,8 +713,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              90438707
-ref_end                90438772
+query_pos              90438707
+query_end              90438772
 query_orientation             -
 query_cigar              35S65M
 length 			 65
@@ -723,17 +723,17 @@ Query Sequence 		 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTTGC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:81109414 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 81109355
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 60
+ref            81109414 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 81109377
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 38
 
-ref            chr13:81109354 GCCCA 81109350
-                              |||||  
-      query                61 GCCCA 65
+ref            90438771 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 90438712
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 60
 
-ref            chr13:90438771 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 90438734
-                              ||||||||||||||||||||||||||||||||||||||  
-      query                63 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 100
+ref            90438711 GCCCA 90438707
+                        |||||  
+      query          61 GCCCA 65
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -768,8 +768,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              81109352
-ref_end                81109415
+query_pos              81109352
+query_end              81109415
 query_orientation             +
 query_cigar              63M37S
 length 			 63
@@ -781,8 +781,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              90438707
-ref_end                90438747
+query_pos              90438707
+query_end              90438747
 query_orientation             +
 query_cigar              60H40M
 length 			 40
@@ -791,17 +791,17 @@ Query Sequence 		 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:81109352 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 81109411
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 60
+ref            81109352 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 81109411
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 60
 
-ref            chr13:81109412 TGG 81109414
-                              |||  
-      query                61 TGG 63
+ref            81109412 TGG 81109414
+                        |||  
+      query          61 TGG 63
 
-ref            chr13:90438707 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 90438746
-                              ||||||||||||||||||||||||||||||||||||||||  
-      query                61 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 100
+ref            90438707 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 90438746
+                        ||||||||||||||||||||||||||||||||||||||||  
+       query          1 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 40
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -836,8 +836,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              81469984
-ref_end                81470037
+query_pos              81469984
+query_end              81470037
 query_orientation             +
 query_cigar              53M47S
 length 			 53
@@ -849,8 +849,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              81470259
-ref_end                81470312
+query_pos              81470259
+query_end              81470312
 query_orientation             -
 query_cigar              53M47H
 length 			 53
@@ -859,13 +859,13 @@ Query Sequence 		 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:81469984 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 81470036
-                              |||||||||||||||||||||||||||||||||||||||||||||||||||||  
-       query                1 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 53
+ref            81469984 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 81470036
+                        |||||||||||||||||||||||||||||||||||||||||||||||||||||  
+       query          1 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 53
 
-ref            chr13:81470311 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 81470259
-                              |||||||||||||||||||||||||||||||||||||||||||||||||||||  
-      query                48 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 100
+ref            81470311 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 81470259
+                        |||||||||||||||||||||||||||||||||||||||||||||||||||||  
+       query          1 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 53
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -900,8 +900,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      1
 query_chrom               chr13
-ref_start              90862814
-ref_end                90862856
+query_pos              90862814
+query_end              90862856
 query_orientation             -
 query_cigar              42M58H
 length 			 42
@@ -913,8 +913,8 @@ Right Alignment
 proper_pair           Discordant
 read_num                       1
 query_chrom                chr13
-ref_start               90864807
-ref_end                 90864870
+query_pos               90864807
+query_end               90864870
 query_orientation              -
 query_cigar          38S24M1D38M
 length 			 62
@@ -923,49 +923,49 @@ Query Sequence 		 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAATATTTGGAAAAAGAAGCAGCATTT
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:90862855 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90862796
-                              ||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||||
-       query                1 ATTTCAACTATGCTACATATTTGAAAATTTTTCT-AAAATATTTGGAAAAAGAAGCAGCA 60
+ref            90862855 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCATTACA 90862814
+                        ||||||||||||||||||||||||||||||||||||.|||||  
+       query          1 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCGTTACA 42
 
-ref            chr13:90862795 TTT 90862793
-                              |||  
-      query                61 TTT 63
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCT-AAAATATTTGGAAAAAGAAGCAGCA 60
 
-ref            chr13:90862855 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90862796
-                              |||||||||||||||||||||||||||||||||||-||||||||||||||||||||||||
-       query                1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTA-AAATATTTGGAAAAAGAAGCAGCA 60
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
 
-ref            chr13:90862795 TTT 90862793
-                              |||  
-      query                61 TTT 63
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        |||||||||||||||||||||||||||||||||||-||||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTA-AAATATTTGGAAAAAGAAGCAGCA 60
 
-ref            chr13:90862855 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90862796
-                              ||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||
-       query                1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAA-AATATTTGGAAAAAGAAGCAGCA 60
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
 
-ref            chr13:90862795 TTT 90862793
-                              |||  
-      query                61 TTT 63
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAA-AATATTTGGAAAAAGAAGCAGCA 60
 
-ref            chr13:90862855 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90862796
-                              |||||||||||||||||||||||||||||||||||||-||||||||||||||||||||||
-       query                1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAA-ATATTTGGAAAAAGAAGCAGCA 60
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
 
-ref            chr13:90862795 TTT 90862793
-                              |||  
-      query                61 TTT 63
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        |||||||||||||||||||||||||||||||||||||-||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAA-ATATTTGGAAAAAGAAGCAGCA 60
 
-ref            chr13:90862855 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90862796
-                              ||||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||
-       query                1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAA-TATTTGGAAAAAGAAGCAGCA 60
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
 
-ref            chr13:90862795 TTT 90862793
-                              |||  
-      query                61 TTT 63
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAA-TATTTGGAAAAAGAAGCAGCA 60
 
-ref            chr13:90864869 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCATTACA 90864828
-                              ||||||||||||||||||||||||||||||||||||.|||||  
-      query                59 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCGTTACA 100
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -1000,8 +1000,8 @@ Left Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom               chr13
-ref_start              92473942
-ref_end                92474012
+query_pos              92473942
+query_end              92474012
 query_orientation             -
 query_cigar              70M30S
 length 			 70
@@ -1013,8 +1013,8 @@ Right Alignment
 proper_pair          Concordant
 read_num                      1
 query_chrom               chr13
-ref_start              92475727
-ref_end                92475759
+query_pos              92475727
+query_end              92475759
 query_orientation             +
 query_cigar              32M68H
 length 			 32
@@ -1023,17 +1023,17 @@ Query Sequence 		 AAATTAATGCTCCCACTTCAACTTAAAGAATT
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:92474011 AAATTAATGCTCCCACTTCAACTTAAAGAATT 92473980
-                              ||||||||||||||||||||||||||||||||  
-       query                1 AAATTAATGCTCCCACTTCAACTTAAAGAATT 32
+ref            92474011 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 92473952
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 60
 
-ref            chr13:92475727 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 92475786
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      query                31 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 90
+ref            92473951 CATTACGTCT 92473942
+                        ||||||||||  
+      query          61 CATTACGTCT 70
 
-ref            chr13:92475787 CATTACGTCT 92475796
-                              ||||||||||  
-      query                91 CATTACGTCT 100
+ref            92475727 AAATTAATGCTCCCACTTCAACTTAAAGAATT 92475758
+                        ||||||||||||||||||||||||||||||||  
+       query          1 AAATTAATGCTCCCACTTCAACTTAAAGAATT 32
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -1068,8 +1068,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              92473947
-ref_end                92474012
+query_pos              92473947
+query_end              92474012
 query_orientation             +
 query_cigar              65M35S
 length 			 65
@@ -1081,8 +1081,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              92475722
-ref_end                92475759
+query_pos              92475722
+query_end              92475759
 query_orientation             -
 query_cigar              37M63H
 length 			 37
@@ -1091,17 +1091,17 @@ Query Sequence 		 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:92473947 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 92474006
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 60
+ref            92473947 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 92474006
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 60
 
-ref            chr13:92474007 TCAAA 92474011
-                              |||||  
-      query                61 TCAAA 65
+ref            92474007 TCAAA 92474011
+                        |||||  
+      query          61 TCAAA 65
 
-ref            chr13:92475758 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 92475722
-                              |||||||||||||||||||||||||||||||||||||  
-      query                64 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 100
+ref            92475758 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 92475722
+                        |||||||||||||||||||||||||||||||||||||  
+       query          1 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 37
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -1136,8 +1136,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start              94023348
-ref_end                94023409
+query_pos              94023348
+query_end              94023409
 query_orientation             +
 query_cigar              61M39S
 length 			 61
@@ -1149,8 +1149,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr13
-ref_start             108500973
-ref_end               108501012
+query_pos             108500973
+query_end             108501012
 query_orientation             +
 query_cigar              61H39M
 length 			 39
@@ -1159,17 +1159,17 @@ Query Sequence 		 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr13:94023348 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 94023407
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 60
+ref            94023348 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 94023407
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 60
 
-ref            chr13:94023408 T 94023408
-                              |  
-      query                61 T 61
+ref            94023408 T 94023408
+                        |  
+      query          61 T 61
 
-ref            chr13:108500973 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 108501011
-                               |||||||||||||||||||||||||||||||||||||||  
-       query                62 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 100
+ref            108500973 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 108501011
+                         |||||||||||||||||||||||||||||||||||||||  
+        query          1 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 39
 
 Calculated Breakpoint
 chr1 		 chr13
@@ -1204,8 +1204,8 @@ Left Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr22
-ref_start              18953123
-ref_end                18953191
+query_pos              18953123
+query_end              18953191
 query_orientation             -
 query_cigar              32S68M
 length 			 68
@@ -1217,8 +1217,8 @@ Right Alignment
 proper_pair          Discordant
 read_num                      2
 query_chrom               chr22
-ref_start              22935374
-ref_end                22935406
+query_pos              22935374
+query_end              22935406
 query_orientation             +
 query_cigar              68H32M
 length 			 32
@@ -1227,17 +1227,17 @@ Query Sequence 		 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA
 
 Split Read Alignment Visualization:
 Left then Right alignment
-ref            chr22:18953190 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 18953131
-                              ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-       query                1 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 60
+ref            18953190 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 18953131
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 60
 
-ref            chr22:18953130 CAGATGGA 18953123
-                              ||||||||  
-      query                61 CAGATGGA 68
+ref            18953130 CAGATGGA 18953123
+                        ||||||||  
+      query          61 CAGATGGA 68
 
-ref            chr22:22935374 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 22935405
-                              ||||||||||||||||||||||||||||||||  
-      query                69 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 100
+ref            22935374 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 22935405
+                        ||||||||||||||||||||||||||||||||  
+       query          1 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 32
 
 Calculated Breakpoint
 chr1 		 chr22
