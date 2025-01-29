@@ -1,0 +1,1253 @@
+[(0, 39), (34, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      133607146
+break_chrom2        chr22
+break_pos2       23632741
+break_sv_type         interchromosomal
+break_read_support                   7
+break_features                 unknown
+break_orientation                   -+
+AA_homology_len                    5.0
+AA_homology_seq                  GAGTG 
+
+Split read details:
+Full Reference Sequence: TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA
+Full Query Sequence: TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA
+query_name    HWI-ST1113:353:H99R3ADXX:2:2216:1974:92037
+Left Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom                chr9
+query_pos             133607147
+query_end             133607213
+query_orientation             +
+query_cigar              34S66M
+length 			 66
+Reference Sequence 	 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA
+Query Sequence 		 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2216:1974:92037
+Right Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom               chr22
+query_pos              23632704
+query_end              23632743
+query_orientation             +
+query_cigar              39M61H
+length 			 39
+Reference Sequence 	 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+Query Sequence 		 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            133607147 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 133607206
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTG 60
+
+ref            133607207 ATTGCA 133607212
+                         ||||||  
+       query          61 ATTGCA 66
+
+ref            23632704 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 23632742
+                        |||||||||||||||||||||||||||||||||||||||  
+       query          1 TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG 39
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 133607212
+chr2 		 chr22
+pos2 		 23632704
+Strand Orientation 	 ++
+"AA" Orientation 	 +-
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 5
+homology_sequence 	 GAGTG
+--------------------------------------------------------------------------------
+[(0, 44), (39, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      133607146
+break_chrom2        chr22
+break_pos2       23632741
+break_sv_type         interchromosomal
+break_read_support                   7
+break_features                 unknown
+break_orientation                   -+
+AA_homology_len                    5.0
+AA_homology_seq                  GAGTG 
+
+Split read details:
+Full Reference Sequence: GGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTA
+Full Query Sequence: TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCC
+query_name    HWI-ST1113:353:H99R3ADXX:2:1104:8084:31831
+Left Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom                chr9
+query_pos             133607147
+query_end             133607191
+query_orientation             -
+query_cigar              56H44M
+length 			 44
+Reference Sequence 	 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTA
+Query Sequence 		 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1104:8084:31831
+Right Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom               chr22
+query_pos              23632682
+query_end              23632743
+query_orientation             -
+query_cigar              61M39S
+length 			 61
+Reference Sequence 	 GGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCC 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            133607190 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
+                         ||||||||||||||||||||||||||||||||||||||||||||  
+        query          1 TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 44
+
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 60
+
+ref            23632682 C 23632682
+                        |  
+      query          61 C 61
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 133607147
+chr2 		 chr22
+pos2 		 23632742
+Strand Orientation 	 --
+"AA" Orientation 	 -+
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 5
+homology_sequence 	 GAGTG
+--------------------------------------------------------------------------------
+[(0, 31), (26, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      133607146
+break_chrom2        chr22
+break_pos2       23632741
+break_sv_type         interchromosomal
+break_read_support                   7
+break_features                 unknown
+break_orientation                   -+
+AA_homology_len                    5.0
+AA_homology_seq                  GAGTG 
+
+Split read details:
+Full Reference Sequence: GGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTGGGTTTTATCAGCTTCCATACCCAAAC
+Full Query Sequence: GTTTGGGTATGGAAGCTGATAAAACCCACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCCCCACACCCTGCCC
+query_name    HWI-ST1113:353:H99R3ADXX:2:1114:3878:88045
+Left Alignment
+proper_pair          Concordant
+read_num                      2
+query_chrom                chr9
+query_pos             133607147
+query_end             133607178
+query_orientation             -
+query_cigar              69H31M
+length 			 31
+Reference Sequence 	 GAGTGGGTTTTATCAGCTTCCATACCCAAAC
+Query Sequence 		 GTTTGGGTATGGAAGCTGATAAAACCCACTC 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1114:3878:88045
+Right Alignment
+proper_pair          Concordant
+read_num                      2
+query_chrom               chr22
+query_pos              23632669
+query_end              23632743
+query_orientation             -
+query_cigar              74M26S
+length 			 74
+Reference Sequence 	 GGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTCCCCACACCCTGCCC 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            133607177 GTTTGGGTATGGAAGCTGATAAAACCCACTC 133607147
+                         |||||||||||||||||||||||||||||||  
+        query          1 GTTTGGGTATGGAAGCTGATAAAACCCACTC 31
+
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 23632683
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCATCTGAACAACCTCCCTGTTTC 60
+
+ref            23632682 CCCACACCCTGCCC 23632669
+                        ||||||||||||||  
+      query          61 CCCACACCCTGCCC 74
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 133607147
+chr2 		 chr22
+pos2 		 23632742
+Strand Orientation 	 --
+"AA" Orientation 	 -+
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 5
+homology_sequence 	 GAGTG
+--------------------------------------------------------------------------------
+[(0, 71), (66, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      133607146
+break_chrom2        chr22
+break_pos2       23632741
+break_sv_type         interchromosomal
+break_read_support                   7
+break_features                 unknown
+break_orientation                   -+
+AA_homology_len                    5.0
+AA_homology_seq                  GAGTG 
+
+Split read details:
+Full Reference Sequence: ACGGGACACCTTTGACCCTGGCCGCTGTGGAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAA
+Full Query Sequence: TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT
+query_name    HWI-ST1113:353:H99R3ADXX:2:1114:8967:93025
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom                chr9
+query_pos             133607147
+query_end             133607218
+query_orientation             -
+query_cigar              29S71M
+length 			 71
+Reference Sequence 	 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAA
+Query Sequence 		 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACCCACTC 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1114:8967:93025
+Right Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr22
+query_pos              23632709
+query_end              23632743
+query_orientation             -
+query_cigar              34M66H
+length 			 34
+Reference Sequence 	 ACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+Query Sequence 		 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            133607217 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 133607158
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 TTTAGTGCAATCAGAGAAGAAAATCCTTAAGGGTATTTCTGTTTGGGTATGGAAGCTGAT 60
+
+ref            133607157 AAAACCCACTC 133607147
+                         |||||||||||  
+       query          61 AAAACCCACTC 71
+
+ref            23632742 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 23632709
+                        ||||||||||||||||||||||||||||||||||  
+       query          1 CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT 34
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 133607147
+chr2 		 chr22
+pos2 		 23632742
+Strand Orientation 	 --
+"AA" Orientation 	 -+
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 5
+homology_sequence 	 GAGTG
+--------------------------------------------------------------------------------
+[(0, 69), (70, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      133607146
+break_chrom2        chr22
+break_pos2       23632741
+break_sv_type         interchromosomal
+break_read_support                   7
+break_features                 unknown
+break_orientation                   -+
+AA_homology_len                    5.0
+AA_homology_seq                  GAGTG 
+
+Split read details:
+Full Reference Sequence: CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGGGGGTTTTATCAGCTTCCATACCCAAACAGA
+Full Query Sequence: CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGGGGGTTTTATCAGCTTCCATACCCAAACAGA
+query_name    HWI-ST1113:353:H99R3ADXX:2:2212:8483:98862
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom                chr9
+query_pos             133607151
+query_end             133607181
+query_orientation             +
+query_cigar              70H30M
+length 			 30
+Reference Sequence 	 GGGTTTTATCAGCTTCCATACCCAAACAGA
+Query Sequence 		 GGGTTTTATCAGCTTCCATACCCAAACAGA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2212:8483:98862
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr22
+query_pos              23632672
+query_end              23632741
+query_orientation             +
+query_cigar              69M31S
+length 			 69
+Reference Sequence 	 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAG
+Query Sequence 		 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAG 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            133607151 GGGTTTTATCAGCTTCCATACCCAAACAGA 133607180
+                         ||||||||||||||||||||||||||||||  
+        query          1 GGGTTTTATCAGCTTCCATACCCAAACAGA 30
+
+Gap detected between donor sequences: G
+ref            23632672 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 23632731
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCC 60
+
+ref            23632732 GCTGTGGAG 23632740
+                        |||||||||  
+      query          61 GCTGTGGAG 69
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 133607180
+chr2 		 chr22
+pos2 		 23632672
+Strand Orientation 	 ++
+"AA" Orientation 	 +-
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 -1
+homology_sequence 	 G
+--------------------------------------------------------------------------------
+[(0, 61), (59, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      134155523
+break_chrom2        chr13
+break_pos2      108661410
+break_sv_type         interchromosomal
+break_read_support                   6
+break_features                 unknown
+break_orientation                   ++
+AA_homology_len                    2.0
+AA_homology_seq                     AT 
+
+Split read details:
+Full Reference Sequence: ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA
+Full Query Sequence: ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA
+query_name    HWI-ST1113:353:H99R3ADXX:2:1204:4029:29524
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom                chr9
+query_pos             134155484
+query_end             134155525
+query_orientation             -
+query_cigar              41M59H
+length 			 41
+Reference Sequence 	 TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCCAT
+Query Sequence 		 ATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1204:4029:29524
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos             108661351
+query_end             108661412
+query_orientation             +
+query_cigar              61M39S
+length 			 61
+Reference Sequence 	 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+Query Sequence 		 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            134155524 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGCAGACTGAGA 134155484
+                         |||||||||||||||.|||||||||||||||||||||||||  
+        query          1 ATGGACTGATGCTTCTTGGTCCCTTCTCCTGCAGACTGAGA 41
+
+ref            108661351 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 108661410
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAA 60
+
+ref            108661411 T 108661411
+                         |  
+       query          61 T 61
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 134155484
+chr2 		 chr13
+pos2 		 108661351
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 2
+homology_sequence 	 AT
+--------------------------------------------------------------------------------
+[(0, 40), (38, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      134155523
+break_chrom2        chr13
+break_pos2      108661410
+break_sv_type         interchromosomal
+break_read_support                   6
+break_features                 unknown
+break_orientation                   ++
+AA_homology_len                    2.0
+AA_homology_seq                     AT 
+
+Split read details:
+Full Reference Sequence: TATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAATGGACTGATGCTTCCTGGTCCCTTCTCCTGCAGACTGAG
+Full Query Sequence: CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAATA
+query_name    HWI-ST1113:353:H99R3ADXX:2:2206:18184:51161
+Left Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom                chr9
+query_pos             134155485
+query_end             134155525
+query_orientation             +
+query_cigar              40M60H
+length 			 40
+Reference Sequence 	 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+Query Sequence 		 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2206:18184:51161
+Right Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom               chr13
+query_pos             108661350
+query_end             108661412
+query_orientation             -
+query_cigar              62M38S
+length 			 62
+Reference Sequence 	 TATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+Query Sequence 		 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAATA 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            134155485 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 134155524
+                         ||||||||||||||||||||||||||||||||||||||||  
+        query          1 CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT 40
+
+ref            108661411 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 108661352
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 ATTATAATTTTCAAGACAAAGCAGGAAGGTAAAATAGCCTCAATAGAAGCAAGTCCTAAA 60
+
+ref            108661351 TA 108661350
+                         ||  
+       query          61 TA 62
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 134155524
+chr2 		 chr13
+pos2 		 108661411
+Strand Orientation 	 +-
+"AA" Orientation 	 ++
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 2
+homology_sequence 	 AT
+--------------------------------------------------------------------------------
+[(0, 70), (68, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1         chr9
+break_pos1      134155523
+break_chrom2        chr13
+break_pos2      108661410
+break_sv_type         interchromosomal
+break_read_support                   6
+break_features                 unknown
+break_orientation                   ++
+AA_homology_len                    2.0
+AA_homology_seq                     AT 
+
+Split read details:
+Full Reference Sequence: GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAATGGACTGATGCTTCCTGGTCCCTTCTCCTGC
+Full Query Sequence: GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAATGGACTGATGCTTCCTGGTCCCTTCTCCTGC
+query_name    HWI-ST1113:353:H99R3ADXX:2:2107:10816:29921
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom                chr9
+query_pos             134155493
+query_end             134155525
+query_orientation             -
+query_cigar              32M68H
+length 			 32
+Reference Sequence 	 GCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+Query Sequence 		 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2107:10816:29921
+Right Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos             108661342
+query_end             108661412
+query_orientation             +
+query_cigar              70M30S
+length 			 70
+Reference Sequence 	 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+Query Sequence 		 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            134155524 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 134155493
+                         ||||||||||||||||||||||||||||||||  
+        query          1 ATGGACTGATGCTTCCTGGTCCCTTCTCCTGC 32
+
+ref            108661342 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 108661401
+                         ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        query          1 GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGA 60
+
+ref            108661402 AAATTATAAT 108661411
+                         ||||||||||  
+       query          61 AAATTATAAT 70
+
+Calculated Breakpoint
+chr1 		 chr9
+pos1 		 134155493
+chr2 		 chr13
+pos2 		 108661342
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 interchromosomal
+homology_length 	 2
+homology_sequence 	 AT
+--------------------------------------------------------------------------------
+[(0, 65), (62, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      81088032
+break_chrom2       chr13
+break_pos2      81469934
+break_sv_type         inversion
+break_read_support            4
+break_features            ecDNA
+break_orientation            --
+AA_homology_len             3.0
+AA_homology_seq             AAC 
+
+Split read details:
+Full Reference Sequence: GTTAATGAAAAAAACAGAAGAATAAAGACCAAAGAAACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Full Query Sequence: CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAAAAGTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+query_name    HWI-ST1113:353:H99R3ADXX:2:2109:19475:78137
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              81088033
+query_end              81088098
+query_orientation             -
+query_cigar              35S65M
+length 			 65
+Reference Sequence 	 AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Query Sequence 		 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAAAAGTT 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2109:19475:78137
+Right Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              81469935
+query_end              81469973
+query_orientation             +
+query_cigar              62H38M
+length 			 38
+Reference Sequence 	 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+Query Sequence 		 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
+
+ref            81088037 AAGTT 81088033
+                        |||||  
+      query          61 AAGTT 65
+
+ref            81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 38
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 81088033
+chr2 		 chr13
+pos2 		 81469935
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 inversion
+homology_length 	 3
+homology_sequence 	 AAC
+--------------------------------------------------------------------------------
+[(0, 65), (62, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      81088032
+break_chrom2       chr13
+break_pos2      81469934
+break_sv_type         inversion
+break_read_support            4
+break_features            ecDNA
+break_orientation            --
+AA_homology_len             3.0
+AA_homology_seq             AAC 
+
+Split read details:
+Full Reference Sequence: GTTAATGAAAAAAACAGAAGAATAAAGACCAAAGAAACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Full Query Sequence: CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAAAAGTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+query_name    HWI-ST1113:353:H99R3ADXX:2:2204:10689:60717
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              81088033
+query_end              81088098
+query_orientation             -
+query_cigar              35S65M
+length 			 65
+Reference Sequence 	 AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Query Sequence 		 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAAAAGTT 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2204:10689:60717
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              81469935
+query_end              81469973
+query_orientation             +
+query_cigar              62H38M
+length 			 38
+Reference Sequence 	 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+Query Sequence 		 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            81088097 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 81088038
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CGACACTTTTCTAGACAATGTACCAGACTGGAAAGTAATGCACCCCATGAGAGAGGATAA 60
+
+ref            81088037 AAGTT 81088033
+                        |||||  
+      query          61 AAGTT 65
+
+ref            81469935 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 81469972
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC 38
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 81088033
+chr2 		 chr13
+pos2 		 81469935
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 inversion
+homology_length 	 3
+homology_sequence 	 AAC
+--------------------------------------------------------------------------------
+[(0, 65), (62, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      81109413
+break_chrom2       chr13
+break_pos2      90438706
+break_sv_type         deletion-like
+break_read_support                3
+break_features                ecDNA
+break_orientation                +-
+AA_homology_len                 3.0
+AA_homology_seq                 TGG 
+
+Split read details:
+Full Reference Sequence: CTGTCACTGACTGAATTAATTTTACCTCATATGTCTGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTGGTCCATCTTGATTATAATTCTATTT
+Full Query Sequence: AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTTGCCCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG
+query_name    HWI-ST1113:353:H99R3ADXX:2:2211:17685:53350
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              81109377
+query_end              81109415
+query_orientation             -
+query_cigar              38M62H
+length 			 38
+Reference Sequence 	 CTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+Query Sequence 		 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2211:17685:53350
+Right Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              90438707
+query_end              90438772
+query_orientation             -
+query_cigar              35S65M
+length 			 65
+Reference Sequence 	 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTGGTCCATCTTGATTATAATTCTATTT
+Query Sequence 		 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTTGCCCA 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            81109414 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 81109377
+                        ||||||||||||||||||||||||||||||||||||||  
+       query          1 CCAGACATATGAGGTAAAATTAATTCAGTCAGTGACAG 38
+
+ref            90438771 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 90438712
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 AAATAGAATTATAATCAAGATGGACCAAAAATAAAGTTAAAAAACTGAGCTTAAGATTTT 60
+
+ref            90438711 GCCCA 90438707
+                        |||||  
+      query          61 GCCCA 65
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 81109377
+chr2 		 chr13
+pos2 		 90438771
+Strand Orientation 	 --
+"AA" Orientation 	 -+
+Orientation is based on above order of breakpoint ends!
+features 	 duplication-like
+homology_length 	 3
+homology_sequence 	 TGG
+--------------------------------------------------------------------------------
+[(0, 63), (60, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      81109413
+break_chrom2       chr13
+break_pos2      90438706
+break_sv_type         deletion-like
+break_read_support                3
+break_features                ecDNA
+break_orientation                +-
+AA_homology_len                 3.0
+AA_homology_seq                 TGG 
+
+Split read details:
+Full Reference Sequence: GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
+Full Query Sequence: GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
+query_name    HWI-ST1113:353:H99R3ADXX:2:1110:4050:84698
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              81109352
+query_end              81109415
+query_orientation             +
+query_cigar              63M37S
+length 			 63
+Reference Sequence 	 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+Query Sequence 		 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1110:4050:84698
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              90438707
+query_end              90438747
+query_orientation             +
+query_cigar              60H40M
+length 			 40
+Reference Sequence 	 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
+Query Sequence 		 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            81109352 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 81109411
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTC 60
+
+ref            81109412 TGG 81109414
+                        |||  
+      query          61 TGG 63
+
+ref            90438707 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 90438746
+                        ||||||||||||||||||||||||||||||||||||||||  
+       query          1 TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG 40
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 81109414
+chr2 		 chr13
+pos2 		 90438707
+Strand Orientation 	 ++
+"AA" Orientation 	 +-
+Orientation is based on above order of breakpoint ends!
+features 	 deletion-like
+homology_length 	 3
+homology_sequence 	 TGG
+--------------------------------------------------------------------------------
+[(0, 53), (47, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      81470035
+break_chrom2       chr13
+break_pos2      81470310
+break_sv_type         foldback
+break_read_support           3
+break_features           ecDNA
+break_orientation           ++
+AA_homology_len            6.0
+AA_homology_seq         ATAAAA 
+
+Split read details:
+Full Reference Sequence: ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG
+Full Query Sequence: ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG
+query_name    HWI-ST1113:353:H99R3ADXX:2:2204:3704:15030
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              81469984
+query_end              81470037
+query_orientation             +
+query_cigar              53M47S
+length 			 53
+Reference Sequence 	 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA
+Query Sequence 		 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2204:3704:15030
+Right Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              81470259
+query_end              81470312
+query_orientation             -
+query_cigar              53M47H
+length 			 53
+Reference Sequence 	 CTCTGTTTTAAAAAGTTTATCTATATGTCTTGCCACAGATTTATTACTTTTAT
+Query Sequence 		 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            81469984 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 81470036
+                        |||||||||||||||||||||||||||||||||||||||||||||||||||||  
+       query          1 ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA 53
+
+ref            81470311 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 81470259
+                        |||||||||||||||||||||||||||||||||||||||||||||||||||||  
+       query          1 ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG 53
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 81470036
+chr2 		 chr13
+pos2 		 81470311
+Strand Orientation 	 +-
+"AA" Orientation 	 ++
+Orientation is based on above order of breakpoint ends!
+features 	 foldback
+homology_length 	 6
+homology_sequence 	 ATAAAA
+--------------------------------------------------------------------------------
+[(0, 62), (58, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      90862773
+break_chrom2       chr13
+break_pos2      90864806
+break_sv_type         deletion-like
+break_read_support                3
+break_features                ecDNA
+break_orientation                +-
+AA_homology_len                 NaN
+AA_homology_seq                 NaN 
+
+Split read details:
+Full Reference Sequence: TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCCAAATGCTGCTTCTTTTTCCAAATATTTTAGAAAAATTTTCAAATATGTAGCATAGTTGAAAT
+Full Query Sequence: ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAATATTTGGAAAAAGAAGCAGCATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCGTTACA
+query_name    HWI-ST1113:353:H99R3ADXX:2:2116:5449:58267
+Left Alignment
+proper_pair          Discordant
+read_num                      1
+query_chrom               chr13
+query_pos              90862814
+query_end              90862856
+query_orientation             -
+query_cigar              42M58H
+length 			 42
+Reference Sequence 	 TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCCAAAT
+Query Sequence 		 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCGTTACA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2116:5449:58267
+Right Alignment
+proper_pair           Discordant
+read_num                       1
+query_chrom                chr13
+query_pos               90864807
+query_end               90864870
+query_orientation              -
+query_cigar          38S24M1D38M
+length 			 62
+Reference Sequence 	 AAATGCTGCTTCTTTTTCCAAATATTTTAGAAAAATTTTCAAATATGTAGCATAGTTGAAAT
+Query Sequence 		 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAATATTTGGAAAAAGAAGCAGCATTT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            90862855 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCATTACA 90862814
+                        ||||||||||||||||||||||||||||||||||||.|||||  
+       query          1 ATTTGGACTGGGCTGAGAAAGGAACCCATGATCAGCGTTACA 42
+
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCT-AAAATATTTGGAAAAAGAAGCAGCA 60
+
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
+
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        |||||||||||||||||||||||||||||||||||-||||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTA-AAATATTTGGAAAAAGAAGCAGCA 60
+
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
+
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAA-AATATTTGGAAAAAGAAGCAGCA 60
+
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
+
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        |||||||||||||||||||||||||||||||||||||-||||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAA-ATATTTGGAAAAAGAAGCAGCA 60
+
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
+
+ref            90864869 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAAATATTTGGAAAAAGAAGCAGCA 90864810
+                        ||||||||||||||||||||||||||||||||||||||-|||||||||||||||||||||
+       query          1 ATTTCAACTATGCTACATATTTGAAAATTTTTCTAAAA-TATTTGGAAAAAGAAGCAGCA 60
+
+ref            90864809 TTT 90864807
+                        |||  
+      query          61 TTT 63
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 90862814
+chr2 		 chr13
+pos2 		 90864869
+Strand Orientation 	 --
+"AA" Orientation 	 -+
+Orientation is based on above order of breakpoint ends!
+features 	 duplication-like
+homology_length 	 4
+homology_sequence 	 AAAT
+--------------------------------------------------------------------------------
+[(0, 32), (30, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      92474010
+break_chrom2       chr13
+break_pos2      92475757
+break_sv_type         foldback
+break_read_support           3
+break_features             NaN
+break_orientation           ++
+AA_homology_len            2.0
+AA_homology_seq             AA 
+
+Split read details:
+Full Reference Sequence: AGACGTAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAATTCTTTAAGTTGAAGTGGGAGCATTAATTT
+Full Query Sequence: AAATTAATGCTCCCACTTCAACTTAAAGAATTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCACATTACGTCT
+query_name    HWI-ST1113:353:H99R3ADXX:2:1202:14027:57596
+Left Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom               chr13
+query_pos              92473942
+query_end              92474012
+query_orientation             -
+query_cigar              70M30S
+length 			 70
+Reference Sequence 	 AGACGTAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAA
+Query Sequence 		 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCACATTACGTCT 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1202:14027:57596
+Right Alignment
+proper_pair          Concordant
+read_num                      1
+query_chrom               chr13
+query_pos              92475727
+query_end              92475759
+query_orientation             +
+query_cigar              32M68H
+length 			 32
+Reference Sequence 	 AAATTAATGCTCCCACTTCAACTTAAAGAATT
+Query Sequence 		 AAATTAATGCTCCCACTTCAACTTAAAGAATT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            92474011 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 92473952
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 TTTGATGATTAGTTAGCATCCATTAATATAATAATCATATGAATAGATTAGAAGAAATCA 60
+
+ref            92473951 CATTACGTCT 92473942
+                        ||||||||||  
+      query          61 CATTACGTCT 70
+
+ref            92475727 AAATTAATGCTCCCACTTCAACTTAAAGAATT 92475758
+                        ||||||||||||||||||||||||||||||||  
+       query          1 AAATTAATGCTCCCACTTCAACTTAAAGAATT 32
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 92473942
+chr2 		 chr13
+pos2 		 92475727
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 inversion
+homology_length 	 2
+homology_sequence 	 AA
+--------------------------------------------------------------------------------
+[(0, 65), (63, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr13
+break_pos1      92474010
+break_chrom2       chr13
+break_pos2      92475757
+break_sv_type         foldback
+break_read_support           3
+break_features             NaN
+break_orientation           ++
+AA_homology_len            2.0
+AA_homology_seq             AA 
+
+Split read details:
+Full Reference Sequence: TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT
+Full Query Sequence: TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT
+query_name    HWI-ST1113:353:H99R3ADXX:2:1213:5110:83594
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              92473947
+query_end              92474012
+query_orientation             +
+query_cigar              65M35S
+length 			 65
+Reference Sequence 	 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAA
+Query Sequence 		 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:1213:5110:83594
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              92475722
+query_end              92475759
+query_orientation             -
+query_cigar              37M63H
+length 			 37
+Reference Sequence 	 AAAGTAAATTAATGCTCCCACTTCAACTTAAAGAATT
+Query Sequence 		 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            92473947 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 92474006
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCA 60
+
+ref            92474007 TCAAA 92474011
+                        |||||  
+      query          61 TCAAA 65
+
+ref            92475758 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 92475722
+                        |||||||||||||||||||||||||||||||||||||  
+       query          1 AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT 37
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 92474011
+chr2 		 chr13
+pos2 		 92475758
+Strand Orientation 	 +-
+"AA" Orientation 	 ++
+Orientation is based on above order of breakpoint ends!
+features 	 foldback
+homology_length 	 2
+homology_sequence 	 AA
+--------------------------------------------------------------------------------
+[(0, 61), (61, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1        chr13
+break_pos1       94023407
+break_chrom2        chr13
+break_pos2      108500972
+break_sv_type         deletion-like
+break_read_support                3
+break_features              unknown
+break_orientation                +-
+AA_homology_len                 NaN
+AA_homology_seq                 NaN 
+
+Split read details:
+Full Reference Sequence: GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTTATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC
+Full Query Sequence: GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTTATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC
+query_name    HWI-ST1113:353:H99R3ADXX:2:2105:6521:62556
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos              94023348
+query_end              94023409
+query_orientation             +
+query_cigar              61M39S
+length 			 61
+Reference Sequence 	 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+Query Sequence 		 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2105:6521:62556
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr13
+query_pos             108500973
+query_end             108501012
+query_orientation             +
+query_cigar              61H39M
+length 			 39
+Reference Sequence 	 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC
+Query Sequence 		 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            94023348 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 94023407
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTT 60
+
+ref            94023408 T 94023408
+                        |  
+      query          61 T 61
+
+ref            108500973 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 108501011
+                         |||||||||||||||||||||||||||||||||||||||  
+        query          1 ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC 39
+
+Calculated Breakpoint
+chr1 		 chr13
+pos1 		 94023408
+chr2 		 chr13
+pos2 		 108500973
+Strand Orientation 	 ++
+"AA" Orientation 	 +-
+Orientation is based on above order of breakpoint ends!
+features 	 deletion-like
+homology_length 	 0
+homology_sequence 	 None
+--------------------------------------------------------------------------------
+[(0, 68), (68, 100)]
+Fetched split read near AA breakpoint. Displaying breakpoint details:
+break_chrom1       chr22
+break_pos1      18953122
+break_chrom2       chr22
+break_pos2      22935373
+break_sv_type         inversion
+break_read_support            5
+break_features          unknown
+break_orientation            --
+AA_homology_len             NaN
+AA_homology_seq             NaN 
+
+Split read details:
+Full Reference Sequence: TTAACTAACTCAGCACAAACTCTGAGACCCAATCCATCTGGGAAACGGAACAAACCTGCATGCCGCATGGATCATGGTGGCCCAGAGTGGGGTGCCCAGG
+Full Query Sequence: CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCCCAGATGGATTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA
+query_name    HWI-ST1113:353:H99R3ADXX:2:2111:2083:14734
+Left Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr22
+query_pos              18953123
+query_end              18953191
+query_orientation             -
+query_cigar              32S68M
+length 			 68
+Reference Sequence 	 TCCATCTGGGAAACGGAACAAACCTGCATGCCGCATGGATCATGGTGGCCCAGAGTGGGGTGCCCAGG
+Query Sequence 		 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCCCAGATGGA 
+
+query_name    HWI-ST1113:353:H99R3ADXX:2:2111:2083:14734
+Right Alignment
+proper_pair          Discordant
+read_num                      2
+query_chrom               chr22
+query_pos              22935374
+query_end              22935406
+query_orientation             +
+query_cigar              68H32M
+length 			 32
+Reference Sequence 	 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA
+Query Sequence 		 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 
+
+Split Read Alignment Visualization:
+Left then Right alignment
+ref            18953190 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 18953131
+                        ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+       query          1 CCTGGGCACCCCACTCTGGGCCACCATGATCCATGCGGCATGCAGGTTTGTTCCGTTTCC 60
+
+ref            18953130 CAGATGGA 18953123
+                        ||||||||  
+      query          61 CAGATGGA 68
+
+ref            22935374 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 22935405
+                        ||||||||||||||||||||||||||||||||  
+       query          1 TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA 32
+
+Calculated Breakpoint
+chr1 		 chr22
+pos1 		 18953123
+chr2 		 chr22
+pos2 		 22935374
+Strand Orientation 	 -+
+"AA" Orientation 	 --
+Orientation is based on above order of breakpoint ends!
+features 	 inversion
+homology_length 	 0
+homology_sequence 	 None
+--------------------------------------------------------------------------------
