@@ -236,7 +236,7 @@ if __name__ == "__main__":
     df_nonsplit = df_nonsplit[(df_nonsplit["split"] == False) & df_nonsplit["query_cigar"].str.contains('S')]
     df_nonsplit.to_csv("special_cases.csv")
     pd.set_option('display.max_colwidth', None)
-    df_nonsplit = df_nonsplit[['split', 'AA_homology_seq', 'break_pos1', 'break_pos2', 'query_name', 'query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
+    df_nonsplit = df_nonsplit[['split', 'AA_homology_seq', 'break_chrom1', 'break_pos1', 'break_chrom2', 'break_pos2', 'query_name', 'query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
     df_nonsplit.query_name = df_nonsplit.query_name.apply(lambda x: x.split(':')[-1])
     df_nonsplit
     nonsplit_matches = df_nonsplit[
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     df_split = pd.read_csv("alignments.tsv", sep="\t")
     df_split = df_split[df_split["split"] == True]
     pd.set_option('display.max_colwidth', None)
-    df_split = df_split[['split', 'AA_homology_seq', 'break_pos1', 'break_pos2', 'query_name', 'query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
+    df_split = df_split[['split', 'AA_homology_seq', 'break_chrom1', 'break_pos1', 'break_chrom2', 'break_pos2', 'query_name', 'query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
     df_split.query_name = df_split.query_name.apply(lambda x: x.split(':')[-1])
     df_split
     half_match = df_split[
@@ -288,9 +288,18 @@ if __name__ == "__main__":
 
     # %%
     def process_row(row):
-        if ((row["break_pos1"] == row["query_pos"] or row["break_pos1"] == row["query_end"]) and not row["break_start"]) or ((row["break_pos2"] == row["query_pos"] or row["break_pos2"] == row["query_end"]) and row["break_start"]):
-            return row["query_aln_sub"][::-1]
-        return row["query_aln_sub"]
+        if (row["break_pos1"] == row["query_pos"] or row["break_pos1"] == row["query_end"]):
+            if not row["break_pos1"] == row["query_pos"]:
+                complement = {'C': 'G', 'G': 'C', 'A': 'T', 'T': 'A'}
+                return (''.join([complement[bp] for bp in row["query_aln_sub"]]))[::-1]
+            else:
+                return row["query_aln_sub"]
+        else:
+            if not row["break_pos2"] == row["query_end"]:
+                complement = {'C': 'G', 'G': 'C', 'A': 'T', 'T': 'A'}
+                return (''.join([complement[bp] for bp in row["query_aln_sub"]]))[::-1]
+            else:
+                return row["query_aln_sub"]
 
     new_awesomesauce_df["new_awesomesauce_query"] = new_awesomesauce_df.apply(process_row, axis=1)
     new_awesomesauce_df
@@ -344,16 +353,20 @@ if __name__ == "__main__":
     grouped_queries.columns = ["last", "first"]
     grouped_queries['homology'] = grouped_queries.apply(lambda row: homology_inator(row["first"], row["last"]), axis=1)
     grouped_queries
-
+    print(grouped_queries)
     # %%
     grouped_queries['combined'] = grouped_queries['first'] + grouped_queries['last']
     temp = grouped_queries[['combined', 'homology']].explode('combined')
     homologies = dict(zip(temp['combined'], temp['homology']))
     new_awesomesauce_df['homology'] = new_awesomesauce_df['new_awesomesauce_query'].apply(lambda x: homologies[x])
+    new_awesomesauce_df = new_awesomesauce_df[['break_chrom1', 'break_pos1', 'break_chrom2', 'break_pos2', 'AA_homology_seq', 'homology', 'query_name', 'split','query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
+    new_awesomesauce_df = new_awesomesauce_df.reset_index(drop=True)
+    new_awesomesauce_df.to_csv('final.tsv', sep='\t')
+    new_awesomesauce_df
 
     # %%
-    new_awesomesauce_df["homology_cut"] = new_awesomesauce_df.apply(lambda x: x['query_aln_sub'][:7] if x["break_start"] else x['query_aln_sub'][-7:], axis=1)
-    new_awesomesauce_df["wrong_dog"] = new_awesomesauce_df.apply(lambda x: str(x['AA_homology_seq']) not in x['homology_cut'], axis=1)
-    new_awesomesauce_df.loc[new_awesomesauce_df["wrong_dog"] == True]
+    # new_awesomesauce_df["homology_cut"] = new_awesomesauce_df.apply(lambda x: x['query_aln_sub'][:7] if x["break_start"] else x['query_aln_sub'][-7:], axis=1)
+    # new_awesomesauce_df["wrong_dog"] = new_awesomesauce_df.apply(lambda x: str(x['AA_homology_seq']) not in x['homology_cut'], axis=1)
+    # new_awesomesauce_df.loc[new_awesomesauce_df["wrong_dog"] == True]
 
     # %%
