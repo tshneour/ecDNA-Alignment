@@ -28,7 +28,15 @@ def get_pairs(regions, chrom1, chrom2):
                 print("Duplicate found")
                 continue
 
-            mate = samfile.mate(aln)
+            if not (aln.is_mapped):
+                print("Unmapped read at")
+                continue
+
+            try:
+                mate = samfile.mate(aln)
+            except ValueError as e:
+                print(e)
+                continue
 
             if aln.is_supplementary or aln.has_tag("SA"):
                 sa_tag = (aln.get_tag("SA")).split(";")[:-1]
@@ -84,7 +92,7 @@ def get_pairs(regions, chrom1, chrom2):
     
     return split_alignments, nonsplit_alignments
 
-def fetch_alignments(bamfile, chrom1, pos1, chrom2, pos2, sv_type, read_support, features, orientation, hom_len, hom, region_size=150, mapq_threshold=15):
+def fetch_alignments(bamfile, chrom1, pos1, chrom2, pos2, sv_type, read_support, features, orientation, hom_len, hom, region_size=350, mapq_threshold=15):
     """
     Fetch reads from a BAM file that have split alignments 
     between two genomic coordinates as well as all paired-end reads.
@@ -214,7 +222,7 @@ if __name__ == "__main__":
         homology = row["homology_sequence"]
 
         # Fetch the DataFrames for split alignments and paired alignments
-        split_df, nonsplit_df = fetch_alignments(bamfile, chrom1, pos1, chrom2, pos2, sv_type, read_support, features, orientation, hom_len, homology, 150)
+        split_df, nonsplit_df = fetch_alignments(bamfile, chrom1, pos1, chrom2, pos2, sv_type, read_support, features, orientation, hom_len, homology, 350)
         num_split += len(split_df)/3
         num_paired += (2 * len(split_df) / 3) + len(nonsplit_df)
         # num_paired += len(paired_df)
