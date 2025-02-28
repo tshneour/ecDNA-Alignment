@@ -9,6 +9,14 @@ from Bio import SeqIO
 warnings.filterwarnings("ignore")
 pd.set_option("display.max_colwidth", None)
 pd.set_option("display.max_columns", None)
+print_columns = [
+    "query_short",
+    "query_chrom",
+    "query_pos",
+    "query_cigar",
+    "query_aln_full",
+    "query_aln_sub",
+]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Refine AA SVs.")
@@ -119,8 +127,6 @@ if __name__ == "__main__":
         def contains(read, break_cand):
             return break_cand in range(read["query_pos"] + 1, read["query_end"])
 
-        # for break_cand in cands.index:
-        #     display(break_cand, all_reads[all_reads.apply(lambda x: contains(x, break_cand), axis=1)])
         thing = all_reads.loc[all_reads.apply(lambda x: contains(x, best), axis=1)]
         if args.verbose:
             print(
@@ -169,8 +175,6 @@ if __name__ == "__main__":
             )
         ]
 
-        # print(type(left))
-        # print(left.columns)
         left["clip_len"] = left.apply(
             lambda x: len(x["query_aln_full"]) - len(x["query_aln_sub"]), axis=1
         )
@@ -212,7 +216,7 @@ if __name__ == "__main__":
                     if first_row["end"]
                     else reverse_complement(first_row["query_aln_sub"])
                 )
-                last = ( 
+                last = (
                     last_row["query_aln_sub"]
                     if last_row["begin"]
                     else reverse_complement(last_row["query_aln_sub"])
@@ -220,12 +224,15 @@ if __name__ == "__main__":
 
                 # Check for homology
                 homology = homology_inator(first, last)
-                # print(homology)
                 hom_len = len(homology)
                 first_nohomo = first[:-hom_len]
                 last_nohomo = last[hom_len:]
-                left_df["rev_clipped"] = left_df["clipped"].where(left_df["end"], rev_comp(left_df["clipped"]))
-                left_df["does_clip_match"] = left_df["rev_clipped"].apply(lambda x: last_nohomo.startswith(x))
+                left_df["rev_clipped"] = left_df["clipped"].where(
+                    left_df["end"], rev_comp(left_df["clipped"])
+                )
+                left_df["does_clip_match"] = left_df["rev_clipped"].apply(
+                    lambda x: last_nohomo.startswith(x)
+                )
                 left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
                     left_df["split"]
                 ].apply(
@@ -237,8 +244,12 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                right_df["rev_clipped"] = right_df["clipped"].where(right_df["begin"], rev_comp(right_df["clipped"]))
-                right_df["does_clip_match"] = right_df["rev_clipped"].apply(lambda x: first_nohomo.startswith(x))
+                right_df["rev_clipped"] = right_df["clipped"].where(
+                    right_df["begin"], rev_comp(right_df["clipped"])
+                )
+                right_df["does_clip_match"] = right_df["rev_clipped"].apply(
+                    lambda x: first_nohomo.startswith(x)
+                )
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
@@ -250,13 +261,9 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                # print(right_df["does_clip_match"].to_string())
-                # print(left_df["rev_clipped"].to_string())
-                # print(last_nohomo)
 
                 hom_sum_left = left_df["does_clip_match"].sum()
                 hom_sum_right = right_df["does_clip_match"].sum()
-                # print(sum_left, sum_right)
 
                 # Check for insertion
                 first_row = left_df.loc[left_df["rev_clipped"].str.len().idxmax()]
@@ -283,7 +290,11 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                right_df["does_clip_match"] = right_df["rev_clipped"].str.slice(stop=-insertion_len).apply(lambda x: first.endswith(x)) 
+                right_df["does_clip_match"] = (
+                    right_df["rev_clipped"]
+                    .str.slice(stop=-insertion_len)
+                    .apply(lambda x: first.endswith(x))
+                )
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
@@ -319,41 +330,16 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} homology: {homology}",
                     )
-                    print(
-                        left_df[
-                            [
-                                "query_short",
-                                "query_chrom",
-                                "query_pos",
-                                "query_cigar",
-                                "query_aln_full",
-                                "query_aln_sub",
-                            ]
-                        ].to_string()
-                    )
-                    print(
-                        right_df[
-                            [
-                                "query_short",
-                                "query_chrom",
-                                "query_pos",
-                                "query_cigar",
-                                "query_aln_full",
-                                "query_aln_sub",
-                            ]
-                        ].to_string()
-                    )
+                    print(left_df[print_columns].to_string())
+                    print(right_df[print_columns].to_string())
                     print()
 
                 if insertion_len == 0:
                     continue
-                # print(first, last, "homology:", homology)
-                # print(right_df[["does_clip_match", "query_cigar", "rev_clipped"]].to_string())
                 if ins_sum_left == len(left_df) and ins_sum_right == len(right_df):
                     print()
                     print("Trying as insertion")
                     print("Yes! All soft clips match!")
-                    # print("INSERTION:", insertion)
                     if best_left is not None:
                         print(
                             "Hmmmm.... Multiple candidates with matching soft clips",
@@ -375,30 +361,8 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} insertion: {insertion}",
                     )
-                    print(
-                        left_df[
-                            [
-                                "query_short",
-                                "query_chrom",
-                                "query_pos",
-                                "query_cigar",
-                                "query_aln_full",
-                                "query_aln_sub",
-                            ]
-                        ].to_string()
-                    )
-                    print(
-                        right_df[
-                            [
-                                "query_short",
-                                "query_chrom",
-                                "query_pos",
-                                "query_cigar",
-                                "query_aln_full",
-                                "query_aln_sub",
-                            ]
-                        ].to_string()
-                    )
+                    print(left_df[print_columns].to_string())
+                    print(right_df[print_columns].to_string())
                     print()
 
         return (
@@ -413,6 +377,7 @@ if __name__ == "__main__":
     def reverse_complement(dna: str) -> str:
         """Returns the reverse complement of a DNA sequence using Biopython."""
         return str(Seq(dna).reverse_complement())
+
     def rev_comp(series: pd.Series) -> pd.Series:
         return series.str[::-1].str.translate(str.maketrans("ACGT", "TGCA"))
 
@@ -423,7 +388,6 @@ if __name__ == "__main__":
         for i in range(min(len(first_str), len(last_str)) + 1):
             if first_str[-i:] == last_str[:i]:
                 longest_str = first_str[-i:]
-        # print(first, last, longest_str)
         return longest_str
 
     # ------------- Do refinement ------------------
