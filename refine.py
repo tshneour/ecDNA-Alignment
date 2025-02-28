@@ -212,7 +212,7 @@ if __name__ == "__main__":
                     if first_row["end"]
                     else reverse_complement(first_row["query_aln_sub"])
                 )
-                last = (
+                last = ( 
                     last_row["query_aln_sub"]
                     if last_row["begin"]
                     else reverse_complement(last_row["query_aln_sub"])
@@ -224,12 +224,7 @@ if __name__ == "__main__":
                 hom_len = len(homology)
                 first_nohomo = first[:-hom_len]
                 last_nohomo = last[hom_len:]
-                left_df["rev_clipped"] = left_df.apply(
-                    lambda x: (
-                        x["clipped"] if x["end"] else reverse_complement(x["clipped"])
-                    ),
-                    axis=1,
-                )
+                left_df["rev_clipped"] = left_df["clipped"].where(left_df["end"], rev_comp(left_df["clipped"]))
                 left_df["does_clip_match"] = left_df["rev_clipped"].apply(lambda x: last_nohomo.startswith(x))
                 left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
                     left_df["split"]
@@ -242,12 +237,7 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                right_df["rev_clipped"] = right_df.apply(
-                    lambda x: (
-                        x["clipped"] if x["begin"] else reverse_complement(x["clipped"])
-                    ),
-                    axis=1,
-                )
+                right_df["rev_clipped"] = right_df["clipped"].where(right_df["begin"], rev_comp(right_df["clipped"]))
                 right_df["does_clip_match"] = right_df["rev_clipped"].apply(lambda x: first_nohomo.startswith(x))
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
@@ -293,13 +283,7 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                right_df["does_clip_match"] = right_df.apply(
-                    lambda x: len(
-                        homology_inator(first, x["rev_clipped"][:-insertion_len])
-                    )
-                    == len(x["rev_clipped"][:-insertion_len]),
-                    axis=1,
-                )
+                right_df["does_clip_match"] = right_df["rev_clipped"].str.slice(stop=-insertion_len).apply(lambda x: first.endswith(x)) 
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
@@ -429,6 +413,8 @@ if __name__ == "__main__":
     def reverse_complement(dna: str) -> str:
         """Returns the reverse complement of a DNA sequence using Biopython."""
         return str(Seq(dna).reverse_complement())
+    def rev_comp(series: pd.Series) -> pd.Series:
+        return series.str[::-1].str.translate(str.maketrans("ACGT", "TGCA"))
 
     def homology_inator(first, last):
         first_str = first
@@ -440,22 +426,7 @@ if __name__ == "__main__":
         # print(first, last, longest_str)
         return longest_str
 
-    def extract_sequence(seq_id, start, end):
-
-        # Check if the sequence ID exists in the FAI index
-        if seq_id in fasta.references:
-            # Fetch the sequence from the FASTA file in the specified range (start, end)
-            sequence = fasta.fetch(seq_id, start, end)
-            return sequence
-        else:
-            print("UHH OHH AAAAAAAAAAAA")
-            return None  # If the sequence ID is not found
-
     # ------------- Do refinement ------------------
-
-    # all_reads.loc[all_reads['query_cigar'].str.contains('H'), 'query_aln_full'] = all_reads.loc[all_reads['query_cigar'].str.contains('H')].apply(
-    #     lambda row: extract_sequence(row["query_chrom"], row['query_pos'], row['query_end']), axis=1
-    # )
 
     pd.set_option("mode.chained_assignment", None)
     svs = all_reads.groupby("break_pos1")
