@@ -276,7 +276,7 @@ if __name__ == "__main__":
         results["total_%"] = results[["hom_%", "ins_%"]].max(axis=1)
         results["split_matches"] = results["split_matches"]
         results["total_reads"] = results["left_len"] + results["right_len"]
-        results = results.sort_values(by=["total_%", "split_matches", "total_reads"])
+        results = results.sort_values(by=["total_%", "split_matches", "total_reads"], ascending=False)
 
         return results.head(3)[["left_sv", "right_sv", "hom_%", "ins_%", "total_%", "total_reads", "split_matches", "homology", "insertion", "left", "right"]]
 
@@ -342,7 +342,7 @@ if __name__ == "__main__":
         results = check_overlap(left_groups, right_groups)
         results["left_sv"] = results["left_sv"].astype(int)
         results["right_sv"] = results["right_sv"].astype(int)
-        for row in range(len(results)):
+        for row in range(0, len(results), -1):
             print('___________________________________________________________________________________________________')
             print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
             print('\n', 'Left side reads for this candidate:')
