@@ -193,11 +193,6 @@ if __name__ == "__main__":
                     axis=1,
                 )
 
-                hom_split_matches = (
-                    left_df.loc[left_df["split"]]["hom_clip_match"].sum()
-                    + right_df.loc[right_df["split"]]["hom_clip_match"].sum()
-                )
-
                 hom_sum_left = left_df["hom_clip_match"].sum()
                 hom_sum_right = right_df["hom_clip_match"].sum()
 
@@ -243,7 +238,7 @@ if __name__ == "__main__":
                 ins_sum_left = left_df["ins_clip_match"].sum()
                 ins_sum_right = right_df["ins_clip_match"].sum()
 
-                ins_split_matches = (
+                split_matches = (
                     left_df.loc[left_df["split"]]["ins_clip_match"].sum()
                     + right_df.loc[right_df["split"]]["ins_clip_match"].sum()
                 )
@@ -261,8 +256,7 @@ if __name__ == "__main__":
                             "insertion": insertion,
                             "left_len": len(left_df),
                             "right_len": len(right_df),
-                            "hom_split_matches": hom_split_matches,
-                            "ins_split_matches": ins_split_matches,
+                            "split_matches": split_matches,
                             "left": (left_df,),
                             "right": (right_df,),
                         },
@@ -280,9 +274,9 @@ if __name__ == "__main__":
             + results["ins_sum_right"] / results["right_len"]
         ) / 2
         results["total_%"] = results[["hom_%", "ins_%"]].max(axis=1)
-        results["split_matches"] = results["hom_split_matches"] + results["ins_split_matches"]
+        results["split_matches"] = results["split_matches"]
         results["total_reads"] = results["left_len"] + results["right_len"]
-        results = results.sort_values(by=["total_%", "split_matches", "total_reads"], ascending=False)
+        results = results.sort_values(by=["total_%", "split_matches", "total_reads"])
 
         return results.head(3)[["left_sv", "right_sv", "hom_%", "ins_%", "total_%", "total_reads", "split_matches", "homology", "insertion", "left", "right"]]
 
@@ -344,6 +338,20 @@ if __name__ == "__main__":
         best_left, left_groups = refine_step1(left)
         best_right, right_groups = refine_step1(right)
 
+
+        results = check_overlap(left_groups, right_groups)
+        results["left_sv"] = results["left_sv"].astype(int)
+        results["right_sv"] = results["right_sv"].astype(int)
+        for row in range(len(results)):
+            print('___________________________________________________________________________________________________')
+            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
+            print('\n', 'Left side reads for this candidate:')
+            print(results.iloc[row]["left"][print_columns2].to_string(index=False))
+            print('\n', 'Right side reads for this candidate:')
+            print(results.iloc[row]["right"][print_columns2].to_string(index=False))
+            print('___________________________________________________________________________________________________')
+            print('\n\n\n')
+        
         print("Original AA breakpoint:")
         print(
             sv.iloc[0][
@@ -358,14 +366,3 @@ if __name__ == "__main__":
             ].to_string(),
             "\n",
         )
-
-        results = check_overlap(left_groups, right_groups)
-        for row in range(len(results)):
-            print('___________________________________________________________________________________________________')
-            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
-            print('\n', 'Left side reads for this candidate:')
-            print(results.iloc[row]["left"][print_columns2].to_string(index=False))
-            print('\n', 'Right side reads for this candidate:')
-            print(results.iloc[row]["right"][print_columns2].to_string(index=False))
-            print('___________________________________________________________________________________________________')
-            print('\n\n\n')
