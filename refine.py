@@ -113,14 +113,7 @@ if __name__ == "__main__":
             print("Mates of Discordant Reads from above Table: ")
             print(mates.to_string(), "\n")
 
-        filtered_reads.split = filtered_reads.split.astype(int)
-        group_rankings = (
-            filtered_reads.groupby("sv_end")["split"]
-            .agg(sum)
-            .sort_values(ascending=False)
-        )
-
-        return end_cands, best, filtered_reads, group_rankings
+        return end_cands, best, filtered_reads
 
     def refine_step2(best):
         def contains(read, break_cand):
@@ -149,12 +142,10 @@ if __name__ == "__main__":
             )
         return len(thing)
 
-    def check_overlap(left, left_rankings, right, right_rankings):
+    def check_overlap(left, right):
         left = left.reset_index(drop=True)
         right = right.reset_index(drop=True)
 
-        left["split"] = left["split"].astype(bool)
-        right["split"] = right["split"].astype(bool)
         left["query_short"] = left["query_short"].astype(str)
         right["query_short"] = right["query_short"].astype(str)
 
@@ -233,17 +224,13 @@ if __name__ == "__main__":
                 hom_len = len(homology)
                 first_nohomo = first[:-hom_len]
                 last_nohomo = last[hom_len:]
-                left_df["new_clipped"] = left_df.apply(
+                left_df["rev_clipped"] = left_df.apply(
                     lambda x: (
                         x["clipped"] if x["end"] else reverse_complement(x["clipped"])
                     ),
                     axis=1,
                 )
-                left_df["does_clip_match"] = left_df.apply(
-                    lambda x: len(homology_inator(x["new_clipped"], last_nohomo))
-                    == len(x["new_clipped"]),
-                    axis=1,
-                )
+                left_df["does_clip_match"] = left_df["rev_clipped"].apply(lambda x: last_nohomo.startswith(x))
                 left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
                     left_df["split"]
                 ].apply(
@@ -255,17 +242,13 @@ if __name__ == "__main__":
                     ),
                     axis=1,
                 )
-                right_df["new_clipped"] = right_df.apply(
+                right_df["rev_clipped"] = right_df.apply(
                     lambda x: (
                         x["clipped"] if x["begin"] else reverse_complement(x["clipped"])
                     ),
                     axis=1,
                 )
-                right_df["does_clip_match"] = right_df.apply(
-                    lambda x: len(homology_inator(first_nohomo, x["new_clipped"]))
-                    == len(x["new_clipped"]),
-                    axis=1,
-                )
+                right_df["does_clip_match"] = right_df["rev_clipped"].apply(lambda x: first_nohomo.startswith(x))
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
@@ -278,7 +261,7 @@ if __name__ == "__main__":
                     axis=1,
                 )
                 # print(right_df["does_clip_match"].to_string())
-                # print(left_df["new_clipped"].to_string())
+                # print(left_df["rev_clipped"].to_string())
                 # print(last_nohomo)
 
                 hom_sum_left = left_df["does_clip_match"].sum()
@@ -286,17 +269,17 @@ if __name__ == "__main__":
                 # print(sum_left, sum_right)
 
                 # Check for insertion
-                first_row = left_df.loc[left_df["new_clipped"].str.len().idxmax()]
-                last_row = right_df.loc[right_df["new_clipped"].str.len().idxmax()]
-                first_clipped = first_row["new_clipped"]
-                last_clipped = last_row["new_clipped"]
+                first_row = left_df.loc[left_df["rev_clipped"].str.len().idxmax()]
+                last_row = right_df.loc[right_df["rev_clipped"].str.len().idxmax()]
+                first_clipped = first_row["rev_clipped"]
+                last_clipped = last_row["rev_clipped"]
                 insertion = homology_inator(last_clipped, first_clipped)
                 insertion_len = len(insertion)
                 left_df["does_clip_match"] = left_df.apply(
                     lambda x: len(
-                        homology_inator(x["new_clipped"][insertion_len:], last)
+                        homology_inator(x["rev_clipped"][insertion_len:], last)
                     )
-                    == len(x["new_clipped"][insertion_len:]),
+                    == len(x["rev_clipped"][insertion_len:]),
                     axis=1,
                 )
                 left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
@@ -312,9 +295,9 @@ if __name__ == "__main__":
                 )
                 right_df["does_clip_match"] = right_df.apply(
                     lambda x: len(
-                        homology_inator(first, x["new_clipped"][:-insertion_len])
+                        homology_inator(first, x["rev_clipped"][:-insertion_len])
                     )
-                    == len(x["new_clipped"][:-insertion_len]),
+                    == len(x["rev_clipped"][:-insertion_len]),
                     axis=1,
                 )
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
@@ -381,7 +364,7 @@ if __name__ == "__main__":
                 if insertion_len == 0:
                     continue
                 # print(first, last, "homology:", homology)
-                # print(right_df[["does_clip_match", "query_cigar", "new_clipped"]].to_string())
+                # print(right_df[["does_clip_match", "query_cigar", "rev_clipped"]].to_string())
                 if ins_sum_left == len(left_df) and ins_sum_right == len(right_df):
                     print()
                     print("Trying as insertion")
@@ -517,12 +500,12 @@ if __name__ == "__main__":
             print(
                 f"Reads for {'best' if args.verbose == 1 else ('' if args.verbose == 2 else '')} left SV candidates"
             )
-        left_cands, best_left, left_groups, left_rankings = refine_step1(left)
+        left_cands, best_left, left_groups = refine_step1(left)
         if args.verbose:
             print(
                 f"Reads for {'best' if args.verbose == 1 else ('' if args.verbose == 2 else '')} right SV candidates"
             )
-        right_cands, best_right, right_groups, right_rankings = refine_step1(right)
+        right_cands, best_right, right_groups = refine_step1(right)
 
         (
             new_best_left,
@@ -531,16 +514,13 @@ if __name__ == "__main__":
             new_best_insL,
             new_best_insR,
             insertion,
-        ) = check_overlap(left_groups, left_rankings, right_groups, right_rankings)
+        ) = check_overlap(left_groups, right_groups)
         print(
             f"New refinement (Homology) -> left: {new_best_left} right: {new_best_right} homology: {homology}"
         )
         print(
             f"New refinement (Insertion) -> left: {new_best_insL} right: {new_best_insR} insertion: {insertion}"
         )
-
-        # print(left_groups.to_string())
-        # print(right_groups.to_string())
 
         print("Original AA breakpoint:")
         print(
