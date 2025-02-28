@@ -17,7 +17,8 @@ print_columns2 = [
     "query_chrom",
     "query_pos",
     "query_cigar",
-    "does_clip_match",
+    "hom_clip_match",
+    "ins_clip_match",
     "rev_clipped",
     "query_aln_sub",
 ]
@@ -160,45 +161,45 @@ if __name__ == "__main__":
                 left_df["rev_clipped"] = left_df["clipped"].where(
                     left_df["end"], rev_comp(left_df["clipped"])
                 )
-                left_df["does_clip_match"] = left_df["rev_clipped"].apply(
+                left_df["hom_clip_match"] = left_df["rev_clipped"].apply(
                     lambda x: last_nohomo.startswith(x)
                 )
-                left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
+                left_df.loc[left_df["split"], "hom_clip_match"] = left_df.loc[
                     left_df["split"]
                 ].apply(
                     lambda x: (
                         x["query_short"]
                         in (right_df.loc[right_df["split"], "query_short"]).values
                         if "H" in x["query_cigar"]
-                        else x["does_clip_match"]
+                        else x["hom_clip_match"]
                     ),
                     axis=1,
                 )
                 right_df["rev_clipped"] = right_df["clipped"].where(
                     right_df["begin"], rev_comp(right_df["clipped"])
                 )
-                right_df["does_clip_match"] = right_df["rev_clipped"].apply(
+                right_df["hom_clip_match"] = right_df["rev_clipped"].apply(
                     lambda x: first_nohomo.endswith(x)
                 )
-                right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
+                right_df.loc[right_df["split"], "hom_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
                     lambda x: (
                         x["query_short"]
                         in (left_df.loc[left_df["split"], "query_short"]).values
                         if "H" in x["query_cigar"]
-                        else x["does_clip_match"]
+                        else x["hom_clip_match"]
                     ),
                     axis=1,
                 )
 
                 hom_split_matches = (
-                    left_df.loc[left_df["split"]]["does_clip_match"].sum()
-                    + right_df.loc[right_df["split"]]["does_clip_match"].sum()
+                    left_df.loc[left_df["split"]]["hom_clip_match"].sum()
+                    + right_df.loc[right_df["split"]]["hom_clip_match"].sum()
                 )
 
-                hom_sum_left = left_df["does_clip_match"].sum()
-                hom_sum_right = right_df["does_clip_match"].sum()
+                hom_sum_left = left_df["hom_clip_match"].sum()
+                hom_sum_right = right_df["hom_clip_match"].sum()
 
                 # Check for insertion
                 first_row = left_df.loc[left_df["rev_clipped"].str.len().idxmax()]
@@ -207,44 +208,44 @@ if __name__ == "__main__":
                 last_clipped = last_row["rev_clipped"]
                 insertion = get_homology(last_clipped, first_clipped)
                 insertion_len = len(insertion)
-                left_df["does_clip_match"] = (
+                left_df["ins_clip_match"] = (
                     left_df["rev_clipped"]
                     .str.slice(start=insertion_len)
                     .apply(lambda x: last.startswith(x))
                 )
-                left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
+                left_df.loc[left_df["split"], "ins_clip_match"] = left_df.loc[
                     left_df["split"]
                 ].apply(
                     lambda x: (
                         x["query_short"]
                         in (right_df.loc[right_df["split"], "query_short"]).values
                         if "H" in x["query_cigar"]
-                        else x["does_clip_match"]
+                        else x["ins_clip_match"]
                     ),
                     axis=1,
                 )
-                right_df["does_clip_match"] = (
+                right_df["ins_clip_match"] = (
                     right_df["rev_clipped"]
                     .str.slice(stop=-insertion_len)
                     .apply(lambda x: first.endswith(x))
                 )
-                right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
+                right_df.loc[right_df["split"], "ins_clip_match"] = right_df.loc[
                     right_df["split"]
                 ].apply(
                     lambda x: (
                         x["query_short"]
                         in (left_df.loc[left_df["split"], "query_short"]).values
                         if "H" in x["query_cigar"]
-                        else x["does_clip_match"]
+                        else x["ins_clip_match"]
                     ),
                     axis=1,
                 )
-                ins_sum_left = left_df["does_clip_match"].sum()
-                ins_sum_right = right_df["does_clip_match"].sum()
+                ins_sum_left = left_df["ins_clip_match"].sum()
+                ins_sum_right = right_df["ins_clip_match"].sum()
 
                 ins_split_matches = (
-                    left_df.loc[left_df["split"]]["does_clip_match"].sum()
-                    + right_df.loc[right_df["split"]]["does_clip_match"].sum()
+                    left_df.loc[left_df["split"]]["ins_clip_match"].sum()
+                    + right_df.loc[right_df["split"]]["ins_clip_match"].sum()
                 )
 
                 results.append(
@@ -343,11 +344,6 @@ if __name__ == "__main__":
         best_left, left_groups = refine_step1(left)
         best_right, right_groups = refine_step1(right)
 
-        results = check_overlap(left_groups, right_groups)
-        for row in range(len(results)):
-            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
-            print(results.iloc[row]["left"].to_string(index=False))
-
         print("Original AA breakpoint:")
         print(
             sv.iloc[0][
@@ -362,3 +358,14 @@ if __name__ == "__main__":
             ].to_string(),
             "\n",
         )
+
+        results = check_overlap(left_groups, right_groups)
+        for row in range(len(results)):
+            print('___________________________________________________________________________________________________')
+            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
+            print('\n', 'Left side reads for this candidate:')
+            print(results.iloc[row]["left"][print_columns2].to_string(index=False))
+            print('\n', 'Right side reads for this candidate:')
+            print(results.iloc[row]["right"][print_columns2].to_string(index=False))
+            print('___________________________________________________________________________________________________')
+            print('\n\n\n')
