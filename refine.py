@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import argparse
 import warnings
 
@@ -79,7 +78,7 @@ if __name__ == "__main__":
             print("Mates of Discordant Reads from above Table: ")
             print(mates.to_string(index=False), "\n")
 
-        return end_cands, best, reads
+        return best, reads
 
     def refine_step2(best):
         def contains(read, break_cand):
@@ -111,8 +110,8 @@ if __name__ == "__main__":
             )
         ]
 
-        left["clip_len"] = left.apply(
-            lambda x: len(x["query_aln_full"]) - len(x["query_aln_sub"]), axis=1
+        left["clip_len"] = (
+            left["query_aln_full"].str.len() - left["query_aln_sub"].str.len()
         )
         left["clipped"] = left.apply(
             lambda x: (
@@ -122,8 +121,8 @@ if __name__ == "__main__":
             ),
             axis=1,
         )
-        right["clip_len"] = right.apply(
-            lambda x: len(x["query_aln_full"]) - len(x["query_aln_sub"]), axis=1
+        right["clip_len"] = (
+            right["query_aln_full"].str.len() - right["query_aln_sub"].str.len()
         )
         right["clipped"] = right.apply(
             lambda x: (
@@ -136,12 +135,7 @@ if __name__ == "__main__":
         left_groups = left.groupby("sv_end")
         right_groups = right.groupby("sv_end")
 
-        best_left = None
-        best_right = None
-        best_homology = None
-        best_left_ins = None
-        best_right_ins = None
-        best_insertion = None
+        results = []
 
         for left_group, left_df in left_groups:
             for right_group, right_df in right_groups:
@@ -198,6 +192,11 @@ if __name__ == "__main__":
                     axis=1,
                 )
 
+                hom_split_matches = (
+                    left_df.loc[left_df["split"]]["does_clip_match"].sum()
+                    + right_df.loc[right_df["split"]]["does_clip_match"].sum()
+                )
+
                 hom_sum_left = left_df["does_clip_match"].sum()
                 hom_sum_right = right_df["does_clip_match"].sum()
 
@@ -243,68 +242,48 @@ if __name__ == "__main__":
                 ins_sum_left = left_df["does_clip_match"].sum()
                 ins_sum_right = right_df["does_clip_match"].sum()
 
-                if hom_sum_left == len(left_df) and hom_sum_right == len(right_df):
-                    print("Yes! All soft clips match!")
-                    if best_left is not None:
-                        print(
-                            "Hmmmm.... Multiple candidates with matching soft clips",
-                            f"Namely left: {left_group} right: {right_group} homology: {homology}",
-                        )
-                    best_left = left_group
-                    best_right = right_group
-                    best_homology = homology if first_row["end"] else rev_comp(homology)
-                elif hom_sum_left > 0 or hom_sum_right > 0:
-                    print(
-                        "Hmmmmm...... only some soft clips matched",
-                        f"Namely left: {hom_sum_left}/{len(left_df)} right: {hom_sum_right}/{len(right_df)}",
-                    )
-                    print(
-                        "More info:",
-                        f"Namely left: {left_group} right: {right_group} homology: {homology}",
-                    )
-                    print(left_df[print_columns2].to_string(index=False))
-                    print(right_df[print_columns2].to_string(index=False))
-                    print()
+                ins_split_matches = (
+                    left_df.loc[left_df["split"]]["does_clip_match"].sum()
+                    + right_df.loc[right_df["split"]]["does_clip_match"].sum()
+                )
 
-                if insertion_len == 0:
-                    continue
-                if ins_sum_left == len(left_df) and ins_sum_right == len(right_df):
-                    print()
-                    print("Trying as insertion")
-                    print("Yes! All soft clips match!")
-                    if best_left is not None:
-                        print(
-                            "Hmmmm.... Multiple candidates with matching soft clips",
-                            f"Namely left: {left_group} right: {right_group} insertion: {insertion}",
-                        )
-                    best_left_ins = left_group
-                    best_right_ins = right_group
-                    best_insertion = (
-                        insertion if first_row["end"] else rev_comp(insertion)
+                results.append(
+                    pd.DataFrame(
+                        {
+                            "left_sv": left_group,
+                            "right_sv": right_group,
+                            "hom_sum_left": hom_sum_left,
+                            "hom_sum_right": hom_sum_right,
+                            "homology": homology,
+                            "ins_sum_left": ins_sum_left,
+                            "ins_sum_right": ins_sum_right,
+                            "insertion": insertion,
+                            "left_len": len(left_df),
+                            "right_len": len(right_df),
+                            "hom_split_matches": hom_split_matches,
+                            "ins_split_matches": ins_split_matches,
+                            "left": (left_df,),
+                            "right": (right_df,),
+                        },
+                        index=[0],
                     )
-                elif ins_sum_left > 0 or ins_sum_right > 0:
-                    print()
-                    print("Trying as insertion")
-                    print(
-                        "Hmmmmm...... only some soft clips matched",
-                        f"Namely left: {ins_sum_left}/{len(left_df)} right: {ins_sum_right}/{len(right_df)}",
-                    )
-                    print(
-                        "More info:",
-                        f"Namely left: {left_group} right: {right_group} insertion: {insertion}",
-                    )
-                    print(left_df[print_columns2].to_string(index=False))
-                    print(right_df[print_columns2].to_string(index=False))
-                    print()
+                )
 
-        return (
-            best_left,
-            best_right,
-            best_homology,
-            best_left_ins,
-            best_right_ins,
-            best_insertion,
-        )
+        results = pd.concat(results)
+        results["hom_%"] = (
+            results["hom_sum_left"] / results["left_len"]
+            + results["hom_sum_right"] / results["right_len"]
+        ) / 2
+        results["ins_%"] = (
+            results["ins_sum_left"] / results["left_len"]
+            + results["ins_sum_right"] / results["right_len"]
+        ) / 2
+        results["total_%"] = results[["hom_%", "ins_%"]].max(axis=1)
+        results["split_matches"] = results["hom_split_matches"] + results["ins_split_matches"]
+        results["total_reads"] = results["left_len"] + results["right_len"]
+        results = results.sort_values(by=["total_%", "split_matches", "total_reads"], ascending=False)
+
+        return results.head(3)[["left_sv", "right_sv", "hom_%", "ins_%", "total_%", "total_reads", "split_matches", "homology", "insertion", "left", "right"]]
 
     def rev_comp(series):
         trans = str.maketrans("ACGT", "TGCA")
@@ -361,31 +340,13 @@ if __name__ == "__main__":
             if group_name not in breaks:
                 continue
 
-        if args.verbose:
-            print(
-                f"Reads for {'best' if args.verbose == 1 else ('' if args.verbose == 2 else '')} left SV candidates"
-            )
-        left_cands, best_left, left_groups = refine_step1(left)
-        if args.verbose:
-            print(
-                f"Reads for {'best' if args.verbose == 1 else ('' if args.verbose == 2 else '')} right SV candidates"
-            )
-        right_cands, best_right, right_groups = refine_step1(right)
+        best_left, left_groups = refine_step1(left)
+        best_right, right_groups = refine_step1(right)
 
-        (
-            new_best_left,
-            new_best_right,
-            homology,
-            new_best_insL,
-            new_best_insR,
-            insertion,
-        ) = check_overlap(left_groups, right_groups)
-        print(
-            f"New refinement (Homology) -> left: {new_best_left} right: {new_best_right} homology: {homology}"
-        )
-        print(
-            f"New refinement (Insertion) -> left: {new_best_insL} right: {new_best_insR} insertion: {insertion}"
-        )
+        results = check_overlap(left_groups, right_groups)
+        for row in range(len(results)):
+            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
+            print(results.iloc[row]["left"].to_string(index=False))
 
         print("Original AA breakpoint:")
         print(
@@ -401,17 +362,3 @@ if __name__ == "__main__":
             ].to_string(),
             "\n",
         )
-
-        print("Best left candidate:", best_left)
-        print("Best right candidate:", best_right, "\n")
-
-        if args.verbose:
-            print("Overlapping reads with best left candidate:")
-        left_ovrs = refine_step2(best_left)
-        if args.verbose:
-            print("Overlapping reads with best right candidate:")
-        right_ovrs = refine_step2(best_right)
-
-        print("Reads overlapping on best left candidate:", left_ovrs)
-        print("Reads overlapping on best right candidate:", right_ovrs)
-        print()
