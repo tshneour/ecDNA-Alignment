@@ -342,7 +342,7 @@ if __name__ == "__main__":
         results = check_overlap(left_groups, right_groups)
         results["left_sv"] = results["left_sv"].astype(int)
         results["right_sv"] = results["right_sv"].astype(int)
-        for row in range(0, len(results), -1):
+        for row in range(len(results), 0, -1):
             print('___________________________________________________________________________________________________')
             print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
             print('\n', 'Left side reads for this candidate:')
