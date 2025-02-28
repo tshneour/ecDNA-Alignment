@@ -4,12 +4,20 @@ import argparse
 import warnings
 import pysam
 from Bio.Seq import Seq
-from Bio import SeqIO
 
 warnings.filterwarnings("ignore")
 pd.set_option("display.max_colwidth", None)
 pd.set_option("display.max_columns", None)
 print_columns = [
+    "query_name",
+    "proper_pair",
+    "query_pos",
+    "query_end",
+    "query_cigar",
+    "split",
+    "query_aln_full",
+]
+print_columns2 = [
     "query_short",
     "query_chrom",
     "query_pos",
@@ -71,16 +79,7 @@ if __name__ == "__main__":
         if args.verbose == 2:
             print(
                 filtered_reads.sort_values(by="sv_end")[
-                    [
-                        "sv_end",
-                        "query_name",
-                        "proper_pair",
-                        "query_pos",
-                        "query_end",
-                        "query_cigar",
-                        "split",
-                        "query_aln_full",
-                    ]
+                    ["sv_end", *print_columns]
                 ].to_string(),
                 "\n",
             )
@@ -90,32 +89,13 @@ if __name__ == "__main__":
 
         if args.verbose == 1:
             verb_1 = filtered_reads[filtered_reads["sv_end"] == best][
-                [
-                    "sv_end",
-                    "query_name",
-                    "proper_pair",
-                    "query_pos",
-                    "query_end",
-                    "query_cigar",
-                    "split",
-                    "query_aln_full",
-                ]
+                ["sv_end", *print_columns]
             ]
             disc = verb_1[verb_1["proper_pair"] == "Discordant"]
             mates = all_reads[
                 all_reads["query_name"].isin(disc.query_name)
                 & ~all_reads["query_aln_full"].isin(disc.query_aln_full)
-            ][
-                [
-                    "query_name",
-                    "proper_pair",
-                    "query_pos",
-                    "query_end",
-                    "query_cigar",
-                    "split",
-                    "query_aln_full",
-                ]
-            ]
+            ][print_columns]
             print(verb_1.to_string(), "\n")
             print()
             print("Mates of Discordant Reads from above Table: ")
@@ -151,9 +131,6 @@ if __name__ == "__main__":
     def check_overlap(left, right):
         left = left.reset_index(drop=True)
         right = right.reset_index(drop=True)
-
-        left["query_short"] = left["query_short"].astype(str)
-        right["query_short"] = right["query_short"].astype(str)
 
         # Eliminate unhelpful split reads
         left = left[
@@ -272,12 +249,10 @@ if __name__ == "__main__":
                 last_clipped = last_row["rev_clipped"]
                 insertion = homology_inator(last_clipped, first_clipped)
                 insertion_len = len(insertion)
-                left_df["does_clip_match"] = left_df.apply(
-                    lambda x: len(
-                        homology_inator(x["rev_clipped"][insertion_len:], last)
-                    )
-                    == len(x["rev_clipped"][insertion_len:]),
-                    axis=1,
+                left_df["does_clip_match"] = (
+                    left_df["rev_clipped"]
+                    .str.slice(start=insertion_len)
+                    .apply(lambda x: last.startswith(x))
                 )
                 left_df.loc[left_df["split"], "does_clip_match"] = left_df.loc[
                     left_df["split"]
@@ -318,9 +293,7 @@ if __name__ == "__main__":
                         )
                     best_left = left_group
                     best_right = right_group
-                    best_homology = (
-                        homology if first_row["end"] else reverse_complement(homology)
-                    )
+                    best_homology = homology if first_row["end"] else rev_comp(homology)
                 elif hom_sum_left > 0 or hom_sum_right > 0:
                     print(
                         "Hmmmmm...... only some soft clips matched",
@@ -330,8 +303,8 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} homology: {homology}",
                     )
-                    print(left_df[print_columns].to_string())
-                    print(right_df[print_columns].to_string())
+                    print(left_df[print_columns2].to_string())
+                    print(right_df[print_columns2].to_string())
                     print()
 
                 if insertion_len == 0:
@@ -348,7 +321,7 @@ if __name__ == "__main__":
                     best_left_ins = left_group
                     best_right_ins = right_group
                     best_insertion = (
-                        insertion if first_row["end"] else reverse_complement(insertion)
+                        insertion if first_row["end"] else rev_comp(insertion)
                     )
                 elif ins_sum_left > 0 or ins_sum_right > 0:
                     print()
@@ -361,8 +334,8 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} insertion: {insertion}",
                     )
-                    print(left_df[print_columns].to_string())
-                    print(right_df[print_columns].to_string())
+                    print(left_df[print_columns2].to_string())
+                    print(right_df[print_columns2].to_string())
                     print()
 
         return (
@@ -378,8 +351,12 @@ if __name__ == "__main__":
         """Returns the reverse complement of a DNA sequence using Biopython."""
         return str(Seq(dna).reverse_complement())
 
-    def rev_comp(series: pd.Series) -> pd.Series:
-        return series.str[::-1].str.translate(str.maketrans("ACGT", "TGCA"))
+    def rev_comp(series):
+        return (
+            series.str[::-1].str.translate(str.maketrans("ACGT", "TGCA"))
+            if isinstance(series, pd.Series)
+            else series[::-1].translate(str.maketrans("ACGT", "TGCA"))
+        )
 
     def homology_inator(first, last):
         first_str = first
