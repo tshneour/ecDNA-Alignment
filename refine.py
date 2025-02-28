@@ -2,12 +2,8 @@ import pandas as pd
 import re
 import argparse
 import warnings
-import pysam
-from Bio.Seq import Seq
 
 warnings.filterwarnings("ignore")
-pd.set_option("display.max_colwidth", None)
-pd.set_option("display.max_columns", None)
 print_columns = [
     "query_name",
     "proper_pair",
@@ -22,14 +18,14 @@ print_columns2 = [
     "query_chrom",
     "query_pos",
     "query_cigar",
-    "query_aln_full",
+    "does_clip_match",
+    "rev_clipped",
     "query_aln_sub",
 ]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Refine AA SVs.")
     parser.add_argument("file", type=str, help="alignments file to refine")
-    parser.add_argument("fasta", type=str, help="fasta file used to generate bamfile")
     parser.add_argument(
         "-l", "--list", help="shows all breakpoints", action="store_true"
     )
@@ -46,62 +42,44 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     all_reads = pd.read_csv(args.file, sep="\t")
-    fasta = pysam.FastaFile(args.fasta)
 
     # ------------- Define Functions ------------------
 
-    def refine_step1(reads, certainty=1):
-        beg_reg = r"^\d+(S|H)"
-        end_reg = r"\d+(S|H)$"
-        filtered_reads = reads[
-            (reads["query_cigar"].str.contains("S"))
-            | (reads["query_cigar"].str.contains("H"))
-        ]
+    def refine_step1(reads):
+        reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
+        reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
+        reads["end"] = reads["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
 
-        filtered_reads["begin"] = filtered_reads.query_cigar.apply(
-            lambda x: bool(re.search(beg_reg, x))
-        )
-        filtered_reads["end"] = filtered_reads.query_cigar.apply(
-            lambda x: bool(re.search(end_reg, x))
-        )
+        reads["sv_end"] = reads["query_pos"].where(reads["begin"])
+        reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
 
-        filtered_reads["sv_end"] = filtered_reads.apply(
-            lambda row: (
-                row["query_pos"]
-                if row["begin"]
-                else row["query_end"] if row["end"] else pd.NA
-            ),
-            axis=1,
-        )
-
-        filtered_reads = filtered_reads.dropna(subset=["sv_end"])
+        # Drop rows where 'sv_end' is still NaN
+        reads.dropna(subset=["sv_end"], inplace=True)
 
         if args.verbose == 2:
             print(
-                filtered_reads.sort_values(by="sv_end")[
-                    ["sv_end", *print_columns]
-                ].to_string(),
+                reads.sort_values(by="sv_end")[["sv_end", *print_columns]].to_string(
+                    index=False
+                ),
                 "\n",
             )
 
-        end_cands = filtered_reads["sv_end"].value_counts()
+        end_cands = reads["sv_end"].value_counts()
         best = end_cands.index[0] if end_cands.shape[0] > 0 else None
 
         if args.verbose == 1:
-            verb_1 = filtered_reads[filtered_reads["sv_end"] == best][
-                ["sv_end", *print_columns]
-            ]
+            verb_1 = reads[reads["sv_end"] == best][["sv_end", *print_columns]]
             disc = verb_1[verb_1["proper_pair"] == "Discordant"]
             mates = all_reads[
                 all_reads["query_name"].isin(disc.query_name)
                 & ~all_reads["query_aln_full"].isin(disc.query_aln_full)
             ][print_columns]
-            print(verb_1.to_string(), "\n")
+            print(verb_1.to_string(index=False), "\n")
             print()
             print("Mates of Discordant Reads from above Table: ")
-            print(mates.to_string(), "\n")
+            print(mates.to_string(index=False), "\n")
 
-        return end_cands, best, filtered_reads
+        return end_cands, best, reads
 
     def refine_step2(best):
         def contains(read, break_cand):
@@ -110,45 +88,26 @@ if __name__ == "__main__":
         thing = all_reads.loc[all_reads.apply(lambda x: contains(x, best), axis=1)]
         if args.verbose:
             print(
-                (
-                    thing[
-                        [
-                            "query_name",
-                            "query_pos",
-                            "query_end",
-                            "query_cigar",
-                            "split",
-                            "query_aln_full",
-                        ]
-                    ].to_string()
-                    if len(thing) != 0
-                    else "None"
-                ),
+                thing[print_columns].to_string(index=False) if thing else "None",
                 "\n",
             )
         return len(thing)
 
     def check_overlap(left, right):
-        left = left.reset_index(drop=True)
-        right = right.reset_index(drop=True)
 
         # Eliminate unhelpful split reads
         left = left[
-            (~left["split"].astype(bool))
+            ~left["split"]
             | (
-                left["split"].astype(bool)
-                & left["query_name"].isin(
-                    right.loc[right["split"].astype(bool), "query_name"]
-                )
+                left["split"]
+                & left["query_name"].isin(right.loc[right["split"], "query_name"])
             )
         ]
         right = right[
-            (~right["split"].astype(bool))
+            ~right["split"]
             | (
-                right["split"].astype(bool)
-                & right["query_name"].isin(
-                    left.loc[left["split"].astype(bool), "query_name"]
-                )
+                right["split"]
+                & right["query_name"].isin(left.loc[left["split"], "query_name"])
             )
         ]
 
@@ -191,16 +150,16 @@ if __name__ == "__main__":
                 first = (
                     first_row["query_aln_sub"]
                     if first_row["end"]
-                    else reverse_complement(first_row["query_aln_sub"])
+                    else rev_comp(first_row["query_aln_sub"])
                 )
                 last = (
                     last_row["query_aln_sub"]
                     if last_row["begin"]
-                    else reverse_complement(last_row["query_aln_sub"])
+                    else rev_comp(last_row["query_aln_sub"])
                 )
 
                 # Check for homology
-                homology = homology_inator(first, last)
+                homology = get_homology(first, last)
                 hom_len = len(homology)
                 first_nohomo = first[:-hom_len]
                 last_nohomo = last[hom_len:]
@@ -247,7 +206,7 @@ if __name__ == "__main__":
                 last_row = right_df.loc[right_df["rev_clipped"].str.len().idxmax()]
                 first_clipped = first_row["rev_clipped"]
                 last_clipped = last_row["rev_clipped"]
-                insertion = homology_inator(last_clipped, first_clipped)
+                insertion = get_homology(last_clipped, first_clipped)
                 insertion_len = len(insertion)
                 left_df["does_clip_match"] = (
                     left_df["rev_clipped"]
@@ -303,8 +262,8 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} homology: {homology}",
                     )
-                    print(left_df[print_columns2].to_string())
-                    print(right_df[print_columns2].to_string())
+                    print(left_df[print_columns2].to_string(index=False))
+                    print(right_df[print_columns2].to_string(index=False))
                     print()
 
                 if insertion_len == 0:
@@ -334,8 +293,8 @@ if __name__ == "__main__":
                         "More info:",
                         f"Namely left: {left_group} right: {right_group} insertion: {insertion}",
                     )
-                    print(left_df[print_columns2].to_string())
-                    print(right_df[print_columns2].to_string())
+                    print(left_df[print_columns2].to_string(index=False))
+                    print(right_df[print_columns2].to_string(index=False))
                     print()
 
         return (
@@ -347,25 +306,19 @@ if __name__ == "__main__":
             best_insertion,
         )
 
-    def reverse_complement(dna: str) -> str:
-        """Returns the reverse complement of a DNA sequence using Biopython."""
-        return str(Seq(dna).reverse_complement())
-
     def rev_comp(series):
+        trans = str.maketrans("ACGT", "TGCA")
         return (
-            series.str[::-1].str.translate(str.maketrans("ACGT", "TGCA"))
+            series.str[::-1].str.translate(trans)
             if isinstance(series, pd.Series)
-            else series[::-1].translate(str.maketrans("ACGT", "TGCA"))
+            else series[::-1].translate(trans)
         )
 
-    def homology_inator(first, last):
-        first_str = first
-        last_str = last
-        longest_str = ""
-        for i in range(min(len(first_str), len(last_str)) + 1):
-            if first_str[-i:] == last_str[:i]:
-                longest_str = first_str[-i:]
-        return longest_str
+    def get_homology(first, last):
+        for i in range(len(first), -1, -1):
+            if last.startswith(first[-i:]):
+                return first[-i:]
+        return ""
 
     # ------------- Do refinement ------------------
 
