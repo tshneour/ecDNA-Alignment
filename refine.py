@@ -225,7 +225,7 @@ if __name__ == "__main__":
                     right_df["begin"], rev_comp(right_df["clipped"])
                 )
                 right_df["does_clip_match"] = right_df["rev_clipped"].apply(
-                    lambda x: first_nohomo.startswith(x)
+                    lambda x: first_nohomo.endswith(x)
                 )
                 right_df.loc[right_df["split"], "does_clip_match"] = right_df.loc[
                     right_df["split"]
