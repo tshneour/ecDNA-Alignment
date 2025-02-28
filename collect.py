@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 
-def get_pairs(regions, chrom1, chrom2):
+def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     """
     Fetch all paired reads, including those with split alignments
 
@@ -41,6 +41,12 @@ def get_pairs(regions, chrom1, chrom2):
             except ValueError as e:
                 print(e)
                 continue
+            
+            # Filter out unhelpful discordant pairs
+            if (not aln.is_proper_pair and not (aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"))):
+                if ((i == 0 and (not mate.reference_name == chrom2 or not (break_pos2 - 500 < mate.reference_start and break_pos2 + 500 > mate.reference_start)))
+                    or (i == 1 and (not mate.reference_name == chrom1 or not (break_pos1 - 500 < mate.reference_start and break_pos1 + 500 > mate.reference_start)))):
+                    continue
 
             if aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"):
                 sa_tag = (aln.get_tag("SA")).split(";")[:-1]
@@ -155,7 +161,7 @@ def fetch_alignments(
     region2 = samfile.fetch(chrom2, pos2 - region_size, pos2 + region_size + 1)
 
     split_alignments, nonsplit_alignments = get_pairs(
-        [region1, region2], chrom1, chrom2
+        [region1, region2], chrom1, chrom2, pos1, pos2
     )
 
     # Collect details of split alignments
@@ -273,10 +279,16 @@ if __name__ == "__main__":
         help="Include debug output",
         action="store_true"
     )
+    parser.add_argument(
+        "-f", "--file",
+        help="File to store alignments",
+        type=str
+    )
     args = parser.parse_args()
     # Define the BAM file and positions
     bamfile = args.bam
     samfile = pysam.AlignmentFile(bamfile, "rb")
+    # print(samfile.header)
     df = pd.concat([pd.read_csv(os.path.join(args.sum, f), sep="\t") for f in os.listdir(args.sum) if ".tsv" in f], ignore_index=True)
     # Define output table
     output = pd.DataFrame()
@@ -324,7 +336,7 @@ if __name__ == "__main__":
         output = pd.concat([output, split_df], ignore_index=True)
         output = pd.concat([output, nonsplit_df], ignore_index=True)
 
-    output.to_csv("alignments.tsv", sep="\t", index=False)
+    output.to_csv(args.file if args.file else args.bam.split('/')[-1].split('.')[0] + '.tsv', sep="\t", index=False)
 
     if args.verbose:
         print("Total Number of split reads:", num_split)
