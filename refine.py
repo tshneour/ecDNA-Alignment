@@ -239,8 +239,8 @@ if __name__ == "__main__":
                 ins_sum_right = right_df["ins_clip_match"].sum()
 
                 split_matches = (
-                    left_df.loc[left_df["split"]]["ins_clip_match"].sum()
-                    + right_df.loc[right_df["split"]]["ins_clip_match"].sum()
+                    left_df["split"].sum() +
+                    right_df["split"].sum()
                 )
 
                 results.append(
@@ -257,8 +257,8 @@ if __name__ == "__main__":
                             "left_len": len(left_df),
                             "right_len": len(right_df),
                             "split_matches": split_matches,
-                            "left": (left_df,),
-                            "right": (right_df,),
+                            "left": (left_df.copy(deep=True),),
+                            "right": (right_df.copy(deep=True),),
                         },
                         index=[0],
                     )
@@ -266,13 +266,13 @@ if __name__ == "__main__":
 
         results = pd.concat(results)
         results["hom_%"] = (
-            results["hom_sum_left"] / results["left_len"]
-            + results["hom_sum_right"] / results["right_len"]
-        ) / 2
+            (results["hom_sum_left"] + results["hom_sum_right"])
+            / (results["left_len"] + results["right_len"])
+        )
         results["ins_%"] = (
-            results["ins_sum_left"] / results["left_len"]
-            + results["ins_sum_right"] / results["right_len"]
-        ) / 2
+            (results["ins_sum_left"] + results["ins_sum_right"])
+            / (results["left_len"] + results["right_len"])
+        )
         results["total_%"] = results[["hom_%", "ins_%"]].max(axis=1)
         results["split_matches"] = results["split_matches"]
         results["total_reads"] = results["left_len"] + results["right_len"]
