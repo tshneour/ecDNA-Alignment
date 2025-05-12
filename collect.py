@@ -248,8 +248,8 @@ def fetch_alignments(
                             list(map(lambda x: chr(x + 33), read2.query_qualities)))
                         + "\n"
                     )
-    subprocess.run(['gzip', fast1_name])
-    subprocess.run(['gzip', fast2_name])
+    # subprocess.run(['gzip', fast1_name])
+    # subprocess.run(['gzip', fast2_name])
 
     # Collect details of split alignments
     split_alignment_details = []
