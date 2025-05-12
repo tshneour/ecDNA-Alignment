@@ -2,9 +2,9 @@ import pandas as pd
 import pysam
 import re
 import argparse
-import numpy as np
 import os
-
+# import gzip
+import subprocess
 
 def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     """
@@ -26,8 +26,10 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     for i, region in enumerate(regions):
         for aln in region:
             # If we've seen this read before, skip it
-            if aln.is_duplicate or any(aln in tup for tup in split_alignments) or any(
-                aln in tup for tup in nonsplit_alignments
+            if (
+                aln.is_duplicate
+                or any(aln in tup for tup in split_alignments)
+                or any(aln in tup for tup in nonsplit_alignments)
             ):
                 # print("Duplicate read or read already seen")
                 continue
@@ -41,11 +43,30 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
             except ValueError as e:
                 print(e)
                 continue
-            
+
             # Filter out unhelpful discordant pairs
-            if (not aln.is_proper_pair and not (aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"))):
-                if ((i == 0 and (not mate.reference_name == chrom2 or not (break_pos2 - 500 < mate.reference_start and break_pos2 + 500 > mate.reference_start)))
-                    or (i == 1 and (not mate.reference_name == chrom1 or not (break_pos1 - 500 < mate.reference_start and break_pos1 + 500 > mate.reference_start)))):
+            if not aln.is_proper_pair and not (
+                aln.is_supplementary or aln.is_secondary or aln.has_tag("SA")
+            ):
+                if (
+                    i == 0
+                    and (
+                        not mate.reference_name == chrom2
+                        or not (
+                            break_pos2 - 500 < mate.reference_start
+                            and break_pos2 + 500 > mate.reference_start
+                        )
+                    )
+                ) or (
+                    i == 1
+                    and (
+                        not mate.reference_name == chrom1
+                        or not (
+                            break_pos1 - 500 < mate.reference_start
+                            and break_pos1 + 500 > mate.reference_start
+                        )
+                    )
+                ):
                     continue
 
             if aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"):
@@ -66,8 +87,16 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                         and re.sub(r"[SH]", "", sup_read.cigarstring)
                         == re.sub(r"[SH]", "", sup_cigar)
                     ):
-                        non_sup = aln if not aln.is_supplementary and not aln.is_secondary else sup_read
-                        sup = aln if aln.is_supplementary or aln.is_secondary else sup_read
+                        non_sup = (
+                            aln
+                            if not aln.is_supplementary and not aln.is_secondary
+                            else sup_read
+                        )
+                        sup = (
+                            aln
+                            if aln.is_supplementary or aln.is_secondary
+                            else sup_read
+                        )
                         read1 = non_sup if non_sup.is_read1 else mate
                         read2 = non_sup if non_sup.is_read2 else mate
                         split_alignments.append((read1, sup, read2))
@@ -95,8 +124,16 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                         and re.sub(r"[SH]", "", sup_read.cigarstring)
                         == re.sub(r"[SH]", "", sup_cigar)
                     ):
-                        non_sup = mate if not mate.is_supplementary and not mate.is_secondary else sup_read
-                        sup = mate if mate.is_supplementary or mate.is_secondary else sup_read
+                        non_sup = (
+                            mate
+                            if not mate.is_supplementary and not mate.is_secondary
+                            else sup_read
+                        )
+                        sup = (
+                            mate
+                            if mate.is_supplementary or mate.is_secondary
+                            else sup_read
+                        )
                         read1 = non_sup if non_sup.is_read1 else aln
                         read2 = non_sup if non_sup.is_read2 else aln
                         split_alignments.append((read1, sup, read2))
@@ -164,6 +201,56 @@ def fetch_alignments(
         [region1, region2], chrom1, chrom2, pos1, pos2
     )
 
+    fast1_name = f"fastq/b_{chrom1}:{pos1+1}_{chrom2}:{pos2+1}_1.fastq"
+    fast2_name = f"fastq/b_{chrom1}:{pos1+1}_{chrom2}:{pos2+1}_2.fastq"
+    os.makedirs('fastq', exist_ok=True)
+    with open(fast1_name, "w") as fast1:
+        with open(fast2_name, "w") as fast2:
+            for pair in nonsplit_alignments:
+                read1, read2 = pair
+                fast1.write(
+                    read1.query_name
+                    + "\n"
+                    + read1.query_sequence
+                    + "\n"
+                    + "+\n"
+                    + "".join(list(map(lambda x: chr(x + 33), read1.query_qualities)))
+                    + "\n"
+                )
+                fast2.write(
+                    read2.query_name
+                    + "\n"
+                    + read2.query_sequence
+                    + "\n"
+                    + "+\n"
+                    + "".join(list(map(lambda x: chr(x + 33), read2.query_qualities)))
+                    + "\n"
+                )
+            for pair in split_alignments:
+                read1_1, read1_2, read2 = pair
+                fast1.write(
+                        read1_1.query_name
+                        + "\n"
+                        + read1_1.query_sequence
+                        + "\n"
+                        + "+\n"
+                        + "".join(
+                            list(map(lambda x: chr(x + 33), read1_1.query_qualities)))
+                        + "\n"
+                    )
+                fast2.write(
+                        read2.query_name
+                        + "\n"
+                        + read2.query_sequence
+                        + "\n"
+                        + "+\n"
+                        + "".join(
+                            list(map(lambda x: chr(x + 33), read2.query_qualities)))
+                        + "\n"
+                    )
+    subprocess.run(['gzip', fast1_name])
+    subprocess.run(['gzip', fast2_name])
+
     # Collect details of split alignments
     split_alignment_details = []
     for pair in split_alignments:
@@ -193,9 +280,9 @@ def fetch_alignments(
                         "query_name": read.query_name,
                         "query_short": read.query_name.split(":")[-1],
                         "split": read.has_tag("SA"),
-                        "proper_pair": "Concordant"
-                        if read.is_proper_pair
-                        else "Discordant",
+                        "proper_pair": (
+                            "Concordant" if read.is_proper_pair else "Discordant"
+                        ),
                         "read_num": "1" if read.is_read1 else "2",
                         "query_chrom": read.reference_name,
                         "query_pos": read.reference_start + 1,
@@ -232,9 +319,9 @@ def fetch_alignments(
                         "query_name": read.query_name,
                         "query_short": read.query_name.split(":")[-1],
                         "split": read.has_tag("SA"),
-                        "proper_pair": "Concordant"
-                        if read1.is_proper_pair
-                        else "Discordant",
+                        "proper_pair": (
+                            "Concordant" if read1.is_proper_pair else "Discordant"
+                        ),
                         "read_num": "1" if read.is_read1 else "2",
                         "query_chrom": read.reference_name,
                         "query_pos": read.reference_start + 1,
@@ -257,7 +344,9 @@ def fetch_alignments(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Collect reads from the ends of a SV for refinement.")
+    parser = argparse.ArgumentParser(
+        description="Collect reads from the ends of a SV for refinement."
+    )
     parser.add_argument(
         "refine",
         help="Radius of refinement region",
@@ -275,21 +364,22 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
-        "-v", "--verbose",
-        help="Include debug output",
-        action="store_true"
+        "-v", "--verbose", help="Include debug output", action="store_true"
     )
-    parser.add_argument(
-        "-f", "--file",
-        help="File to store alignments",
-        type=str
-    )
+    parser.add_argument("-f", "--file", help="File to store alignments", type=str)
     args = parser.parse_args()
     # Define the BAM file and positions
     bamfile = args.bam
     samfile = pysam.AlignmentFile(bamfile, "rb")
     # print(samfile.header)
-    df = pd.concat([pd.read_csv(os.path.join(args.sum, f), sep="\t") for f in os.listdir(args.sum) if ".tsv" in f], ignore_index=True)
+    df = pd.concat(
+        [
+            pd.read_csv(os.path.join(args.sum, f), sep="\t")
+            for f in os.listdir(args.sum)
+            if ".tsv" in f
+        ],
+        ignore_index=True,
+    )
     # Define output table
     output = pd.DataFrame()
     num_split = 0
@@ -336,7 +426,11 @@ if __name__ == "__main__":
         output = pd.concat([output, split_df], ignore_index=True)
         output = pd.concat([output, nonsplit_df], ignore_index=True)
 
-    output.to_csv(args.file if args.file else args.bam.split('/')[-1].split('.')[0] + '.tsv', sep="\t", index=False)
+    output.to_csv(
+        args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
+        sep="\t",
+        index=False,
+    )
 
     if args.verbose:
         print("Total Number of split reads:", num_split)
