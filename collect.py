@@ -209,7 +209,7 @@ def fetch_alignments(
             for pair in nonsplit_alignments:
                 read1, read2 = pair
                 fast1.write(
-                    read1.query_name
+                    '@' + read1.query_name
                     + "\n"
                     + read1.query_sequence
                     + "\n"
@@ -218,7 +218,7 @@ def fetch_alignments(
                     + "\n"
                 )
                 fast2.write(
-                    read2.query_name
+                    '@' + read2.query_name
                     + "\n"
                     + read2.query_sequence
                     + "\n"
@@ -229,7 +229,7 @@ def fetch_alignments(
             for pair in split_alignments:
                 read1_1, read1_2, read2 = pair
                 fast1.write(
-                        read1_1.query_name
+                        '@' + read1_1.query_name
                         + "\n"
                         + read1_1.query_sequence
                         + "\n"
@@ -239,7 +239,7 @@ def fetch_alignments(
                         + "\n"
                     )
                 fast2.write(
-                        read2.query_name
+                        '@' + read2.query_name
                         + "\n"
                         + read2.query_sequence
                         + "\n"
