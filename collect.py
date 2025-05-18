@@ -6,6 +6,11 @@ import os
 # import gzip
 import subprocess
 
+def rev_comp(dna):
+    complement = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'N': 'N'}
+    reversed_dna = dna[::-1]
+    return ''.join(complement[base] for base in reversed_dna)
+
 def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     """
     Fetch all paired reads, including those with split alignments
@@ -194,6 +199,7 @@ def fetch_alignments(
     samfile = pysam.AlignmentFile(bamfile, "rb")
 
     # Fetch alignments region_size away from both positions
+    # print(chrom1, pos1, region_size)
     region1 = samfile.fetch(chrom1, pos1 - region_size, pos1 + region_size + 1)
     region2 = samfile.fetch(chrom2, pos2 - region_size, pos2 + region_size + 1)
 
@@ -211,19 +217,19 @@ def fetch_alignments(
                 fast1.write(
                     '@' + read1.query_name
                     + "\n"
-                    + read1.query_sequence
+                    + (read1.query_sequence if read1.is_forward else rev_comp(read1.query_sequence))
                     + "\n"
                     + "+\n"
-                    + "".join(list(map(lambda x: chr(x + 33), read1.query_qualities)))
+                    + "".join(list(map(lambda x: chr(x + 33), (read1.query_qualities if read1.is_forward else read1.query_qualities[::-1]))))
                     + "\n"
                 )
                 fast2.write(
                     '@' + read2.query_name
                     + "\n"
-                    + read2.query_sequence
+                    + (read2.query_sequence if read2.is_forward else rev_comp(read2.query_sequence))
                     + "\n"
                     + "+\n"
-                    + "".join(list(map(lambda x: chr(x + 33), read2.query_qualities)))
+                    + "".join(list(map(lambda x: chr(x + 33), (read2.query_qualities if read2.is_forward else read2.query_qualities[::-1]))))
                     + "\n"
                 )
             for pair in split_alignments:
@@ -231,25 +237,25 @@ def fetch_alignments(
                 fast1.write(
                         '@' + read1_1.query_name
                         + "\n"
-                        + read1_1.query_sequence
+                        + (read1_1.query_sequence if read1_1.is_forward else rev_comp(read1_1.query_sequence))
                         + "\n"
                         + "+\n"
                         + "".join(
-                            list(map(lambda x: chr(x + 33), read1_1.query_qualities)))
+                            list(map(lambda x: chr(x + 33), (read1_1.query_qualities if read1_1.is_forward else read1_1.query_qualities[::-1]))))
                         + "\n"
                     )
                 fast2.write(
                         '@' + read2.query_name
                         + "\n"
-                        + read2.query_sequence
+                        + (read2.query_sequence if read2.is_forward else rev_comp(read2.query_sequence))
                         + "\n"
                         + "+\n"
                         + "".join(
-                            list(map(lambda x: chr(x + 33), read2.query_qualities)))
+                            list(map(lambda x: chr(x + 33), (read2.query_qualities if read2.is_forward else read2.query_qualities[::-1]))))
                         + "\n"
                     )
-    # subprocess.run(['gzip', fast1_name])
-    # subprocess.run(['gzip', fast2_name])
+    subprocess.run(['gzip', fast1_name, '-f'])
+    subprocess.run(['gzip', fast2_name, '-f'])
 
     # Collect details of split alignments
     split_alignment_details = []
@@ -398,6 +404,7 @@ if __name__ == "__main__":
         orientation = row["orientation"]
         hom_len = row["homology_length"]
         homology = row["homology_sequence"]
+        # print(chrom1, pos1, chrom2, pos2)
 
         # Fetch the DataFrames for split alignments and paired alignments
         split_df, nonsplit_df = fetch_alignments(
