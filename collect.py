@@ -3,13 +3,35 @@ import pysam
 import re
 import argparse
 import os
+
 # import gzip
 import subprocess
 
+def check_strict(read1, read2, pos1, pos2, region_size, sup=None):
+    def overlaps_region(read, center, region_size):
+        region_start = center - region_size
+        region_end = center + region_size
+        return read.reference_start <= region_end and read.reference_end >= region_start
+
+    def overlaps_either_region(read):
+        return (overlaps_region(read, pos1, region_size) or
+                overlaps_region(read, pos2, region_size))
+
+    # Check reads overlap with one of either region
+    if sup is not None:
+        return (overlaps_either_region(read1) and
+                overlaps_either_region(read2) and
+                overlaps_either_region(sup))
+    else:
+        return (overlaps_either_region(read1) and
+                overlaps_either_region(read2))
+
+
 def rev_comp(dna):
-    complement = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'N': 'N'}
+    complement = {"A": "T", "T": "A", "C": "G", "G": "C", "N": "N"}
     reversed_dna = dna[::-1]
-    return ''.join(complement[base] for base in reversed_dna)
+    return "".join(complement[base] for base in reversed_dna)
+
 
 def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     """
@@ -175,7 +197,7 @@ def fetch_alignments(
     orientation,
     hom_len,
     hom,
-    region_size,
+    args,
     mapq_threshold=15,
 ):
     """
@@ -188,7 +210,7 @@ def fetch_alignments(
     - pos1: int, first position in the genome.
     - chrom2: str, chromosome for the second position.
     - pos2: int, second position in the genome.
-    - region_size: int, the size of the region around the positions to fetch alignments from.
+    - args.refine: int, the size of the region around the positions to fetch alignments from.
     - mapq_threshold: int, cutoff for collecting reads above certain mapping quality.
 
     Returns:
@@ -198,70 +220,133 @@ def fetch_alignments(
     # Open the BAM file
     samfile = pysam.AlignmentFile(bamfile, "rb")
 
-    # Fetch alignments region_size away from both positions
-    # print(chrom1, pos1, region_size)
-    region1 = samfile.fetch(chrom1, pos1 - region_size, pos1 + region_size + 1)
-    region2 = samfile.fetch(chrom2, pos2 - region_size, pos2 + region_size + 1)
+    # Fetch alignments args.refine away from both positions
+    # print(chrom1, pos1, args.refine)
+    region1 = samfile.fetch(chrom1, pos1 - args.refine, pos1 + args.refine + 1)
+    region2 = samfile.fetch(chrom2, pos2 - args.refine, pos2 + args.refine + 1)
 
     split_alignments, nonsplit_alignments = get_pairs(
         [region1, region2], chrom1, chrom2, pos1, pos2
     )
 
-    fast1_name = f"fastq/b_{chrom1}:{pos1+1}_{chrom2}:{pos2+1}_1.fastq"
-    fast2_name = f"fastq/b_{chrom1}:{pos1+1}_{chrom2}:{pos2+1}_2.fastq"
-    os.makedirs('fastq', exist_ok=True)
+    fast1_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_1.fastq"
+    fast2_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_2.fastq"
+    os.makedirs("fastq", exist_ok=True)
     with open(fast1_name, "w") as fast1:
         with open(fast2_name, "w") as fast2:
             for pair in nonsplit_alignments:
                 read1, read2 = pair
                 fast1.write(
-                    '@' + read1.query_name
+                    "@"
+                    + read1.query_name
                     + "\n"
-                    + (read1.query_sequence if read1.is_forward else rev_comp(read1.query_sequence))
+                    + (
+                        read1.query_sequence
+                        if read1.is_forward
+                        else rev_comp(read1.query_sequence)
+                    )
                     + "\n"
                     + "+\n"
-                    + "".join(list(map(lambda x: chr(x + 33), (read1.query_qualities if read1.is_forward else read1.query_qualities[::-1]))))
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read1.query_qualities
+                                    if read1.is_forward
+                                    else read1.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
                     + "\n"
                 )
                 fast2.write(
-                    '@' + read2.query_name
+                    "@"
+                    + read2.query_name
                     + "\n"
-                    + (read2.query_sequence if read2.is_forward else rev_comp(read2.query_sequence))
+                    + (
+                        read2.query_sequence
+                        if read2.is_forward
+                        else rev_comp(read2.query_sequence)
+                    )
                     + "\n"
                     + "+\n"
-                    + "".join(list(map(lambda x: chr(x + 33), (read2.query_qualities if read2.is_forward else read2.query_qualities[::-1]))))
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read2.query_qualities
+                                    if read2.is_forward
+                                    else read2.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
                     + "\n"
                 )
             for pair in split_alignments:
                 read1_1, read1_2, read2 = pair
                 fast1.write(
-                        '@' + read1_1.query_name
-                        + "\n"
-                        + (read1_1.query_sequence if read1_1.is_forward else rev_comp(read1_1.query_sequence))
-                        + "\n"
-                        + "+\n"
-                        + "".join(
-                            list(map(lambda x: chr(x + 33), (read1_1.query_qualities if read1_1.is_forward else read1_1.query_qualities[::-1]))))
-                        + "\n"
+                    "@"
+                    + read1_1.query_name
+                    + "\n"
+                    + (
+                        read1_1.query_sequence
+                        if read1_1.is_forward
+                        else rev_comp(read1_1.query_sequence)
                     )
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read1_1.query_qualities
+                                    if read1_1.is_forward
+                                    else read1_1.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
                 fast2.write(
-                        '@' + read2.query_name
-                        + "\n"
-                        + (read2.query_sequence if read2.is_forward else rev_comp(read2.query_sequence))
-                        + "\n"
-                        + "+\n"
-                        + "".join(
-                            list(map(lambda x: chr(x + 33), (read2.query_qualities if read2.is_forward else read2.query_qualities[::-1]))))
-                        + "\n"
+                    "@"
+                    + read2.query_name
+                    + "\n"
+                    + (
+                        read2.query_sequence
+                        if read2.is_forward
+                        else rev_comp(read2.query_sequence)
                     )
-    subprocess.run(['gzip', fast1_name, '-f'])
-    subprocess.run(['gzip', fast2_name, '-f'])
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read2.query_qualities
+                                    if read2.is_forward
+                                    else read2.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
+    subprocess.run(["gzip", fast1_name, "-f"])
+    subprocess.run(["gzip", fast2_name, "-f"])
 
     # Collect details of split alignments
     split_alignment_details = []
     for pair in split_alignments:
         read1_1, read1_2, read2 = pair
-
+        if args.strict and not check_strict(read1_1, read2, pos1, pos2, args.refine, sup=read1_2):
+            break
         # Filter out low quality reads
         if (
             (
@@ -304,6 +389,8 @@ def fetch_alignments(
     nonsplit_alignment_details = []
     for pair in nonsplit_alignments:
         read1, read2 = pair
+        if args.strict and not check_strict(read1, read2, pos1, pos2, args.refine):
+            break
         # Filter out low quality reads
         if (
             read1.mapping_quality > mapq_threshold
@@ -372,6 +459,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-v", "--verbose", help="Include debug output", action="store_true"
     )
+    parser.add_argument(
+        "--strict",
+        help="Force collection of read pairs which fully align within the region of interest",
+        action="store_true",
+    )
     parser.add_argument("-f", "--file", help="File to store alignments", type=str)
     args = parser.parse_args()
     # Define the BAM file and positions
@@ -419,7 +511,7 @@ if __name__ == "__main__":
             orientation,
             hom_len,
             homology,
-            args.refine,
+            args,
         )
         num_split += len(split_df) / 3
         num_paired += (2 * len(split_df) / 3) + len(nonsplit_df)
