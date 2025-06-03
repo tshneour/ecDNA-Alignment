@@ -2,11 +2,38 @@ import pandas as pd
 import pysam
 import re
 import argparse
-import numpy as np
 import os
 
+# import gzip
+import subprocess
 
-def get_pairs(regions, chrom1, chrom2):
+def check_strict(read1, read2, pos1, pos2, region_size, sup=None):
+    def overlaps_region(read, center, region_size):
+        region_start = center - region_size
+        region_end = center + region_size
+        return read.reference_start <= region_end and read.reference_end >= region_start
+
+    def overlaps_either_region(read):
+        return (overlaps_region(read, pos1, region_size) or
+                overlaps_region(read, pos2, region_size))
+
+    # Check reads overlap with one of either region
+    if sup is not None:
+        return (overlaps_either_region(read1) and
+                overlaps_either_region(read2) and
+                overlaps_either_region(sup))
+    else:
+        return (overlaps_either_region(read1) and
+                overlaps_either_region(read2))
+
+
+def rev_comp(dna):
+    complement = {"A": "T", "T": "A", "C": "G", "G": "C", "N": "N"}
+    reversed_dna = dna[::-1]
+    return "".join(complement[base] for base in reversed_dna)
+
+
+def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
     """
     Fetch all paired reads, including those with split alignments
 
@@ -26,8 +53,10 @@ def get_pairs(regions, chrom1, chrom2):
     for i, region in enumerate(regions):
         for aln in region:
             # If we've seen this read before, skip it
-            if aln.is_duplicate or any(aln in tup for tup in split_alignments) or any(
-                aln in tup for tup in nonsplit_alignments
+            if (
+                aln.is_duplicate
+                or any(aln in tup for tup in split_alignments)
+                or any(aln in tup for tup in nonsplit_alignments)
             ):
                 # print("Duplicate read or read already seen")
                 continue
@@ -41,6 +70,31 @@ def get_pairs(regions, chrom1, chrom2):
             except ValueError as e:
                 print(e)
                 continue
+
+            # Filter out unhelpful discordant pairs
+            if not aln.is_proper_pair and not (
+                aln.is_supplementary or aln.is_secondary or aln.has_tag("SA")
+            ):
+                if (
+                    i == 0
+                    and (
+                        not mate.reference_name == chrom2
+                        or not (
+                            break_pos2 - 500 < mate.reference_start
+                            and break_pos2 + 500 > mate.reference_start
+                        )
+                    )
+                ) or (
+                    i == 1
+                    and (
+                        not mate.reference_name == chrom1
+                        or not (
+                            break_pos1 - 500 < mate.reference_start
+                            and break_pos1 + 500 > mate.reference_start
+                        )
+                    )
+                ):
+                    continue
 
             if aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"):
                 sa_tag = (aln.get_tag("SA")).split(";")[:-1]
@@ -60,8 +114,16 @@ def get_pairs(regions, chrom1, chrom2):
                         and re.sub(r"[SH]", "", sup_read.cigarstring)
                         == re.sub(r"[SH]", "", sup_cigar)
                     ):
-                        non_sup = aln if not aln.is_supplementary and not aln.is_secondary else sup_read
-                        sup = aln if aln.is_supplementary or aln.is_secondary else sup_read
+                        non_sup = (
+                            aln
+                            if not aln.is_supplementary and not aln.is_secondary
+                            else sup_read
+                        )
+                        sup = (
+                            aln
+                            if aln.is_supplementary or aln.is_secondary
+                            else sup_read
+                        )
                         read1 = non_sup if non_sup.is_read1 else mate
                         read2 = non_sup if non_sup.is_read2 else mate
                         split_alignments.append((read1, sup, read2))
@@ -89,8 +151,16 @@ def get_pairs(regions, chrom1, chrom2):
                         and re.sub(r"[SH]", "", sup_read.cigarstring)
                         == re.sub(r"[SH]", "", sup_cigar)
                     ):
-                        non_sup = mate if not mate.is_supplementary and not mate.is_secondary else sup_read
-                        sup = mate if mate.is_supplementary or mate.is_secondary else sup_read
+                        non_sup = (
+                            mate
+                            if not mate.is_supplementary and not mate.is_secondary
+                            else sup_read
+                        )
+                        sup = (
+                            mate
+                            if mate.is_supplementary or mate.is_secondary
+                            else sup_read
+                        )
                         read1 = non_sup if non_sup.is_read1 else aln
                         read2 = non_sup if non_sup.is_read2 else aln
                         split_alignments.append((read1, sup, read2))
@@ -127,7 +197,7 @@ def fetch_alignments(
     orientation,
     hom_len,
     hom,
-    region_size,
+    args,
     mapq_threshold=15,
 ):
     """
@@ -140,7 +210,7 @@ def fetch_alignments(
     - pos1: int, first position in the genome.
     - chrom2: str, chromosome for the second position.
     - pos2: int, second position in the genome.
-    - region_size: int, the size of the region around the positions to fetch alignments from.
+    - args.refine: int, the size of the region around the positions to fetch alignments from.
     - mapq_threshold: int, cutoff for collecting reads above certain mapping quality.
 
     Returns:
@@ -150,19 +220,133 @@ def fetch_alignments(
     # Open the BAM file
     samfile = pysam.AlignmentFile(bamfile, "rb")
 
-    # Fetch alignments region_size away from both positions
-    region1 = samfile.fetch(chrom1, pos1 - region_size, pos1 + region_size + 1)
-    region2 = samfile.fetch(chrom2, pos2 - region_size, pos2 + region_size + 1)
+    # Fetch alignments args.refine away from both positions
+    # print(chrom1, pos1, args.refine)
+    region1 = samfile.fetch(chrom1, pos1 - args.refine, pos1 + args.refine + 1)
+    region2 = samfile.fetch(chrom2, pos2 - args.refine, pos2 + args.refine + 1)
 
     split_alignments, nonsplit_alignments = get_pairs(
-        [region1, region2], chrom1, chrom2
+        [region1, region2], chrom1, chrom2, pos1, pos2
     )
+
+    fast1_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_1.fastq"
+    fast2_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_2.fastq"
+    os.makedirs("fastq", exist_ok=True)
+    with open(fast1_name, "w") as fast1:
+        with open(fast2_name, "w") as fast2:
+            for pair in nonsplit_alignments:
+                read1, read2 = pair
+                fast1.write(
+                    "@"
+                    + read1.query_name
+                    + "\n"
+                    + (
+                        read1.query_sequence
+                        if read1.is_forward
+                        else rev_comp(read1.query_sequence)
+                    )
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read1.query_qualities
+                                    if read1.is_forward
+                                    else read1.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
+                fast2.write(
+                    "@"
+                    + read2.query_name
+                    + "\n"
+                    + (
+                        read2.query_sequence
+                        if read2.is_forward
+                        else rev_comp(read2.query_sequence)
+                    )
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read2.query_qualities
+                                    if read2.is_forward
+                                    else read2.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
+            for pair in split_alignments:
+                read1_1, read1_2, read2 = pair
+                fast1.write(
+                    "@"
+                    + read1_1.query_name
+                    + "\n"
+                    + (
+                        read1_1.query_sequence
+                        if read1_1.is_forward
+                        else rev_comp(read1_1.query_sequence)
+                    )
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read1_1.query_qualities
+                                    if read1_1.is_forward
+                                    else read1_1.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
+                fast2.write(
+                    "@"
+                    + read2.query_name
+                    + "\n"
+                    + (
+                        read2.query_sequence
+                        if read2.is_forward
+                        else rev_comp(read2.query_sequence)
+                    )
+                    + "\n"
+                    + "+\n"
+                    + "".join(
+                        list(
+                            map(
+                                lambda x: chr(x + 33),
+                                (
+                                    read2.query_qualities
+                                    if read2.is_forward
+                                    else read2.query_qualities[::-1]
+                                ),
+                            )
+                        )
+                    )
+                    + "\n"
+                )
+    subprocess.run(["gzip", fast1_name, "-f"])
+    subprocess.run(["gzip", fast2_name, "-f"])
 
     # Collect details of split alignments
     split_alignment_details = []
     for pair in split_alignments:
         read1_1, read1_2, read2 = pair
-
+        if args.strict and not check_strict(read1_1, read2, pos1, pos2, args.refine, sup=read1_2):
+            break
         # Filter out low quality reads
         if (
             (
@@ -187,9 +371,9 @@ def fetch_alignments(
                         "query_name": read.query_name,
                         "query_short": read.query_name.split(":")[-1],
                         "split": read.has_tag("SA"),
-                        "proper_pair": "Concordant"
-                        if read.is_proper_pair
-                        else "Discordant",
+                        "proper_pair": (
+                            "Concordant" if read.is_proper_pair else "Discordant"
+                        ),
                         "read_num": "1" if read.is_read1 else "2",
                         "query_chrom": read.reference_name,
                         "query_pos": read.reference_start + 1,
@@ -205,6 +389,8 @@ def fetch_alignments(
     nonsplit_alignment_details = []
     for pair in nonsplit_alignments:
         read1, read2 = pair
+        if args.strict and not check_strict(read1, read2, pos1, pos2, args.refine):
+            break
         # Filter out low quality reads
         if (
             read1.mapping_quality > mapq_threshold
@@ -226,9 +412,9 @@ def fetch_alignments(
                         "query_name": read.query_name,
                         "query_short": read.query_name.split(":")[-1],
                         "split": read.has_tag("SA"),
-                        "proper_pair": "Concordant"
-                        if read1.is_proper_pair
-                        else "Discordant",
+                        "proper_pair": (
+                            "Concordant" if read1.is_proper_pair else "Discordant"
+                        ),
                         "read_num": "1" if read.is_read1 else "2",
                         "query_chrom": read.reference_name,
                         "query_pos": read.reference_start + 1,
@@ -251,7 +437,9 @@ def fetch_alignments(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Collect reads from the ends of a SV for refinement.")
+    parser = argparse.ArgumentParser(
+        description="Collect reads from the ends of a SV for refinement."
+    )
     parser.add_argument(
         "refine",
         help="Radius of refinement region",
@@ -269,15 +457,27 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
-        "-v", "--verbose",
-        help="Include debug output",
-        action="store_true"
+        "-v", "--verbose", help="Include debug output", action="store_true"
     )
+    parser.add_argument(
+        "--strict",
+        help="Force collection of read pairs which fully align within the region of interest",
+        action="store_true",
+    )
+    parser.add_argument("-f", "--file", help="File to store alignments", type=str)
     args = parser.parse_args()
     # Define the BAM file and positions
     bamfile = args.bam
     samfile = pysam.AlignmentFile(bamfile, "rb")
-    df = pd.concat([pd.read_csv(os.path.join(args.sum, f), sep="\t") for f in os.listdir(args.sum) if ".tsv" in f], ignore_index=True)
+    # print(samfile.header)
+    df = pd.concat(
+        [
+            pd.read_csv(os.path.join(args.sum, f), sep="\t")
+            for f in os.listdir(args.sum)
+            if ".tsv" in f
+        ],
+        ignore_index=True,
+    )
     # Define output table
     output = pd.DataFrame()
     num_split = 0
@@ -296,6 +496,7 @@ if __name__ == "__main__":
         orientation = row["orientation"]
         hom_len = row["homology_length"]
         homology = row["homology_sequence"]
+        # print(chrom1, pos1, chrom2, pos2)
 
         # Fetch the DataFrames for split alignments and paired alignments
         split_df, nonsplit_df = fetch_alignments(
@@ -310,7 +511,7 @@ if __name__ == "__main__":
             orientation,
             hom_len,
             homology,
-            args.refine,
+            args,
         )
         num_split += len(split_df) / 3
         num_paired += (2 * len(split_df) / 3) + len(nonsplit_df)
@@ -324,7 +525,11 @@ if __name__ == "__main__":
         output = pd.concat([output, split_df], ignore_index=True)
         output = pd.concat([output, nonsplit_df], ignore_index=True)
 
-    output.to_csv("alignments.tsv", sep="\t", index=False)
+    output.to_csv(
+        args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
+        sep="\t",
+        index=False,
+    )
 
     if args.verbose:
         print("Total Number of split reads:", num_split)

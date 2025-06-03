@@ -1,0 +1,1576 @@
+___________________________________________________________________________________________________
+   left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0   371678  128930005    0.0  0.666667  0.666667            3              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                       rev_clipped                             query_aln_sub
+        4359        chr6     371678      33S41M           False           False AACAGCTACTCCACCAACTGCAGCAGCAACACC GGAGGAGTAGCAGCAGCAGCAGTTGCTGTAGCTGTGGCAGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match         rev_clipped                                                        query_aln_sub
+        4508        chr8  128929938       68M7S           False            True             GTAAGTT GCACAGCAGTGGCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+        4347        chr8  128929949      57M19S           False            True CAGCTACTGCAAGTAAGTT            GCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+   left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0   371658  128930005    0.0  0.666667  0.666667            3              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                           query_aln_sub
+        4915        chr6     371620      39M36S           False           False AGGAGCAGAAGATGGTGAAGGAGGAGAAGCAGCATC AGTAGTTGCAGTAGCTGTGGCAGGAGTAGAAGCAGCAGC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match         rev_clipped                                                        query_aln_sub
+        4508        chr8  128929938       68M7S           False            True             GTAAGTT GCACAGCAGTGGCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+        4347        chr8  128929949      57M19S           False            True CAGCTACTGCAAGTAAGTT            GCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+   left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0   371967  128930005    0.0    1.0      1.0            4              0            GTAAGTT
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match              rev_clipped                                            query_aln_sub
+        8229        chr6     371967      24S52M           False            True GTAAGTTTCTGCCAAAAGACGGCT     TTGCAGTAGCTGTGGCAGGAGGAGTAGCAGCAGTTGCAGTAGCTGTGGCAGG
+       10978        chr6     371967      20S56M           False            True     GTAAGTTTCTGCCAAAAGAC TTGCAGTAGCTGTGGCAGGAGGAGTAGCAGCAGTTGCAGTAGCTGTGGCAGGAGGA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match         rev_clipped                                                        query_aln_sub
+        4508        chr8  128929938       68M7S           False            True             GTAAGTT GCACAGCAGTGGCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+        4347        chr8  128929949      57M19S           False            True CAGCTACTGCAAGTAAGTT            GCTTGGCCGCCCCAACGCGCCTGCAGCCCGCTCTGGGGACAGCCGTCTTTTGGCAGA
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr6
+break_pos1              371970
+break_chrom2              chr8
+break_pos2           128929905
+AA_homology_seq            NaN
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+   left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0   382461  33428530    1.0    0.5      1.0            4              0       CA          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                            query_aln_sub
+        7922        chr6     382406      56M20S            True           False GTGAGTGAAAAGACCAGCCA CCTCTGCTTCAACCCTTCCCAGAACTCTGAAGGTTTGAGATGAAATGACTGAGCCA
+        1753        chr6     382406      56M18S            True           False   GTGAGTGAAAAGACCAGC CCTCTGCTTCAACCCTTCCCAGAACTCTGAAGGTTTGAGATGAAATGACTGAGCCA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                 rev_clipped                                               query_aln_sub
+       19678       chr16   33428472      59M17S            True            True           AGATGAAATGACTGAGC ATTTTGCCTTGTGTCCAGATGAGGTTTTTCACATTCTTGGCTGGTCTTTTCACTCACTG
+        8991       chr16   33428482      49M27S            True            True TGAAGGTTTGAGATGAAATGACTGAGC           GTGTCCAGATGAGGTTTTTCACATTCTTGGCTGGTCTTTTCACTCACTG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1             chr6
+break_pos1             382396
+break_chrom2            chr16
+break_pos2           33428530
+AA_homology_seq           NaN
+break_orientation          ++ 
+
+___________________________________________________________________________________________________
+    left_sv  right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  28381831  33431454    0.0  0.916667  0.916667           12              0           AGAATAAT
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                             rev_clipped                                                      query_aln_sub
+       11005       chr13   28381831      21S54M           False            True                   AGAATAATCTTTTGGAGGCTG             ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCTCTGCCTCCGGCTT
+       12566       chr13   28381831      10S66M           False            True                              AGAATAATCT ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCTCTGCCTCCGGCTTACAGACCATGCC
+        5889       chr13   28381831      39S37M           False           False AGAATAATCTTTTGGAGGCTGAGGCAGGTGGATATCCTT                              ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCACTCTT
+       11188       chr13   28381831      36S40M           False            True    AGAATAATCTTTTGGAGGCTGAGGCAGGTGGATAAC                           ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCC
+        6681       chr13   28381831      35S41M           False            True     AGAATAATCTTTTGGAGGCTGAGGCAGGTGGATAA                          ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCT
+        4875       chr13   28381831      25S51M           False            True               AGAATAATCTTTTGGAGGCTGAGGC                ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCTCTGCCTCCGG
+       12141       chr13   28381831      15S61M           False            True                         AGAATAATCTTTTGG      ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCTCTGCCTCCGGCTTACAGACC
+        7825       chr13   28381831      20S56M           False            True                    AGAATAATCTTTTGGAGGCT           ATCTTTGCATTGTTTTTCTTAGTGCGTGCTCTCTCTTCCCTCTGCCTCCGGCTTAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                                     query_aln_sub
+       11618       chr16   33431390      65M11S           False            True          GATAGAATAAT ACCATCTTGGCCACGCTGGTCTTGAACTCCTGACCTCGTTATCCACCTGCCTCAGCCTCCAAAAG
+       10625       chr16   33431399      56M20S           False            True CAATGCAAAGATAGAATAAT          GCCACGCTGGTCTTGAACTCCTGACCTCGTTATCCACCTGCCTCAGCCTCCAAAAG
+        9182       chr16   33431390      65M11S           False            True          GATAGAATAAT ACCATCTTGGCCACGCTGGTCTTGAACTCCTGACCTCGTTATCCACCTGCCTCAGCCTCCAAAAG
+        6511       chr16   33431391      64M12S           False            True         AGATAGAATAAT  CCATCTTGGCCACGCTGGTCTTGAACTCCTGACCTCGTTATCCACCTGCCTCAGCCTCCAAAAG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1            chr13
+break_pos1           28381831
+break_chrom2            chr16
+break_pos2           33431447
+AA_homology_seq           NaN
+break_orientation          -+ 
+
+___________________________________________________________________________________________________
+    left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  32371193  33368450    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                      query_aln_sub
+       15603       chr16   32371193      41S34M           False           False GTGGTTGTTTACTTTATTACTAACAAAGGGAGTTGCTGTAA GGAATTTAAACGGGGGGGGATGAACGAGGGGAGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                        rev_clipped                                                  query_aln_sub
+        2736       chr16   33368450      48S28M           False            True   GGGGGGGGTTTTTCCCGGGGGGTGGGCAATGTATGGCCGCCGCGGGGC                                   GGGGGAAGGAAGGAGGAAGAAAGAAAGA
+        9406       chr16   33368450      14S62M           False            True                                     CGCCCCCGCGGGCC GGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGGAGGACCAGGCACAGTGGCTCATGCCT
+        2148       chr16   33368450      50S26M           False            True CGGGGTGGGGTCATCATTGGGGGTTGGGCAATGTATGGGCGTCCCGGGTT                                     GGGGGAAGGAAGGAGGAAGAAAGAAA
+       17096       chr16   33368450      36S39M           False            True               TATTTTGGGGCGGGTAATGTAATGGCGTATCGGGGC                        GGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGGAGG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+    left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  32371193  33368442    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                      query_aln_sub
+       15603       chr16   32371193      41S34M           False           False GTGGTTGTTTACTTTATTACTAACAAAGGGAGTTGCTGTAA GGAATTTAAACGGGGGGGGATGAACGAGGGGAGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match     rev_clipped                                                           query_aln_sub
+        9836       chr16   33368442       6S70M           False            True          GATGAA  AGAGGGGAGGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGAAGGACCAGGCACAGTGGCTCACGCCT
+       17418       chr16   33368442      15S61M           False            True AAGGGGGGGGATGAA           AGAGGGGAGGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGAAGGACCAGGCACAGTGG
+       14559       chr16   33368442       6S70M           False            True          GATGAA  AGAGGGGAGGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGAAGGACCAGGCACAGTGGCTCACGCCT
+       13801       chr16   33368442       5S71M           False            True           ATGAA AGAGGGGAGGGGGAAGGAAGGAGGAAGAAAGAAAGAAGAAAAGAAGGACCAGGCACAGTGGCTCACGCCTG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+    left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  32371062  33368450    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match        rev_clipped                                              query_aln_sub
+        5471       chr16   32371007  5M2I51M18S           False           False AGAAGGTACTTGGGAGGG GTCTCAAAAAAAAAAAAAAAAATTAAATTAGCCAGACATGGTGGCATGCCCCTGTAGT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                        rev_clipped                                                  query_aln_sub
+        2736       chr16   33368450      48S28M           False            True   GGGGGGGGTTTTTCCCGGGGGGTGGGCAATGTATGGCCGCCGCGGGGC                                   GGGGGAAGGAAGGAGGAAGAAAGAAAGA
+        9406       chr16   33368450      14S62M           False            True                                     CGCCCCCGCGGGCC GGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGGAGGACCAGGCACAGTGGCTCATGCCT
+        2148       chr16   33368450      50S26M           False            True CGGGGTGGGGTCATCATTGGGGGTTGGGCAATGTATGGGCGTCCCGGGTT                                     GGGGGAAGGAAGGAGGAAGAAAGAAA
+       17096       chr16   33368450      36S39M           False            True               TATTTTGGGGCGGGTAATGTAATGGCGTATCGGGGC                        GGGGGAAGGAAGGAGGAAGAAAGAAAGAAGGAAAGGAGG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1            chr16
+break_pos1           32371235
+break_chrom2            chr16
+break_pos2           33368571
+AA_homology_seq           NaN
+break_orientation          +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  111274086  128533850    0.0    0.0      0.0           22              0                  A
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                         rev_clipped                                                      query_aln_sub
+       17151        chr3  111274086      39S37M           False           False             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       16993        chr3  111274086    41S33M1S           False           False          CAATATTATATAGCTTACCATTTATTTTTTTTTATTTTTTTT                                  TGTATGTATAGTTTTTTTTTACTCACATATGAA
+       10958        chr3  111274086      11S65M           False           False                                         AAAAAAATAAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTAATCAC
+       13800        chr3  111274086      47S28M           False           False     AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTA                                       TGTATGTATAGTTTTTATTTACTCACAT
+       17932        chr3  111274086      39S37M           False           False             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       19791        chr3  111274086      10S66M           False           False                                          AAAAAACATG TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+       18974        chr3  111274086      12S63M           False           False                                        AAAAAAATAAAA    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTC
+       19429        chr3  111274086      51S24M           False           False AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTAAGAC                                           TGTATGTATAGTTTTTATTTACTC
+        2288        chr3  111274086      11S64M           False           False                                         AAAAAAATAAA   TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCA
+       17588        chr3  111274086       9S66M           False           False                                           AAAAAAATA TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+        4781        chr3  111274086      13S62M           False           False                                       AAAAAAATAAAAA     TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACT
+       15728        chr3  111274086      10S65M           False           False                                          AAAAAAATAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCAC
+        1948        chr3  111274086      29S47M           False           False                       AAAAAAATAAAAAAAAATAAATGGTAAGC                    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAA
+        3172        chr3  111274086      32S43M           False           False                    AAAAAAATAAAAAAAAATAAATGGTAAGCTAT                        TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATAT
+        7134        chr3  111274086      18S58M           False           False                                  AAAAAAATAAAAAAAAAT         TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match               rev_clipped                                                            query_aln_sub
+       13154        chr8  128533798      53M22S           False           False    ACCAGCACGGCACATGTATACA                    AAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+        2696        chr8  128533790      61M15S           False           False           CGGCACATGTATACA            AATATTGTAAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+        3921        chr8  128533780       71M5S           False           False                     ATACA  ATTTATGGATAATATTGTAAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+        3023        chr8  128533779       72M4S           False           False                      TACA CATTTATGGATAATATTGTAAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+        3391        chr8  128533787      64M12S           False           False              CACATGTATACA         GATAATATTGTAAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+       13494        chr8  128533800      51M25S           False           False CGCACCAGCACGGCACATGTATACA                      AACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+        6284        chr8  128533798      53M22S           False           False    ACCAGCACGGCACATGTATACA                    AAAACTTAATGGAAAGACATTAAAGGAAATCTAAATAAATGGTAAGCTATATA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%   ins_%  total_%  total_reads  split_matches homology insertion
+0  111274086  128534005    0.0  0.0625   0.0625           16              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                         rev_clipped                                                      query_aln_sub
+       17151        chr3  111274086      39S37M           False           False             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       16993        chr3  111274086    41S33M1S           False           False          CAATATTATATAGCTTACCATTTATTTTTTTTTATTTTTTTT                                  TGTATGTATAGTTTTTTTTTACTCACATATGAA
+       10958        chr3  111274086      11S65M           False           False                                         AAAAAAATAAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTAATCAC
+       13800        chr3  111274086      47S28M           False           False     AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTA                                       TGTATGTATAGTTTTTATTTACTCACAT
+       17932        chr3  111274086      39S37M           False           False             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       19791        chr3  111274086      10S66M           False           False                                          AAAAAACATG TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+       18974        chr3  111274086      12S63M           False           False                                        AAAAAAATAAAA    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTC
+       19429        chr3  111274086      51S24M           False           False AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTAAGAC                                           TGTATGTATAGTTTTTATTTACTC
+        2288        chr3  111274086      11S64M           False           False                                         AAAAAAATAAA   TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCA
+       17588        chr3  111274086       9S66M           False           False                                           AAAAAAATA TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+        4781        chr3  111274086      13S62M           False           False                                       AAAAAAATAAAAA     TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACT
+       15728        chr3  111274086      10S65M           False           False                                          AAAAAAATAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCAC
+        1948        chr3  111274086      29S47M           False           False                       AAAAAAATAAAAAAAAATAAATGGTAAGC                    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAA
+        3172        chr3  111274086      32S43M           False           False                    AAAAAAATAAAAAAAAATAAATGGTAAGCTAT                        TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATAT
+        7134        chr3  111274086      18S58M           False           False                                  AAAAAAATAAAAAAAAAT         TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                            query_aln_sub
+       11062        chr8  128534005       4S72M           False            True        CATC CCTGAGGATGTAAATCAAAGTTATGGGACATCCCCAGTAGGATATCAATAACTGTTACAGAGATTTAGGGAT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology       insertion
+0  111274086  128533830    0.0   0.95     0.95           40              0        A  AAAAAAATAAAAAA
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                         rev_clipped                                                      query_aln_sub
+       17151        chr3  111274086      39S37M           False            True             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       16993        chr3  111274086    41S33M1S           False           False          CAATATTATATAGCTTACCATTTATTTTTTTTTATTTTTTTT                                  TGTATGTATAGTTTTTTTTTACTCACATATGAA
+       10958        chr3  111274086      11S65M           False            True                                         AAAAAAATAAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTAATCAC
+       13800        chr3  111274086      47S28M           False            True     AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTA                                       TGTATGTATAGTTTTTATTTACTCACAT
+       17932        chr3  111274086      39S37M           False            True             AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATAT                              TGTATGTATAGTTTTTATTTACTCACATATGAAGACT
+       19791        chr3  111274086      10S66M           False            True                                          AAAAAACATG TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+       18974        chr3  111274086      12S63M           False            True                                        AAAAAAATAAAA    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTC
+       19429        chr3  111274086      51S24M           False            True AAAAAAATAAAAAAAAATAAATGGTAAGCTATATAATATTGTAAGTAAGAC                                           TGTATGTATAGTTTTTATTTACTC
+        2288        chr3  111274086      11S64M           False            True                                         AAAAAAATAAA   TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCA
+       17588        chr3  111274086       9S66M           False            True                                           AAAAAAATA TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCACG
+        4781        chr3  111274086      13S62M           False            True                                       AAAAAAATAAAAA     TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACT
+       15728        chr3  111274086      10S65M           False            True                                          AAAAAAATAA  TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATTTACTCAC
+        1948        chr3  111274086      29S47M           False            True                       AAAAAAATAAAAAAAAATAAATGGTAAGC                    TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAA
+        3172        chr3  111274086      32S43M           False            True                    AAAAAAATAAAAAAAAATAAATGGTAAGCTAT                        TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATAT
+        7134        chr3  111274086      18S58M           False            True                                  AAAAAAATAAAAAAAAAT         TGTATGTATAGTTTTTATTTACTCACATATGAAGACTACATATATAATTTTTCATATT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                     rev_clipped                                                         query_aln_sub
+        4120        chr8  128533830      23S53M           False            True                         ATACATACAAAAAAAATAAAAAA                 AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGT
+        6639        chr8  128533830      37S39M           False            True           AGTAAATAAAAACTATACATACAAAAAAAATAAAAAA                               AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAG
+       13102        chr8  128533830      19S57M           False            True                             ATACAAAAAAAATAAAAAA             AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAAT
+       17734        chr8  128533830       8S68M           False            True                                        ATAAAAAA  AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAAAT
+        5723        chr8  128533830       6S69M           False            True                                          AAAAAA AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAAATA
+        3304        chr8  128533830       9S66M           False            True                                       AATAAAAAA    AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAA
+       15499        chr8  128533830      10S65M           False            True                                      AAATAAAAAA     AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCA
+       19881        chr8  128533830      20S55M           False            True                            CATACAAAAAAAATAAAAAA               AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGA
+       16798        chr8  128533830      32S44M           False            True                ATAAAAACTATACATACAAAAAAAATAAAAAA                          AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCT
+        1520        chr8  128533830      31S45M           False            True                 TAAAAACTATACATACAAAAAAAATAAAAAA                         AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTT
+        7331        chr8  128533830       3S68M           False            True                                             AAA  AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAAAT
+        4396        chr8  128533830       8S68M           False            True                                        ATAAAAAA  AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAAAT
+       13300        chr8  128533830       9S66M           False            True                                       AATAAAAAA    AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAA
+       16685        chr8  128533830      25S47M           False            True                       CTATACATACAAAAAAAATAAAAAA                       AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAA
+        4130        chr8  128533830      23S53M           False            True                         ATACATACAAAAAAAATAAAAAA                 AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGT
+       10393        chr8  128533830       9S66M           False            True                                       AATAAAAAA    AAATAAATGGTAAGCTGTATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAA
+        9051        chr8  128533830      39S37M           False            True         TGAGTAAATAAAAACTATACATACAAAAAAAATAAAAAA                                 AAATAAATGGTAAGCTATATAATATTGTAAGTAAGAC
+        6340        chr8  128533830      23S53M           False            True                         ATACATACAAAAAAAATAAAAAA                 AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGT
+       12002        chr8  128533830      23S53M           False            True                         ATACATACAAAAAAAATAAAAAA                 AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGT
+       16787        chr8  128533830      47S28M           False            True TTCATATGTGAGTAAATAAAAACTATACATACAAAAAAAATAAAAAA                                          AAATAAATGGTAAGCTATATAATATTGT
+       11416        chr8  128533830       7S68M           False            True                                         TAAAAAA  AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAAAT
+        4559        chr8  128533830      18S58M           False           False                              TGCAAAAAAAATAAAAAA            AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATT
+       16345        chr8  128533830      27S47M           False            True                     AACTATACATACAAAAAAAATAAAAAA                       AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAA
+       13340        chr8  128533830      19S57M           False            True                             ATACAAAAAAAATAAAAAA             AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAAT
+       14711        chr8  128533830       9S66M           False            True                                       AATAAAAAA    AAATAAATGGTAAGCTATATAATATTGTAAGTAAGACAGTATCTTAAAGATGTGAATTTTCCCCAA
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr3
+break_pos1           111274086
+break_chrom2              chr8
+break_pos2           128533830
+AA_homology_seq            NaN
+break_orientation           -- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127438256  130278379    0.0    0.5      0.5            2              0                  T
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match  rev_clipped                                                 query_aln_sub
+       14747        chr8  127438196      61M12S           False           False TATCTTAGGATG CTTTTTCCATGGATTTCTGGTCAAAGATATCAATTTAAAACATCAAGTTCTGGAGGAACAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                              query_aln_sub
+        5344        chr8  130278379       1S74M           False            True           T GTAGATCCTGAAGTAGCTGATGGGTTGAGGATGTGTGCTGTTTCCTGTACCCTGTAGTCGGTAGCCAGTCCTTC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127438256  130278184    0.0    0.9      0.9           10              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match  rev_clipped                                                 query_aln_sub
+       14747        chr8  127438196      61M12S           False           False TATCTTAGGATG CTTTTTCCATGGATTTCTGGTCAAAGATATCAATTTAAAACATCAAGTTCTGGAGGAACAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match        rev_clipped                                                             query_aln_sub
+        3051        chr8  130278184       6S68M           False            True             CCCTGG      TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTAT
+        3700        chr8  130278184       6S70M           False            True             CCCTGG    TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTA
+       17263        chr8  130278184      18S58M           False            True CAACCTCTGCCTCCCTGG                TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTC
+       13084        chr8  130278184       6S68M           False            True             CCCTGG      TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTAT
+       11514        chr8  130278184       3S73M           False            True                TGG TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTACCT
+        2341        chr8  130278184      15S59M           False            True    CCTCTGCCTCCCTGG               TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCG
+        8034        chr8  130278184      12S63M           False            True       CTGCCTCCCTGG           TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTT
+       10476        chr8  130278184       9S66M           False            True          CCTCCCTGG        TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGT
+        3192        chr8  130278184       3S73M           False            True                TGG TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTACCT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127437993  130278184    1.0    0.6      1.0           15              0   TTCAAG          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                            query_aln_sub
+       10289        chr8  127437993       9S66M            True           False   ATCACTAAT       CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGAC
+       11085        chr8  127437993       8S66M            True           False    ATCACTAA       CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGAC
+       19589        chr8  127437993       2S72M            True           False          AT CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGACAGAGCC
+       14186        chr8  127437993       2S72M            True           False          AT CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGACAGAGCC
+       10653        chr8  127437993       5S71M            True           False       ATCAC  CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGACAGAGC
+       11049        chr8  127437993       3S72M            True           False         ATC CTTGAACCAGGGAGGCAGAGGTTGCAGTGAGCAGAGATTGCACCACTGCACTCCAGCCTGGGTGACAGAGCC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match        rev_clipped                                                             query_aln_sub
+        3051        chr8  130278184       6S68M            True            True             CCCTGG      TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTAT
+        3700        chr8  130278184       6S70M            True            True             CCCTGG    TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTA
+       17263        chr8  130278184      18S58M            True            True CAACCTCTGCCTCCCTGG                TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTC
+       13084        chr8  130278184       6S68M            True            True             CCCTGG      TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTAT
+       11514        chr8  130278184       3S73M            True            True                TGG TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTACCT
+        2341        chr8  130278184      15S59M            True            True    CCTCTGCCTCCCTGG               TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCG
+        8034        chr8  130278184      12S63M            True            True       CTGCCTCCCTGG           TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTT
+       10476        chr8  130278184       9S66M            True            True          CCTCCCTGG        TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGT
+        3192        chr8  130278184       3S73M            True            True                TGG TTCAAGATCACTAATGCAATGCACACTAAACCAAGAGTCAGCTTGGTGGGGAGTTCTCGAGTTAGTATTACCT
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127437995
+break_chrom2              chr8
+break_pos2           130278184
+AA_homology_seq            NaN
+break_orientation           -- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127439239  128015741    0.0  0.923077  0.923077           13              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                        query_aln_sub
+        5602        chr8  127439239       8S68M           False           False    CTCCCCCC AAGAGAGGGAAAGAGAAACGCAGCAAAGAATCATGGCTCAGGGTAGTGGGATGTTCTGCTCTATGTCG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                           rev_clipped                                                            query_aln_sub
+        4978        chr8  128015741      20S56M           False            True                                  AACTGCGTCACCCCACCTAA                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+        8843        chr8  128015741      49S25M           False            True     TCCTCCCCCCACTCCACCCCCCCGGGGGGGACCCCCCTCTACACCAAAA                                                AAAAAAAAAAAAAAAAAAAAAAAGA
+       18032        chr8  128015741      20S56M           False            True                                  CAACCCCCCCCCCCCCAACT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       13966        chr8  128015741       4S72M           False            True                                                  AACA AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTTCCCTCC
+       17572        chr8  128015741      43S33M           False            True           CCCCACTGCACCCCACCCTGGGTGCCACCGCGCCACACCATCT                                        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACT
+       19073        chr8  128015741      25S51M           False            True                             GGGTTTCTTTGCTTTTTTTTATTTA                      AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCC
+       15164        chr8  128015741      50S26M           False            True    GTTATCACCCCACTGCAACCCACCCTGGGTTACACCGCCCCACCCCAACA                                               AAAAAAAAAAAAAAAAAAAAAAAGAA
+        4153        chr8  128015741      10S66M           False            True                                            CCCCAACCAA       AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTT
+       17952        chr8  128015741      29S47M           False            True                         CCCTGGGGGAACCCCCCAAACCCCAACAA                          AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAAT
+       10393        chr8  128015741      10S65M           False            True                                            TTTTCAATTT        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCC
+       19669        chr8  128015741      19S56M           False            True                                   TAATTTTTTTAATCCATTT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       10690        chr8  128015741    2S23M51S           False            True AAAAAAAAAAAAAAAAAAAAAAAAACAGGAAAAAAAGTACAATAATTTAATAA                                                  AAAAAAAAAAAAAAAAAAAAAAA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127438978  128015741    0.0  0.923077  0.923077           13              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match  rev_clipped                                                    query_aln_sub
+       16185        chr8  127438915      64M12S           False           False GAGGCTGAGATG CACGCCTTTAGAGCTGCCCCCGGTCACAAAACAAGCCCTTTCCAAGCCCTCCATAACTCCTCAG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                           rev_clipped                                                            query_aln_sub
+        4978        chr8  128015741      20S56M           False            True                                  AACTGCGTCACCCCACCTAA                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+        8843        chr8  128015741      49S25M           False            True     TCCTCCCCCCACTCCACCCCCCCGGGGGGGACCCCCCTCTACACCAAAA                                                AAAAAAAAAAAAAAAAAAAAAAAGA
+       18032        chr8  128015741      20S56M           False            True                                  CAACCCCCCCCCCCCCAACT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       13966        chr8  128015741       4S72M           False            True                                                  AACA AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTTCCCTCC
+       17572        chr8  128015741      43S33M           False            True           CCCCACTGCACCCCACCCTGGGTGCCACCGCGCCACACCATCT                                        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACT
+       19073        chr8  128015741      25S51M           False            True                             GGGTTTCTTTGCTTTTTTTTATTTA                      AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCC
+       15164        chr8  128015741      50S26M           False            True    GTTATCACCCCACTGCAACCCACCCTGGGTTACACCGCCCCACCCCAACA                                               AAAAAAAAAAAAAAAAAAAAAAAGAA
+        4153        chr8  128015741      10S66M           False            True                                            CCCCAACCAA       AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTT
+       17952        chr8  128015741      29S47M           False            True                         CCCTGGGGGAACCCCCCAAACCCCAACAA                          AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAAT
+       10393        chr8  128015741      10S65M           False            True                                            TTTTCAATTT        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCC
+       19669        chr8  128015741      19S56M           False            True                                   TAATTTTTTTAATCCATTT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       10690        chr8  128015741    2S23M51S           False            True AAAAAAAAAAAAAAAAAAAAAAAAACAGGAAAAAAAGTACAATAATTTAATAA                                                  AAAAAAAAAAAAAAAAAAAAAAA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127438775  128015741    0.0  0.923077  0.923077           13              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                           query_aln_sub
+        6317        chr8  127438775       5S71M           False           False       GGCGC GGGGGAACAGTACGGGGCGGGGCAAGTTATCCCTCACCTACCCCACATGCAATCGTAATCTAAATGCAGAA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                           rev_clipped                                                            query_aln_sub
+        4978        chr8  128015741      20S56M           False            True                                  AACTGCGTCACCCCACCTAA                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+        8843        chr8  128015741      49S25M           False            True     TCCTCCCCCCACTCCACCCCCCCGGGGGGGACCCCCCTCTACACCAAAA                                                AAAAAAAAAAAAAAAAAAAAAAAGA
+       18032        chr8  128015741      20S56M           False            True                                  CAACCCCCCCCCCCCCAACT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       13966        chr8  128015741       4S72M           False            True                                                  AACA AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTTCCCTCC
+       17572        chr8  128015741      43S33M           False            True           CCCCACTGCACCCCACCCTGGGTGCCACCGCGCCACACCATCT                                        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACT
+       19073        chr8  128015741      25S51M           False            True                             GGGTTTCTTTGCTTTTTTTTATTTA                      AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCC
+       15164        chr8  128015741      50S26M           False            True    GTTATCACCCCACTGCAACCCACCCTGGGTTACACCGCCCCACCCCAACA                                               AAAAAAAAAAAAAAAAAAAAAAAGAA
+        4153        chr8  128015741      10S66M           False            True                                            CCCCAACCAA       AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCTT
+       17952        chr8  128015741      29S47M           False            True                         CCCTGGGGGAACCCCCCAAACCCCAACAA                          AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAAT
+       10393        chr8  128015741      10S65M           False            True                                            TTTTCAATTT        AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATTGGAGGAGCC
+       19669        chr8  128015741      19S56M           False            True                                   TAATTTTTTTAATCCATTT                 AAAAAAAAAAAAAAAAAAAAAAAGAACCTGACTAAAAGTTCCATAATTTCCTAATT
+       10690        chr8  128015741    2S23M51S           False            True AAAAAAAAAAAAAAAAAAAAAAAAACAGGAAAAAAAGTACAATAATTTAATAA                                                  AAAAAAAAAAAAAAAAAAAAAAA
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127438979
+break_chrom2              chr8
+break_pos2           128015731
+AA_homology_seq            NaN
+break_orientation           +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127565466  128420719    0.0    0.0      0.0            5              1                  A
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                          query_aln_sub
+        2126        chr8  127565466      41H34M           False           False                                             ACTTTAAATTAAATGTGAAATAAAAGCTACAAAA
+       16040        chr8  127565466      23S52M           False           False AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        9953        chr8  127565466      23S52M           False           False AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        7539        chr8  127565466      20S54M           False           False    AAAGTTACATCTTCCACTGC ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAATAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                           query_aln_sub
+       14759        chr8  128420719       5S71M           False           False       AAATA CTCTGAGCCTGAGTTTCCTCCTTGGTAAAATATACCTCCAACATATAATGTTGTTGTGATAATTAAGTAAT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127565466  128420937    0.0    0.2      0.2            5              1        T          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                          query_aln_sub
+        2126        chr8  127565466      41H34M           False           False                                             ACTTTAAATTAAATGTGAAATAAAAGCTACAAAA
+       16040        chr8  127565466      23S52M           False           False AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        9953        chr8  127565466      23S52M           False           False AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        7539        chr8  127565466      20S54M           False           False    AAAGTTACATCTTCCACTGC ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAATAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match       rev_clipped                                               query_aln_sub
+       11678        chr8  128420879      59M17S           False            True GGCTTTGTTGACGCTTG CTGCTTTTCAGCCCTCTGCTCCACATTACCAGCAATGAGCACAATTCAGAGAGAGAAAA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv     hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127565466  128421048  0.111111    1.0      1.0            9              2     AAGT         A
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                          query_aln_sub
+        2126        chr8  127565466      41H34M            True            True                                             ACTTTAAATTAAATGTGAAATAAAAGCTACAAAA
+       16040        chr8  127565466      23S52M           False            True AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        9953        chr8  127565466      23S52M           False            True AAAGTTACATCTTCCACTGCAGT   ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAAT
+        7539        chr8  127565466      20S54M           False            True    AAAGTTACATCTTCCACTGC ACTTTAAATTAAATGTGAAATAAAAGCTACAAAAAGTATGAGTTCTTTCAATAC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                    rev_clipped                                              query_aln_sub
+        2126        chr8  128421009      40M35S           False            True            TTTTGTAGCTTTTATTTCACATTTAATTTAAAGTA                   AGGGCACGTTTGAGGCTGACTGCAGTGGAAGATGTAACTT
+        9626        chr8  128421006      43M30S           False            True                 TAGCTTTTATTTCACATTTAATTTAAAGTA                TATAGGGCACGTTTGAGGCTGACTGCAGTGGAAGATGTAACTT
+       10972        chr8  128420992      57M18S           False            True                             CACATTTAATTTAAAGTA  TTCCAGCAGTTTCTTATAGGGCACGTTTGAGGCTGACTGCAGTGGAAGATGTAACTT
+       11612        chr8  128421020      29M46S           False            True GAACTCATACTTTTTGTAGCTTTTATTTCACATTTAATTTAAAGTA                              GAGGCTGACTGCAGTGGAAGATGTAACTT
+       17123        chr8  128420991      58M17S           False            True                              ACATTTAATTTAAAGTA TTTCCAGCAGTTTCTTATAGGGCACGTTTGAGGCTGACTGCAGTGGAAGATGTAACTT
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127565466
+break_chrom2              chr8
+break_pos2           128421048
+AA_homology_seq              T
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+     left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127637996  28549945    0.0    0.0      0.0            4              0                 AT
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                           query_aln_sub
+        2401        chr8  127637996       4S71M           False           False        ATAT AGAGAATATATATATTATATATATAGAGAGAATATATATATTATATATAGAGAGAGAATATATATATTATA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                                          query_aln_sub
+       18790       chr13   28549876       70M5S           False           False                CAGAT GTCCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+        4336       chr13   28549878       68M8S           False           False             TTCCAGAT   CCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+       12168       chr13   28549890      56M20S           False           False CTCATCAGGGTCTTCCAGAT               AGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127638072  28549945    0.0    0.6      0.6            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                             query_aln_sub
+        7696        chr8  127638000       73M3S           False           False         GAG AATATATATATTATATATATAGAGAGAATATATATATTATATATAGAGAGAGAATATATATATTATATATATA
+        6866        chr8  127638003       70M3S           False           False         GAG    ATATATATTATATATATAGAGAGAATATATATATTATATATAGAGAGAGAATATATATATTATATATATA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                                          query_aln_sub
+       18790       chr13   28549876       70M5S           False            True                CAGAT GTCCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+        4336       chr13   28549878       68M8S           False            True             TTCCAGAT   CCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+       12168       chr13   28549890      56M20S           False            True CTCATCAGGGTCTTCCAGAT               AGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv  right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127638303  28549945    0.0    1.0      1.0            6              0        G        AT
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match               rev_clipped                                                            query_aln_sub
+        6148        chr8  127638303      25S51M           False            True ATGCCGCGTGGACCCTAGCTTGCGC                      CTGGAAGACCCTGATGAGCAATACAAGCTGTTAAAATGTACAGTCCAATGG
+       15277        chr8  127638303       4S72M           False            True                      ATGC CTGGAAGACCCTGATGAGCAATACAAGCTGTTAAAATGTACAGTCCAATGGCTTGTACAGAGTTGTGCAACC
+       13354        chr8  127638303      11S64M           False            True               ATGCCGCGTGG         CTGGAAGACCCTGATGAGCAATACAAGCTGTTAAAATGTACAGTCCAATGGCTTGTACAGAGTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                                          query_aln_sub
+       18790       chr13   28549876       70M5S           False            True                CAGAT GTCCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+        4336       chr13   28549878       68M8S           False            True             TTCCAGAT   CCTTCCCTGAGCAGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+       12168       chr13   28549890      56M20S           False            True CTCATCAGGGTCTTCCAGAT               AGCCGGGCCTAGAGTCAAGGCGCGATGATTGCCGCGCAAGCTAGGGTCCACGCGGC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127638303
+break_chrom2             chr13
+break_pos2            28549943
+AA_homology_seq            NaN
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127649448  128147614    0.0   0.75     0.75            4              0        T          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                          query_aln_sub
+       15699        chr8  127649379       70M6S           False           False      GGTGGG ACTTCAGTTAATTGTTCAGTAAAGTCTATTTGCCATGTTTTACAATACTTTTAGTATTGTTCAATTATTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                              rev_clipped                       query_aln_sub
+        8256        chr8  128147614      40S35M           False            True                 ATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+       18391        chr8  128147614      56S20M           False            True AATTGTGCAGCTTCAGATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC                TGCAAGTAAGTTTCAGACCC
+       11398        chr8  128147614      39S35M           False            True                  TACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127649139  128147614    0.0   0.75     0.75            4              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match       rev_clipped                                               query_aln_sub
+       11475        chr8  127649081      59M17S           False           False TGGAAATTAAAAATAAA GAACTATGAGCCCTTTGTACAGATAGAAACTGAGAATACACTGCCAACCCAAATAAAAA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                              rev_clipped                       query_aln_sub
+        8256        chr8  128147614      40S35M           False            True                 ATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+       18391        chr8  128147614      56S20M           False            True AATTGTGCAGCTTCAGATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC                TGCAAGTAAGTTTCAGACCC
+       11398        chr8  128147614      39S35M           False            True                  TACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology             insertion
+0  127649271  128147614    0.0    1.0      1.0           13              0        T  ACTCCTCCTGCCACAGCTAC
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                                                              query_aln_sub
+        3924        chr8  127649237      35M41S           False            True ACTCCTCCTGCCACAGCTACTGCAAGTAAGTTTCAGACCCT                                        ATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+       19374        chr8  127649208      64M12S           False            True                              ACTCCTCCTGCC           ACTTTTTGGAGAAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+       13538        chr8  127649216      56M20S           False            True                      ACTCCTCCTGCCACAGCTAC                   GAGAAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+        9062        chr8  127649229      43M33S           False            True         ACTCCTCCTGCCACAGCTACTGCAAGTAAGTTT                                GAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+        8255        chr8  127649206      66M10S           False            True                                ACTCCTCCTG         GAACTTTTTGGAGAAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+        9183        chr8  127649232      40M36S           False            True      ACTCCTCCTGCCACAGCTACTGCAAGTAAGTTTCAG                                   GAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+       17720        chr8  127649198       74M2S           False            True                                        AC CATTAAAAGAACTTTTTGGAGAAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+        7422        chr8  127649209      63M12S           False            True                              ACTCCTCCTGCC            CTTTTTGGAGAAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+       14737        chr8  127649219      53M23S           False            True                   ACTCCTCCTGCCACAGCTACTGC                      AAGGTAAAAAGAAGAGGAATTGTGCAGCTTCAGATACCCCATCTCACTGAGCT
+        3671        chr8  127649225      47M28S           False            True              ACTCCTCCTGCCACAGCTACTGCAAGTA                            AAAAGAAGAGGAATTGTGCGGCTTCAGATACCCCATCTCACTGAGCT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                              rev_clipped                       query_aln_sub
+        8256        chr8  128147614      40S35M           False            True                 ATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+       18391        chr8  128147614      56S20M           False            True AATTGTGCAGCTTCAGATACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC                TGCAAGTAAGTTTCAGACCC
+       11398        chr8  128147614      39S35M           False            True                  TACCCCATCTCACTGAGCTACTCCTCCTGCCACAGCTAC TGCAAGTAAGTTTCAGACCCTTCACAGTTCTTGAC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127649271
+break_chrom2              chr8
+break_pos2           128147616
+AA_homology_seq            NaN
+break_orientation           +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127674566  127677273    0.0  0.666667  0.666667            3              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                          query_aln_sub
+        7465        chr2  127674566       6S70M           False           False      CGGGGG GGGCCCCTTCGCTTTAAAATGGGACAGCTCAGTGGTGGCACTCGCACTGCAGACTCCCCGTAGGAACAGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                    rev_clipped                                                       query_aln_sub
+        7465        chr2  127677273      30S46M           False            True ACACCCTCAAAAGGTTACTGGCATAGTAAG                      TCCCAATCTGTACTATCAAGGCTGGAAGGCAATGAGGAAATATCTT
+       14675        chr2  127677273       9S67M           False            True                      CATAGTAAG TCCCAATCTGTACTATCAAGGCTGGAAGGCAATGAGGAAATATCTTCAAATTTTCTTGGGGGAAATA
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr2
+break_pos1           127674680
+break_chrom2              chr2
+break_pos2           127677273
+AA_homology_seq            NaN
+break_orientation           +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127696961  128156452    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                      query_aln_sub
+        4296        chr8  127696961    5S34M36S           False           False ATATTAGACAGTGGAGGATGGTACTCATTCTGGTTATGCAA AGACAGTGGAGGATGGTACTCATTCTGGTTATGC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                       query_aln_sub
+        5584        chr8  128156385  32M1D35M9S           False            True                            GGAGTCCAT AACAAAAAGAATCAGCAATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAACCAAAAAAATTATTT
+       17426        chr8  128156402 15M1D35M23S           False            True              TTGTCTTTTCTAATTGTTTCCAT                  ATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAACCAAAAAAATTATTT
+        1416        chr8  128156409  8M1D35M33S           False            True    GTTTATTGCTTGGTCTGTGATAATTGCCCTCAT                         AAAGAACCAAAAAAAAAAAAAAAAAAAACCATAAAAATTATTT
+        1842        chr8  128156413      40M36S           False            True GGTTTTGTTTTCATGGTCTTTTTTAATGGCTTACAC                            AACCAAAAAAAAAAAAAAAAAAAAACAAAAAAAATTATTT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127696961  128156436    0.0  0.833333  0.833333            6              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                      query_aln_sub
+        4296        chr8  127696961    5S34M36S           False           False ATATTAGACAGTGGAGGATGGTACTCATTCTGGTTATGCAA AGACAGTGGAGGATGGTACTCATTCTGGTTATGC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                     rev_clipped                                                         query_aln_sub
+        8780        chr8  128156368       69M6S           False            True                                          TTTTGG CAGACTCTGAAAAACAAAACAAAAAGAATCAGCAATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAA
+       15684        chr8  128156380      57M18S           False            True                              AATTAAATATTTTTTTTG             AACAAAACAAAAAGAATCAGCAATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAA
+        2043        chr8  128156382      55M21S           False            True                           GGCCACAAAAAATTTTTTATG               CAAAACAAAAAGAATCAGCAATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAA
+       10887        chr8  128156385      52M24S           False            True                        GGCTGCCACAAATAATTTTTTTTG                  AACAAAAAGAATCAGCAATGTTTCAAAGAACCAAAAAAAAAAAAAAAAAAAA
+        5529        chr8  128156409      28M47S           False            True TTTTTTTCCTTGCCTGCCCCAATTGCCGCAACAAAAAAATTTTATTG                                          AAAGAACCAAAAAAAAAAAAAAAAAAAA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127697137  128156438    0.5    1.0      1.0            2              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                              query_aln_sub
+        4296        chr8  127697064       74M2S            True            True          GT GTTTCTGTTCTCCCACACAAATAGTCTGGGGCAGCATCTTGGCAGCATAGAATTCATTTTTTGACCCAGTCATT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                        rev_clipped              query_aln_sub
+       15442        chr8  128156413      26M50S           False            True GGTTTTTTTTGCTTGTTCTGTTTTAATTGTTGTCACAAAAAATTTTTTTT AACCAAAAAAAAAAAAAAAAAAAAAC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127696903
+break_chrom2              chr8
+break_pos2           128156592
+AA_homology_seq            NaN
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127705613  128838261    0.0  0.857143  0.857143            7              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                query_aln_sub
+        2159        chr8  127705613      32S44M           False           False AAAAGTTTTGAATAAAAGTAACCATTGAACAT CCCAACCCCAAGAGAAAGAAGCAGAGATGAGATGTGGAGGTTTC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                                        query_aln_sub
+        3704        chr8  128838261       8S68M           False            True                                         CCCTTTTT TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCAGTTTCGAA
+       17343        chr8  128838261      24S51M           False            True                         GTTTTTGCCACCAATCCCCCCTTT                  TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTG
+        2123        chr8  128838261      19S57M           False            True                              GTTCCCCCATTACCCTTTT            TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGATGTCTTGTTATGTTGCCCAGG
+        8897        chr8  128838261      16S60M           False            True                                 CCCATTCCCCTTTTTT         TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCA
+       20044        chr8  128838261      38S37M           False            True           TGTTGGGTTTTATTTTGTTTGTCACCTTTTCCTTTTTT                                TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAG
+       17733        chr8  128838261      48S27M           False            True CCTTCCTCTTTGGGGGGGTTTACTCCGTTGTGCCCCCATTCCCCCTTT                                          TTTTTTTTTTTTTTTTTTTTTTGATAG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127705338  128838261    0.0  0.857143  0.857143            7              0        T          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                     query_aln_sub
+       16606        chr8  127705338      11S65M           False           False AAAAAAAGATG ATTGTTTTGTCCCGAACTACTTCTATTTGTTTATTGTGGCAACTTCTGGTCTGAGGACTTCTGCT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                                        query_aln_sub
+        3704        chr8  128838261       8S68M           False            True                                         CCCTTTTT TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCAGTTTCGAA
+       17343        chr8  128838261      24S51M           False            True                         GTTTTTGCCACCAATCCCCCCTTT                  TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTG
+        2123        chr8  128838261      19S57M           False            True                              GTTCCCCCATTACCCTTTT            TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGATGTCTTGTTATGTTGCCCAGG
+        8897        chr8  128838261      16S60M           False            True                                 CCCATTCCCCTTTTTT         TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCA
+       20044        chr8  128838261      38S37M           False            True           TGTTGGGTTTTATTTTGTTTGTCACCTTTTCCTTTTTT                                TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAG
+       17733        chr8  128838261      48S27M           False            True CCTTCCTCTTTGGGGGGGTTTACTCCGTTGTGCCCCCATTCCCCCTTT                                          TTTTTTTTTTTTTTTTTTTTTTGATAG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127705655  128838111    1.0   0.75      1.0            4              2      TTT          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match          rev_clipped                                            query_aln_sub
+        7026        chr8  127705621      35M41H            True            True                                           CAAGAGAAAGAAGCAGAGATGAGATGTGGAGGTTT
+       10946        chr8  127705600      56M20S            True           False TGAGATGGGGTCTTACTCTG AGACAAATGATGACCCAACCCCAAGAGAAAGAAGCAGAGATGAGATGTGGAGGTTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                           query_aln_sub
+        7026        chr8  128838111      32S44M            True            True CAAGAGAAAGAAGCAGAGATGAGATGTGGAGG            TTTTGAGATGGGGTCTTACTCTGTTGCCCAAGCTGGAGTGCAGT
+       13790        chr8  128838111      21S55M            True            True            AGCAGAGATGAGATGTGGAGG TTTTGAGATGGGGTCTTACTCTGTTGCCCAAGCTGGAGTGCAGTCGCACAATCAT
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127705655
+break_chrom2              chr8
+break_pos2           128838111
+AA_homology_seq            TTT
+break_orientation           +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127706570  128762528    0.0  0.333333  0.333333           15              4                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                           rev_clipped                                                      query_aln_sub
+       17087        chr8  127706570      37S39M           False           False AGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGAT                            GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGAC
+        4151        chr8  127706570      41H35M           False           False                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+       15610        chr8  127706570      41H35M           False           False                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+        1486        chr8  127706570      35S40M           False           False   AGTTCACAGCAGCCTCAACCTCCTAGGCTCAAATG                           GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACA
+       10345        chr8  127706570      10S66M           False           False                            AGTTCACTGC GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        6492        chr8  127706570       8S66M           False           False                              AGTTCACT GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        4664        chr8  127706570      23S52M           False           False               AGTTCACTGCAGCCTCAACCTCC               GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGC
+       10334        chr8  127706570      22S54M           False           False                AGTTCACTGCAGCCTCAACCTC             GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCAT
+       18295        chr8  127706570      16S59M           False           False                      AGTTCACTGCAGCCTC        GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAG
+        7781        chr8  127706570      24S50M           False           False              AGTTCACTGCAGCCTCAACCTCCT                 GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                                          query_aln_sub
+       19814        chr8  128762463       66M8S           False            True                ACACAATC     TCCTTCATTCCTTTTTTGCTTCCTTCCCTTCCCTTCCCTTCCTTCCTTGCTTCCTTCCTTCCTTCC
+       10146        chr8  128762459       70M4S           False            True                    TATC TTCTTCCTTCATTCCTTTTTTCCTTCCTTCCCTTCCCTTCCCTTCCTTCCTTCCTTCCTTCCTTCCTTCC
+        3430        chr8  128762467      62M12S           False            True            TGAGACACTATC         TCATTCCTTTTTTCCTTCCTTCCCTTCCCTTCCCTTCCTTCCTTCCTTCCTTCCTTCCTTCC
+        1098        chr8  128762464      65M11S           False            True             GAGACACTATC      CCTTCATTCCTTTTTTCCTTCCTTCCCTTCCCTTCCCTTCCTTCCTTCCTTCCTTCCTTCCTTCC
+        8618        chr8  128762476      53M23S           False            True GGGTGGCAGAGTGAGACACTATC                  TTTTCCTTCCTTCCCTTCCCTTCCCTTCCTTCCTTCCTTCCTTCCTTCCTTCC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  127706570  128762523    0.0  0.333333  0.333333           15              4       CC          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                           rev_clipped                                                      query_aln_sub
+       17087        chr8  127706570      37S39M           False           False AGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGAT                            GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGAC
+        4151        chr8  127706570      41H35M           False           False                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+       15610        chr8  127706570      41H35M           False           False                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+        1486        chr8  127706570      35S40M           False           False   AGTTCACAGCAGCCTCAACCTCCTAGGCTCAAATG                           GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACA
+       10345        chr8  127706570      10S66M           False           False                            AGTTCACTGC GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        6492        chr8  127706570       8S66M           False           False                              AGTTCACT GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        4664        chr8  127706570      23S52M           False           False               AGTTCACTGCAGCCTCAACCTCC               GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGC
+       10334        chr8  127706570      22S54M           False           False                AGTTCACTGCAGCCTCAACCTC             GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCAT
+       18295        chr8  127706570      16S59M           False           False                      AGTTCACTGCAGCCTC        GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAG
+        7781        chr8  127706570      24S50M           False           False              AGTTCACTGCAGCCTCAACCTCCT                 GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match     rev_clipped                                                          query_aln_sub
+        4809        chr8  128762523      11S64M           False            True     CCCTTCCCTTC       CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCGATAGTGTCTCACTCTGCCACCCAGGCTGGAGTG
+        6353        chr8  128762523       6S70M           False            True          CCCTTC CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCGATAGTGTCTCACTCTGCCACCCAGGCTGGAGTGCAATGC
+       19999        chr8  128762523       6S70M           False            True          CCCTTC CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCGATAGTGTCTCACTCTGCCACCCAGGCTGGAGTGCAATGT
+       12983        chr8  128762523      15S60M           False            True CCTTCCCTTCCCTTC           CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCGATAGTGTCTCACTCTGCCACCCAGGCTGG
+       13494        chr8  128762523      10S65M           False            True      CCTTCCCTTC      CCTTCCTTCCTTCCTTCCTTCCTTCCTTCCGATAGTGTCTCACTCTGCCACCCAGGCTGGAGTGC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127706570  128762601   0.95    0.6     0.95           20              8        C          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                           rev_clipped                                                      query_aln_sub
+       17087        chr8  127706570      37S39M            True           False AGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGAT                            GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGAC
+        4151        chr8  127706570      41H35M            True            True                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+       15610        chr8  127706570      41H35M            True            True                                                                      GGAATTATGGGAGTTACAGGATGAGATTTGGGTGG
+        1486        chr8  127706570      35S40M           False           False   AGTTCACAGCAGCCTCAACCTCCTAGGCTCAAATG                           GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACA
+       10345        chr8  127706570      10S66M            True           False                            AGTTCACTGC GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        6492        chr8  127706570       8S66M            True           False                              AGTTCACT GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAGCAATTTT
+        4664        chr8  127706570      23S52M            True           False               AGTTCACTGCAGCCTCAACCTCC               GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGC
+       10334        chr8  127706570      22S54M            True           False                AGTTCACTGCAGCCTCAACCTC             GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCAT
+       18295        chr8  127706570      16S59M            True           False                      AGTTCACTGCAGCCTC        GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAGGCATATCAG
+        7781        chr8  127706570      24S50M            True           False              AGTTCACTGCAGCCTCAACCTCCT                 GGAATTATGGGAGTTACAGGATGAGATTTGGGTGGGGACACAGAGCGAAG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                        rev_clipped                                                           query_aln_sub
+       17087        chr8  128762601      38H38M            True            True                                                                     CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGAT
+        4151        chr8  128762601      34S42M            True            True CCACCCAAATCTCATCCTGTAACTCCCATAATTC                              CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTC
+       15610        chr8  128762601      34S42M            True            True CCACCCAAATCTCATCCTGTAACTCCCATAATTC                              CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTC
+        1486        chr8  128762601      39H36M            True            True                                                                       CAGTTCACAGCAGCCTCAACCTCCTAGGCTCAAATG
+        5383        chr8  128762601      16S60M            True            True                   GTAACTCCCATAATTC            CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTCAGTCTCCCTAG
+       17292        chr8  128762601       5S71M            True            True                              AATTC CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTCAGTCTCCCTAGCTAGGACTACA
+       16922        chr8  128762601      13S63M            True            True                      ACTCCCATAATTC         CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTCAGTCTCCCTAGCTA
+       10451        chr8  128762601      16S59M            True            True                   GTAACTCCCATAATTC             CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTCAGTCTCCCTA
+        3564        chr8  128762601      26S49M            True            True         ATCTCATCCTGTAACTCCCATAATTC                       CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTC
+       16681        chr8  128762601      27S49M            True            True        AATCTCATCCTGTAACTCCCATAATTC                       CAGTTCACTGCAGCCTCAACCTCCTAGGCTCAAATGATCCTCCCACCTC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127706570
+break_chrom2              chr8
+break_pos2           128762601
+AA_homology_seq              C
+break_orientation           -- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991818  128071624    0.0    0.8      0.8            5              0        C          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                      query_aln_sub
+        6985        chr8  127991818 10S26M10D40M           False           False  AAAGCAGGGG GCACCTCCTCAATGTCCCACCTGGTCTTTTTTTTTTTTTTTTTTTGAGACGGAGTCTCGCTCTGTC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match      rev_clipped                                                      query_aln_sub
+       12605        chr8  128071560      65M11S           False            True      AGACGGAGTCT  ATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       20069        chr8  128071561      64M12S           False            True     GAGACGGAGTCT   TTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       18230        chr8  128071559       66M9S           False            True        ACGGAGTCT AATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       17756        chr8  128071566      59M16S           False            True TTTTGAGACGGAGTCT        ATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991799  128071624    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match  rev_clipped                                                    query_aln_sub
+        3056        chr8  127991799     3S64M9S           False           False GTTATATCTAAC ATATCTAACCCCCTGCTGTTCACCTCCTCAATTTCCCAAATGCTCTTTTTTTTTTTTTTTTTTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match      rev_clipped                                                      query_aln_sub
+       12605        chr8  128071560      65M11S           False            True      AGACGGAGTCT  ATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       20069        chr8  128071561      64M12S           False            True     GAGACGGAGTCT   TTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       18230        chr8  128071559       66M9S           False            True        ACGGAGTCT AATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       17756        chr8  128071566      59M16S           False            True TTTTGAGACGGAGTCT        ATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991794  128071624    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                         query_aln_sub
+        3052        chr8  127991794 4S46M2D23M1S           False           False       ATTTG GGCTCAAATCTAACCACCTGCTTTTCACCTCCTCAATTTCCCACATTCTTTTTTTTTTTTTTTTTTTTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match      rev_clipped                                                      query_aln_sub
+       12605        chr8  128071560      65M11S           False            True      AGACGGAGTCT  ATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       20069        chr8  128071561      64M12S           False            True     GAGACGGAGTCT   TTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       18230        chr8  128071559       66M9S           False            True        ACGGAGTCT AATTATTATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+       17756        chr8  128071566      59M16S           False            True TTTTGAGACGGAGTCT        ATATATTTTTGTTATAAAACAGTCACAAATGTCCACAATGCATCGTAGTATATGAAATG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127991863
+break_chrom2              chr8
+break_pos2           128071624
+AA_homology_seq            NaN
+break_orientation           ++ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991851  128951508    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                        query_aln_sub
+        6273        chr8  127991851    18S52M5S           False           False CATCATTGTCCCACATTGTTTTT TTTTTTTTTTTTTTTTTTTTTTGAGACGGAGTCTCGCTCTGTCGCCCAGGCT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                     rev_clipped                                                            query_aln_sub
+       14908        chr8  128951508      22S54M           False            True          GGGATCAGAGGTCAGAGTCTGT                   GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGC
+        1242        chr8  128951508      31S45M           False            True CGTGGCGGGTGGTTGAGTGGTCAGAGTCTGT                            GCCCTGTACCCTGATATGGGATGGTTAAGGCACACTGGCTTCATG
+        3287        chr8  128951508       2S72M           False            True                              GT GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGCCTACGACCGCAGATGGAG
+       18123        chr8  128951508      24S52M           False            True        GGTGGATCAGAGGTCAGAGTCTGT                     GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991818  128951508    0.2    0.8      0.8            5              0       GC          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                      query_aln_sub
+        6985        chr8  127991818 10S26M10D40M           False           False  AAAGCAGGGG GCACCTCCTCAATGTCCCACCTGGTCTTTTTTTTTTTTTTTTTTTGAGACGGAGTCTCGCTCTGTC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                     rev_clipped                                                            query_aln_sub
+       14908        chr8  128951508      22S54M           False            True          GGGATCAGAGGTCAGAGTCTGT                   GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGC
+        1242        chr8  128951508      31S45M           False            True CGTGGCGGGTGGTTGAGTGGTCAGAGTCTGT                            GCCCTGTACCCTGATATGGGATGGTTAAGGCACACTGGCTTCATG
+        3287        chr8  128951508       2S72M            True            True                              GT GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGCCTACGACCGCAGATGGAG
+       18123        chr8  128951508      24S52M           False            True        GGTGGATCAGAGGTCAGAGTCTGT                     GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  127991794  128951508    0.0    0.8      0.8            5              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                         query_aln_sub
+        3052        chr8  127991794 4S46M2D23M1S           False           False       ATTTG GGCTCAAATCTAACCACCTGCTTTTCACCTCCTCAATTTCCCACATTCTTTTTTTTTTTTTTTTTTTTT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                     rev_clipped                                                            query_aln_sub
+       14908        chr8  128951508      22S54M           False            True          GGGATCAGAGGTCAGAGTCTGT                   GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGC
+        1242        chr8  128951508      31S45M           False            True CGTGGCGGGTGGTTGAGTGGTCAGAGTCTGT                            GCCCTGTACCCTGATATGGGATGGTTAAGGCACACTGGCTTCATG
+        3287        chr8  128951508       2S72M           False            True                              GT GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGGGCCTACGACCGCAGATGGAG
+       18123        chr8  128951508      24S52M           False            True        GGTGGATCAGAGGTCAGAGTCTGT                     GCCCTGTACCCTGATATGGGATGGTTAAGGCACACAGGCTTCATGGATGGGG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           127992092
+break_chrom2              chr8
+break_pos2           128951508
+AA_homology_seq            NaN
+break_orientation           -- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128275548  128373864    0.0    0.8      0.8            5              3                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                            query_aln_sub
+        8706        chr8  128275548       4S72M           False           False        AGCC TCCTTGTTTGGTTCCTGATTTTAGGGAAATTGGTTTCAACTTTTCACCTTTGAGTTTAATGTTAGCTGTTGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                     query_aln_sub
+        6420        chr8  128373864      31S45M           False            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       14369        chr8  128373864      35S41M           False            True GGTAACGCCTTCCCATATTTCACTAATTAGAAGTG                         GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCT
+        1636        chr8  128373864      31S45M           False            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       16744        chr8  128373864      11S65M           False            True                         AATTAGAAGTG GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACTCTTTCCTAGAGCTATCTGTT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128275289  128373864    0.0    0.8      0.8            5              3        G          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                  rev_clipped                    query_aln_sub
+       17171        chr8  128275258      32M44S           False           False ATTTTCCCACAAATTTTTTTGGAAAATTTTTGTAACATCCAAAT AAAAAGAAAAAAAGAAAAAAAAAAAAAAAATG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                     query_aln_sub
+        6420        chr8  128373864      31S45M           False            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       14369        chr8  128373864      35S41M           False            True GGTAACGCCTTCCCATATTTCACTAATTAGAAGTG                         GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCT
+        1636        chr8  128373864      31S45M           False            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       16744        chr8  128373864      11S65M           False            True                         AATTAGAAGTG GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACTCTTTCCTAGAGCTATCTGTT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128275536  128373864  0.875  0.875    0.875            8              6       GC          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                      query_aln_sub
+        6420        chr8  128275504      33M43H            True            True                                              ACGCCTTCCCATATTACACTAATTAGAAGTGGC
+       14369        chr8  128275500      37M39H            True            True                                          GGTAACGCCTTCCCATATTTCACTAATTAGAAGTGGC
+        1636        chr8  128275504      33M43H            True            True                                              ACGCCTTCCCATATTACACTAATTAGAAGTGGC
+        7551        chr8  128275471       66M9S            True           False   CTATTTTAA TTATGTATTTATTTTTGCCTAATTGCTCTGGTAACGCCTTCCCATATTACACTAATTAGAAGTGGC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                     query_aln_sub
+        6420        chr8  128373864      31S45M            True            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       14369        chr8  128373864      35S41M           False            True GGTAACGCCTTCCCATATTTCACTAATTAGAAGTG                         GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCT
+        1636        chr8  128373864      31S45M            True            True     ACGCCTTCCCATATTACACTAATTAGAAGTG                     GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACT
+       16744        chr8  128373864      11S65M            True            True                         AATTAGAAGTG GCCTATTTTAAGCTGAGAAGAAGATTATATTCCCATCAGCTTACTCTTTCCTAGAGCTATCTGTT
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           128275536
+break_chrom2              chr8
+break_pos2           128373864
+AA_homology_seq             GC
+break_orientation           +- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv     hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  128302325  128339963  0.916667  0.666667  0.916667           12              4        C          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                                             query_aln_sub
+        1622        chr8  128302325      43H32M            True            True                                                                                           GCAAACATTCCAAGAGAATAAGGAGGAAGTGC
+       11183        chr8  128302325      39H37M            True            True                                                                                      GCAAACATTCCAAGAGAATAAGGAGGAAGTGCATACC
+       12816        chr8  128302325       8S68M            True           False                                         ATTATTTG      GCAAACATTCCAAGAGAATAAGGAGGAAGTGCATACCATTTTTATGCCCTAGTCTTGGAAGTAACAAT
+        4030        chr8  128302325      48S27M           False           False ATTATTTGTTCCAAACCCATTGATTTAGCTCCTGACATGAGCTTGCTA                                               GCAAACATTCCAAGAGAATAAGGAGGA
+        6638        chr8  128302325      25S51M            True           False                        ATTATTTGTTCCAAACCCATTGATT                       GCAAACATTCCAAGAGAATAAGGAGGAAGTGCATACCATTTTTATGCCCTA
+        6297        chr8  128302325       3S73M            True           False                                              ATT GCAAACATTCCAAGAGAATAAGGAGGAAGTGCATACCATTTTTATGCCCTAGTCTTGGAAGTAACAATATTAT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                          query_aln_sub
+        1622        chr8  128339963      31S44M            True            True      GCACTTCCTCCTTATTCTCTTGGAATGTTTG                           CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATGAGCT
+       11183        chr8  128339963      36S40M            True            True GGTATGCACTTCCTCCTTATTCTCTTGGAATGTTTG                               CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATG
+        2302        chr8  128339963      18S57M            True            True                   ATTCTCTTGGAATGTTTG              CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATGAGCTTGCTACTCTTCCT
+       11524        chr8  128339963       5S70M            True            True                                GTTTG CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATGAGCTTGCTACTCTTCCTTGTTCCTTTTGTA
+       11929        chr8  128339963      25S51M            True            True            CCTCCTTATTCTCTTGGAATGTTTG                    CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATGAGCTTGCTACT
+       10438        chr8  128339963      21S55M            True            True                CTTATTCTCTTGGAATGTTTG                CATTATTTGTTCCAAACCCATTGATTGAGCTCCTGCCATGAGCTTGCTACTCTTC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           128302325
+break_chrom2              chr8
+break_pos2           128339963
+AA_homology_seq              C
+break_orientation           -- 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128334384  128338715    0.0    0.5      0.5            2              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                         query_aln_sub
+        6121        chr8  128334316       69M7S           False           False     CGTGTTC AGAGTCTCACTTGGTTGCTCAGACTGGAGTACAGTGGTACGATCTCGACTCACTGAAACCTCTGCTTCC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match         rev_clipped                                            query_aln_sub
+       12727        chr8  128338660      56M19S           False            True AGAGTAATCTTTGTAGGTT TGCCAGGGATAAAGAGGGGAATTACATAAAGGGATTTCTTCCGCAAGAAGACATAA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  128334384  128338406    0.0  0.714286  0.714286            7              3                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                         query_aln_sub
+        6121        chr8  128334316       69M7S           False           False     CGTGTTC AGAGTCTCACTTGGTTGCTCAGACTGGAGTACAGTGGTACGATCTCGACTCACTGAAACCTCTGCTTCC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                rev_clipped                                                        query_aln_sub
+       17739        chr8  128338371      36M40H           False           False                                                            AAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+        4431        chr8  128338357      50M26S           False            True GAGGAAATGTTTGAAACTTCTTAGAG                   GTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       16567        chr8  128338357      50M26S           False            True GAGGAAATGTTTGAAACTTCTTAGAG                   GTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       15786        chr8  128338348      59M16S           False            True           TTGAAACTTCTTAGAG          AAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+        3780        chr8  128338339       68M5S           False            True                      TAGAG TTTGAAAGAAAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       18151        chr8  128338341       66M9S           False            True                  TTCTTAGAG   TGAAAGAAAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128334662  128338406    1.0    0.8      1.0           10              6     GCTA          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                             query_aln_sub
+       17739        chr8  128334619      44M32S            True           False TTTTGCTAGCTATTTTCTATTTGCTCCATCTT              GAAAGTAGGAAGATGAGGAAATGTTTGAAACTTCTTAGAGGCTA
+        4431        chr8  128334633      30M46H            True            True                                                             GAGGAAATGTTTGAAACTTCTTAGAGGCTA
+       16567        chr8  128334633      30M46H            True            True                                                             GAGGAAATGTTTGAAACTTCTTAGAGGCTA
+       19264        chr8  128334606      57M18S            True           False               TTTTGCTAGCTATTTTCT GAAGAATGCAGAAGAAAGTAGGAAGATGAGGAAATGTTTGAAACTTCTTAGAGGCTA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                rev_clipped                                                        query_aln_sub
+       17739        chr8  128338371      36M40H            True            True                                                            AAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+        4431        chr8  128338357      50M26S            True            True GAGGAAATGTTTGAAACTTCTTAGAG                   GTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       16567        chr8  128338357      50M26S            True            True GAGGAAATGTTTGAAACTTCTTAGAG                   GTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       15786        chr8  128338348      59M16S            True            True           TTGAAACTTCTTAGAG          AAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+        3780        chr8  128338339       68M5S            True            True                      TAGAG TTTGAAAGAAAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+       18151        chr8  128338341       66M9S            True            True                  TTCTTAGAG   TGAAAGAAAGTGGAAAGTAAGAAAAAAATAAAGATGGAGCAAATAGAAAATAGCTAGCAAAATAGC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           128334662
+break_chrom2              chr8
+break_pos2           128338406
+AA_homology_seq           TAGC
+break_orientation           ++ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128640369  128950418    0.0    0.0      0.0            6              0                  C
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                       rev_clipped                              query_aln_sub
+       19538        chr8  128640369   20S42M13S           False           False CTCACACCAATTAATTCTAACCTCCAGAAACAC CCTCCAGAAACACAAGGATTCGGTGGAAAGTGAAAAAAATCA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                  rev_clipped                                        query_aln_sub
+       10174        chr8  128950372      47M29S           False           False                GCTGACCTCGTGATCCACCCGCCTCCTTC      ATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        4913        chr8  128950367      52M24S           False           False                     CCTCGTGATCCACCCGCCTCCTTC GAATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        5209        chr8  128950369      50M26S           False           False                   GACCTCGTGATCCACCCGCCTCCTTC   ATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        6246        chr8  128950387      32M44S           False           False CATAGAGAAAGGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC                     AGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        9946        chr8  128950377      42M34S           False           False           GGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC           GTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  128640484  128950418    0.0  0.833333  0.833333            6              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                    query_aln_sub
+       17002        chr8  128640484      11S64M           False           False AAAGGTTATTG TGACTTTTTACTTAACAGACTCACACTTCTACTAAGTAGAACAAACCAATTGTTCCTTACGGTA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                  rev_clipped                                        query_aln_sub
+       10174        chr8  128950372      47M29S           False            True                GCTGACCTCGTGATCCACCCGCCTCCTTC      ATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        4913        chr8  128950367      52M24S           False            True                     CCTCGTGATCCACCCGCCTCCTTC GAATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        5209        chr8  128950369      50M26S           False            True                   GACCTCGTGATCCACCCGCCTCCTTC   ATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        6246        chr8  128950387      32M44S           False            True CATAGAGAAAGGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC                     AGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        9946        chr8  128950377      42M34S           False            True           GGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC           GTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology                   insertion
+0  128640599  128950418    0.0    1.0      1.0            9              0           GACCTCGTGATCCACCCGCCTCCTTC
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                            rev_clipped                                                  query_aln_sub
+       17785        chr8  128640599      38S35M           False            True GACCTCGTGATCCACCCGCCTCCTTCGATGTGAGGGAT                            AGCTGGCCTTTCTCTATGCAGACCCAATACCACCT
+        3177        chr8  128640599      17S59M           False            True                      GACCTCGTGATCCACCC    AGCTGGCCTTTCTCTATGCAGACCCAATACCACCTAGATCCTTCTGCTCAGCGTGGGCT
+        9265        chr8  128640599      30S46M           False            True         GACCTCGTGATCCACCCGCCTCCTTCGATG                 AGCTGGCCTTTCTCTATGCAGACCCAAAACCACCAAGAACCTTCTG
+        5743        chr8  128640599      13S62M           False            True                          GACCTCGTGATCC AGCTGGCCTTTCTCTATGCAGACCCAATACCACCTAGATCCTTCTGCTCAGCGTGGGCTAGT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                  rev_clipped                                        query_aln_sub
+       10174        chr8  128950372      47M29S           False            True                GCTGACCTCGTGATCCACCCGCCTCCTTC      ATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        4913        chr8  128950367      52M24S           False            True                     CCTCGTGATCCACCCGCCTCCTTC GAATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        5209        chr8  128950369      50M26S           False            True                   GACCTCGTGATCCACCCGCCTCCTTC   ATGATACTGTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        6246        chr8  128950387      32M44S           False            True CATAGAGAAAGGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC                     AGGGCTGGGATGGGGGTGGTATCCCTCACATC
+        9946        chr8  128950377      42M34S           False            True           GGCCAGCTGACCTCGTGATCCACCCGCCTCCTTC           GTTTTTTCCTAGGGCTGGGATGGGGGTGGTATCCCTCACATC
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           128640599
+break_chrom2              chr8
+break_pos2           128950418
+AA_homology_seq            NaN
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%   ins_%  total_%  total_reads  split_matches homology insertion
+0  128750439  128836712    0.0  0.0625   0.0625           16             10                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                            query_aln_sub
+        5817        chr8  128750439      41H35M           False           False                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+       19057        chr8  128750439      35S41M           False           False ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGACA                                GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGT
+        2330        chr8  128750439      33S43M           False           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        8763        chr8  128750439      33S43M           False           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        6105        chr8  128750439      43H33M           False           False                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+        4592        chr8  128750439      43H33M           False           False                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+       19978        chr8  128750439      41H35M           False           False                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+        1614        chr8  128750439      45H30M           False           False                                                                               GCACCAAGACCCCTTTAACTCAAGACTGCC
+       15643        chr8  128750439      42H34M           False           False                                                                           GCACCAAGACCCCTTTAACTCAAGACTGCCTCCC
+       10450        chr8  128750439      45H31M           False           False                                                                              GCACCAAGACCCCTTTAACTCAAGACTGCCT
+        8114        chr8  128750439      28S48M           False           False        ACTTGAGCCCAGGAGTTTGAGATTAGCC                         GCACCAAGACCCCTTTAACTCAACACTGCCTCCCGCTTTGTGTGCCCC
+        4729        chr8  128750439      27S49M           False           False         ACTTGAGCCCAGGAGTTTGAGATTAGC                        GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCG
+        8600        chr8  128750439       4S72M           False           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+       16274        chr8  128750439      10S66M           False           False                          ACTTGAGCCC       GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGC
+        5912        chr8  128750439       4S72M           False           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                            query_aln_sub
+       15664        chr8  128836641       72M3S           False            True         TTT TGATCTGCCTACTTTGGCCTCCCGAAGTGTTGGGATTACAGACACGAGCCACCACTCCCAGCCAGGTTGCTA
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%   ins_%  total_%  total_reads  split_matches homology insertion
+0  128750439  128836325    0.0  0.0625   0.0625           16             10       GC          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                            query_aln_sub
+        5817        chr8  128750439      41H35M           False           False                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+       19057        chr8  128750439      35S41M           False           False ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGACA                                GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGT
+        2330        chr8  128750439      33S43M           False           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        8763        chr8  128750439      33S43M           False           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        6105        chr8  128750439      43H33M           False           False                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+        4592        chr8  128750439      43H33M           False           False                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+       19978        chr8  128750439      41H35M           False           False                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+        1614        chr8  128750439      45H30M           False           False                                                                               GCACCAAGACCCCTTTAACTCAAGACTGCC
+       15643        chr8  128750439      42H34M           False           False                                                                           GCACCAAGACCCCTTTAACTCAAGACTGCCTCCC
+       10450        chr8  128750439      45H31M           False           False                                                                              GCACCAAGACCCCTTTAACTCAAGACTGCCT
+        8114        chr8  128750439      28S48M           False           False        ACTTGAGCCCAGGAGTTTGAGATTAGCC                         GCACCAAGACCCCTTTAACTCAACACTGCCTCCCGCTTTGTGTGCCCC
+        4729        chr8  128750439      27S49M           False           False         ACTTGAGCCCAGGAGTTTGAGATTAGC                        GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCG
+        8600        chr8  128750439       4S72M           False           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+       16274        chr8  128750439      10S66M           False           False                          ACTTGAGCCC       GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGC
+        5912        chr8  128750439       4S72M           False           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                          query_aln_sub
+        9369        chr8  128836325       6S70M           False            True      TGGGAG GCTGAGGTGAGAGGATTGCTCGAGCCCAGGAGTTTGAGGCTGCAGTGAGCTGTAATTGCACCACTGCATT
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv     hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  128750439  128836642  0.967742  0.741935  0.967742           31             20        C          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                            query_aln_sub
+        5817        chr8  128750439      41H35M            True            True                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+       19057        chr8  128750439      35S41M            True           False ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGACA                                GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGT
+        2330        chr8  128750439      33S43M            True           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        8763        chr8  128750439      33S43M            True           False   ACTTGAGCCCAGGAGTTTGAGATTAGCCTGGGA                              GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGT
+        6105        chr8  128750439      43H33M            True            True                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+        4592        chr8  128750439      43H33M            True            True                                                                            GCACCAAGACCCCTTTAACTCAAGACTGCCTCC
+       19978        chr8  128750439      41H35M            True            True                                                                          GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCG
+        1614        chr8  128750439      45H30M            True            True                                                                               GCACCAAGACCCCTTTAACTCAAGACTGCC
+       15643        chr8  128750439      42H34M            True            True                                                                           GCACCAAGACCCCTTTAACTCAAGACTGCCTCCC
+       10450        chr8  128750439      45H31M            True            True                                                                              GCACCAAGACCCCTTTAACTCAAGACTGCCT
+        8114        chr8  128750439      28S48M            True           False        ACTTGAGCCCAGGAGTTTGAGATTAGCC                         GCACCAAGACCCCTTTAACTCAACACTGCCTCCCGCTTTGTGTGCCCC
+        4729        chr8  128750439      27S49M            True           False         ACTTGAGCCCAGGAGTTTGAGATTAGC                        GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCG
+        8600        chr8  128750439       4S72M            True           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+       16274        chr8  128750439      10S66M            True           False                          ACTTGAGCCC       GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGC
+        5912        chr8  128750439       4S72M            True           False                                ACTT GCACCAAGACCCCTTTAACTCAAGACTGCCTCCCGCTTTGTGTGCCCCGCTCCAGCAGCCTCCCGCGACGAT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                        rev_clipped                                                      query_aln_sub
+        5817        chr8  128836601      42M34S            True            True CGGGAGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                         CCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       19057        chr8  128836607      36M40H            True            True                                                                  TGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        2330        chr8  128836609      34M42H            True            True                                                                    TCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        8763        chr8  128836609      34M42H            True            True                                                                    TCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        6105        chr8  128836599      44M32S            True            True   GGAGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                       GCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        4592        chr8  128836599      44M32S            True            True   GGAGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                       GCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       19978        chr8  128836601      42M34S            True            True CGGGAGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                         CCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        1614        chr8  128836597      46M29S            True            True      GGCAGTCTTGAGTTAAAGGGGTCTTGGTG                     CAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       15643        chr8  128836600      43M33S            True            True  GGGAGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                        CCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       10450        chr8  128836597      46M30S            True            True     AGGCAGTCTTGAGTTAAAGGGGTCTTGGTG                     CAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        6682        chr8  128836582      61M14S            True            True                     AAGGGGTCTTGGTG      CCCTTGGGGCCCCTTCAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       17019        chr8  128836577      66M10S            True            True                         GGTCTTGGTG CCCCTCCCTTGGGGCCCCTTCAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        4098        chr8  128836591      52M24S            True            True           TCTTGAGTTAAAGGGGTCTTGGTG               CCCCTTCAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+        1326        chr8  128836597      46M30S           False            True     AGGCAGTCTTGAGTTAAAGGGGACTTGGTG                     CAGCCCCTTGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       14303        chr8  128836579      64M12S            True            True                       GGGGTCTTGGTG   CCTCCCTTGGGGCCCCTTCAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+       13644        chr8  128836578      65M11S            True            True                        GGGTCTTGGTG  CCCTCCCTTGGGGCCCCTTCAGCCCCATGTGTCCCAGGCTAATCTCAAACTCCTGGGCTCAAGTG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           128750439
+break_chrom2              chr8
+break_pos2           128836642
+AA_homology_seq              G
+break_orientation           -+ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  128756580  128838261    0.0   0.75     0.75            8              2        T          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                         query_aln_sub
+       13790        chr8  128756528      53M23S           False           False AAGACAAGAGAATCCATTGAGCC AAAATTAGCCGGGCGTGGTGGCACAGCCTGCAGTCCCAGCTACTCAGGAGGCT
+        4346        chr8  128756528      53M23S           False           False AAGACAAGAGAATCCATTGAGCC AAAATTAGCCGGGCGTGGTGGCACAGCCTGCAGTCCCAGCTACTCAGGAGGCT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                                        query_aln_sub
+        3704        chr8  128838261       8S68M           False            True                                         CCCTTTTT TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCAGTTTCGAA
+       17343        chr8  128838261      24S51M           False            True                         GTTTTTGCCACCAATCCCCCCTTT                  TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTG
+        2123        chr8  128838261      19S57M           False            True                              GTTCCCCCATTACCCTTTT            TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGATGTCTTGTTATGTTGCCCAGG
+        8897        chr8  128838261      16S60M           False            True                                 CCCATTCCCCTTTTTT         TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCA
+       20044        chr8  128838261      38S37M           False            True           TGTTGGGTTTTATTTTGTTTGTCACCTTTTCCTTTTTT                                TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAG
+       17733        chr8  128838261      48S27M           False            True CCTTCCTCTTTGGGGGGGTTTACTCCGTTGTGCCCCCATTCCCCCTTT                                          TTTTTTTTTTTTTTTTTTTTTTGATAG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  128756491  128838261    0.0  0.857143  0.857143            7              0                   
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match        rev_clipped                                              query_aln_sub
+       12747        chr8  128756491      18S58M           False           False AACTGCAAATTTATTAGA CTAAAACAGTGAAACCCCGTCTCTACTAAAAATACAAAAAATTAGCCGGGCGTGGTGG
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                                        query_aln_sub
+        3704        chr8  128838261       8S68M           False            True                                         CCCTTTTT TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCAGTTTCGAA
+       17343        chr8  128838261      24S51M           False            True                         GTTTTTGCCACCAATCCCCCCTTT                  TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTG
+        2123        chr8  128838261      19S57M           False            True                              GTTCCCCCATTACCCTTTT            TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGATGTCTTGTTATGTTGCCCAGG
+        8897        chr8  128838261      16S60M           False            True                                 CCCATTCCCCTTTTTT         TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAGGTCTTGTTATGTTGCCCAGGCCA
+       20044        chr8  128838261      38S37M           False            True           TGTTGGGTTTTATTTTGTTTGTCACCTTTTCCTTTTTT                                TTTTTTTTTTTTTTTTTTTTTTGATAGTAGAGATGAG
+       17733        chr8  128838261      48S27M           False            True CCTTCCTCTTTGGGGGGGTTTACTCCGTTGTGCCCCCATTCCCCCTTT                                          TTTTTTTTTTTTTTTTTTTTTTGATAG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%  total_%  total_reads  split_matches                homology insertion
+0  128756580  128838235    1.0  0.666667      1.0            6              4  AGTCCCAGCTACTCAGGAGGCT          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match             rev_clipped                                         query_aln_sub
+       13790        chr8  128756528      53M23S            True           False AAGACAAGAGAATCCATTGAGCC AAAATTAGCCGGGCGTGGTGGCACAGCCTGCAGTCCCAGCTACTCAGGAGGCT
+        4346        chr8  128756528      53M23S            True           False AAGACAAGAGAATCCATTGAGCC AAAATTAGCCGGGCGTGGTGGCACAGCCTGCAGTCCCAGCTACTCAGGAGGCT
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match  rev_clipped                                                       query_aln_sub
+       13790        chr8  128838191      45M31H            True            True                                    GGCTCAATGGATTCTCTTGTCTTAGCCTCCTGAGTAGCTGGGACT
+        4346        chr8  128838191      45M31H            True            True                                    GGCTCAATGGATTCTCTTGTCTTAGCCTCCTGAGTAGCTGGGACT
+       17061        chr8  128838169       67M9S            True            True    ACAGCCTGC TCATTGCAGCCTCAAATTCCTGGGCTCAATGGATTCTCTTGTCTTAGCCTCCTGAGTAGCTGGGACT
+        4500        chr8  128838173      63M12S            True            True GGCACAGCCTGC     TGCAGCCTCAAATTCCTGGGCTCAATGGATTCTCTTGTCTTAGCCTCCTGAGTAGCTGGGACT
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1                           chr8
+break_pos1                        128756580
+break_chrom2                           chr8
+break_pos2                        128838235
+AA_homology_seq      AGTCCCAGCTACTCAGGAGGCT
+break_orientation                        ++ 
+
+___________________________________________________________________________________________________
+     left_sv   right_sv     hom_%     ins_%   total_%  total_reads  split_matches homology insertion
+0  129010064  130286720  0.727273  0.090909  0.727273           11              5                CCC
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                    rev_clipped                                                             query_aln_sub
+        2610        chr8  129010027      38M37H           False           False                                                                   GAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7154        chr8  129010017      48M28S            True           False   CCCTGCCTTTTTCTGCTTCTTGGGCCTT                          TACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        5154        chr8  129010019      46M30S            True           False CCCTGCCTTTTTCTGCTTCTTGGGCCTTTG                            CTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       18012        chr8  129010033      32M44H           False           False                                                                         TTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       12649        chr8  129009993       72M4S            True           False                           CCCT  GACCAATATTGATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        8869        chr8  129009992       73M3S            True            True                            CCC GGACCAATATTGATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7551        chr8  129010003      62M13S            True           False                  CCCTGCCTTTTTC            GATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7023        chr8  129010003      62M14S            True           False                 CCCTGCCTTTTTCT            GATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       16020        chr8  129010010      55M21S            True           False          CCCTGCCTTTTTCTGCTTCTT                   TATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       10673        chr8  129010014      51M25S            True           False      CCCTGCCTTTTTCTGCTTCTTGGGC                       ATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                query_aln_sub
+        3162        chr8  130286677      44M32S           False           False TTACTTTAGTTTTTACCTGGTCCAGGATCCCC GGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%  ins_%  total_%  total_reads  split_matches homology insertion
+0  129010063  130286720    0.5    1.0      1.0            2              2      CCC          
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                   query_aln_sub
+        3162        chr8  129010033      31M45H            True            True             TTACTTTAGTTTTTACCTGGTCCAGGATCCC
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                query_aln_sub
+        3162        chr8  130286677      44M32S           False            True TTACTTTAGTTTTTACCTGGTCCAGGATCCCC GGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGG
+___________________________________________________________________________________________________
+
+
+
+
+___________________________________________________________________________________________________
+     left_sv   right_sv  hom_%     ins_%  total_%  total_reads  split_matches homology insertion
+0  129010064  130286722    1.0  0.294118      1.0           17              8       CA        CC
+
+ Left side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                    rev_clipped                                                             query_aln_sub
+        2610        chr8  129010027      38M37H            True            True                                                                   GAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7154        chr8  129010017      48M28S            True           False   CCCTGCCTTTTTCTGCTTCTTGGGCCTT                          TACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        5154        chr8  129010019      46M30S            True           False CCCTGCCTTTTTCTGCTTCTTGGGCCTTTG                            CTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       18012        chr8  129010033      32M44H            True            True                                                                         TTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       12649        chr8  129009993       72M4S            True           False                           CCCT  GACCAATATTGATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        8869        chr8  129009992       73M3S            True            True                            CCC GGACCAATATTGATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7551        chr8  129010003      62M13S            True           False                  CCCTGCCTTTTTC            GATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+        7023        chr8  129010003      62M14S            True           False                 CCCTGCCTTTTTCT            GATACATTATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       16020        chr8  129010010      55M21S            True           False          CCCTGCCTTTTTCTGCTTCTT                   TATTATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+       10673        chr8  129010014      51M25S            True           False      CCCTGCCTTTTTCTGCTTCTTGGGC                       ATTTACTGAAGTTGAAACATTACTTTAGTTTTTACCTGGTCCAGGATCCCA
+
+ Right side reads for this candidate:
+ query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                           query_aln_sub
+        2610        chr8  130286684      39M36S            True           False GAAACATTACTTTAGTTTTTACCTGGTCCAGGATCC                                 ATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+        7154        chr8  130286693      30M46H            True            True                                                                               AAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+        5154        chr8  130286691      32M44H            True            True                                                                             CAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+       18012        chr8  130286677      46M30S            True           False       TTACTTTAGTTTTTACCTGGTCCAGGATCC                          GGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+        8166        chr8  130286652       71M5S            True           False                                GATCC TAGAGAAGGGTGCATTTCAGGCAAAGGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+       13531        chr8  130286659      64M12S            True           False                         GGTCCAGGATCC        GGGTGCATTTCAGGCAAAGGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+       11905        chr8  130286659      64M12S            True           False                         GGTCCAGGATCC        GGGTGCATTTCAGGCAAAGGAAGCAATAAAAACAAAGGCCCAAGAAGCAGAAAAAGGCAGGGTG
+___________________________________________________________________________________________________
+
+
+
+
+Original AA breakpoint:
+break_chrom1              chr8
+break_pos1           129010064
+break_chrom2              chr8
+break_pos2           130286722
+AA_homology_seq             TG
+break_orientation           ++ 
+
