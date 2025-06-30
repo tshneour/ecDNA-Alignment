@@ -1,99 +1,79 @@
-import pandas as pd
+#!/usr/bin/env python3
 import argparse
 import warnings
+import pandas as pd
 
+# common
 warnings.filterwarnings("ignore")
+pd.set_option("mode.chained_assignment", None)
+
+# -------------------------------------------
+# Refine pipeline (your original code)
+# -------------------------------------------
+
 print_columns = [
-    "query_name",
-    "proper_pair",
-    "query_pos",
-    "query_end",
-    "query_cigar",
-    "split",
-    "query_aln_full",
+    "query_name", "proper_pair", "query_pos", "query_end",
+    "query_cigar", "split", "query_aln_full",
 ]
 print_columns2 = [
-    "query_short",
-    "query_chrom",
-    "query_pos",
-    "query_cigar",
-    "hom_clip_match",
-    "ins_clip_match",
-    "rev_clipped",
-    "query_aln_sub",
+    "query_short", "query_chrom", "query_pos", "query_cigar",
+    "hom_clip_match", "ins_clip_match", "rev_clipped", "query_aln_sub",
 ]
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Refine AA SVs.")
-    parser.add_argument("file", type=str, help="alignments file to refine")
-    parser.add_argument(
-        "-l", "--list", help="shows all breakpoints", action="store_true"
+def rev_comp(seq):
+    trans = str.maketrans("ACGT", "TGCA")
+    return (
+        seq[::-1].translate(trans)
+        if isinstance(seq, str)
+        else seq.str[::-1].str.translate(trans)
     )
-    parser.add_argument(
-        "-b",
-        "--breakpoints",
-        type=int,
-        help="list info for these breakpoints (use --list to see breakpoint_number)",
-        nargs="+",
-    )
-    parser.add_argument(
-        "-v", "--verbose", help="show information about specific reads", type=int
-    )
-    args = parser.parse_args()
 
-    all_reads = pd.read_csv(args.file, sep="\t")
+def get_homology(first, last):
+    for i in range(len(first), -1, -1):
+        if last.startswith(first[-i:]):
+            return first[-i:]
+    return ""
 
-    # ------------- Define Functions ------------------
+def refine_step1(reads, all_reads, verbose):
+    reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
+    reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
+    reads["end"] = reads["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
 
-    def refine_step1(reads):
-        reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
-        reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
-        reads["end"] = reads["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
+    reads["sv_end"] = reads["query_pos"].where(reads["begin"])
+    reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
+    reads.dropna(subset=["sv_end"], inplace=True)
 
-        reads["sv_end"] = reads["query_pos"].where(reads["begin"])
-        reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
+    if verbose == 2:
+        print(
+            reads.sort_values(by="sv_end")[["sv_end", *print_columns]]
+            .to_string(index=False), "\n"
+        )
 
-        # Drop rows where 'sv_end' is still NaN
-        reads.dropna(subset=["sv_end"], inplace=True)
+    end_cands = reads["sv_end"].value_counts()
+    best = end_cands.index[0] if len(end_cands) > 0 else None
 
-        if args.verbose == 2:
-            print(
-                reads.sort_values(by="sv_end")[["sv_end", *print_columns]].to_string(
-                    index=False
-                ),
-                "\n",
-            )
+    if verbose == 1 and best is not None:
+        verb_1 = reads[reads["sv_end"] == best][["sv_end", *print_columns]]
+        disc = verb_1[verb_1["proper_pair"] == "Discordant"]
+        mates = all_reads[
+            all_reads["query_name"].isin(disc.query_name)
+            & ~all_reads["query_aln_full"].isin(disc.query_aln_full)
+        ][print_columns]
+        print(verb_1.to_string(index=False), "\n")
+        print("Mates of Discordant Reads:")
+        print(mates.to_string(index=False), "\n")
 
-        end_cands = reads["sv_end"].value_counts()
-        best = end_cands.index[0] if end_cands.shape[0] > 0 else None
+    return best, reads
 
-        if args.verbose == 1:
-            verb_1 = reads[reads["sv_end"] == best][["sv_end", *print_columns]]
-            disc = verb_1[verb_1["proper_pair"] == "Discordant"]
-            mates = all_reads[
-                all_reads["query_name"].isin(disc.query_name)
-                & ~all_reads["query_aln_full"].isin(disc.query_aln_full)
-            ][print_columns]
-            print(verb_1.to_string(index=False), "\n")
-            print()
-            print("Mates of Discordant Reads from above Table: ")
-            print(mates.to_string(index=False), "\n")
+def refine_step2(best, all_reads, verbose):
+    def contains(read):
+        return best in range(read["query_pos"] + 1, read["query_end"])
+    thing = all_reads.loc[all_reads.apply(contains, axis=1)]
+    if verbose:
+        print(thing[print_columns].to_string(index=False) if len(thing) else "None", "\n")
+    return len(thing)
 
-        return best, reads
-
-    def refine_step2(best):
-        def contains(read, break_cand):
-            return break_cand in range(read["query_pos"] + 1, read["query_end"])
-
-        thing = all_reads.loc[all_reads.apply(lambda x: contains(x, best), axis=1)]
-        if args.verbose:
-            print(
-                thing[print_columns].to_string(index=False) if thing else "None",
-                "\n",
-            )
-        return len(thing)
-
-    def check_overlap(left, right):
+def check_overlap(left, right):
 
         # Eliminate unhelpful split reads
         left = left[
@@ -280,89 +260,156 @@ if __name__ == "__main__":
 
         return results.head(3)[["left_sv", "right_sv", "hom_%", "ins_%", "total_%", "total_reads", "split_matches", "homology", "insertion", "left", "right"]]
 
-    def rev_comp(series):
-        trans = str.maketrans("ACGT", "TGCA")
-        return (
-            series.str[::-1].str.translate(trans)
-            if isinstance(series, pd.Series)
-            else series[::-1].translate(trans)
-        )
 
-    def get_homology(first, last):
-        for i in range(len(first), -1, -1):
-            if last.startswith(first[-i:]):
-                return first[-i:]
-        return ""
-
-    # ------------- Do refinement ------------------
-
-    pd.set_option("mode.chained_assignment", None)
+def run_refine(args):
+    all_reads = pd.read_csv(args.file, sep="\t")
     svs = all_reads.groupby("break_pos1")
-    for group_name, sv in svs:
+
+    if args.list:
+        out = (
+            svs[["break_chrom1","break_pos1","break_chrom2","break_pos2","AA_homology_seq"]]
+            .first().reset_index(drop=True)
+        )
+        out.index.name = "breakpoint_index"
+        print(out.to_string())
+        return
+
+    breaks = None
+    if args.breakpoints:
+        idxs = svs["break_pos1"].first().reset_index(drop=True)
+        breaks = set(idxs.iloc[args.breakpoints].to_list())
+
+    for bp, sv in svs:
+        if breaks and bp not in breaks:
+            continue
+
         left = sv[
-            (sv["query_pos"] >= (sv["break_pos1"] - 350))
-            & (sv["query_end"] <= (sv["break_pos1"] + 350))
+            (sv["query_pos"] >= bp - 350)
+            & (sv["query_end"] <= bp + 350)
         ]
         right = sv[
-            (sv["query_pos"] >= (sv["break_pos2"] - 350))
-            & (sv["query_end"] <= (sv["break_pos2"] + 350))
+            (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 350)
+            & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 350)
         ]
-        if args.list:
-            out = (
-                svs[
-                    [
-                        "break_chrom1",
-                        "break_pos1",
-                        "break_chrom2",
-                        "break_pos2",
-                        "AA_homology_seq",
-                    ]
-                ]
-                .first()
-                .reset_index(drop=True)
-            )
-            out.index.name = "breakpoint_index"
-            print(out.to_string())
-            break
-        if args.breakpoints:
-            breaks = (
-                svs["break_pos1"]
-                .first()
-                .reset_index(drop=True)
-                .iloc[args.breakpoints]
-                .to_list()
-            )
-            if group_name not in breaks:
-                continue
 
-        best_left, left_groups = refine_step1(left)
-        best_right, right_groups = refine_step1(right)
+        best_left, left_grp = refine_step1(left, all_reads, args.verbose)
+        best_right, right_grp = refine_step1(right, all_reads, args.verbose)
 
+        results = check_overlap(left_grp, right_grp)
+        for i in range(len(results)-1, -1, -1):
+            row = results.iloc[i]
+            print("_" * 100)
+            print(row.drop(["left","right"]).to_string())
+            print("\nLeft reads:")
+            print(row["left"][print_columns2].to_string(index=False))
+            print("\nRight reads:")
+            print(row["right"][print_columns2].to_string(index=False))
+            print("_" * 100, "\n\n")
 
-        results = check_overlap(left_groups, right_groups)
-        results["left_sv"] = results["left_sv"].astype(int)
-        results["right_sv"] = results["right_sv"].astype(int)
-        for row in range(len(results) - 1, -1, -1):
-            print('___________________________________________________________________________________________________')
-            print(results.iloc[[row]].drop(["left", "right"], axis=1).to_string())
-            print('\n', 'Left side reads for this candidate:')
-            print(results.iloc[row]["left"][print_columns2].to_string(index=False))
-            print('\n', 'Right side reads for this candidate:')
-            print(results.iloc[row]["right"][print_columns2].to_string(index=False))
-            print('___________________________________________________________________________________________________')
-            print('\n\n\n')
-        
         print("Original AA breakpoint:")
+        bp0 = sv.iloc[0]
         print(
-            sv.iloc[0][
-                [
-                    "break_chrom1",
-                    "break_pos1",
-                    "break_chrom2",
-                    "break_pos2",
-                    "AA_homology_seq",
-                    "break_orientation",
-                ]
-            ].to_string(),
-            "\n",
+            bp0[["break_chrom1","break_pos1","break_chrom2","break_pos2",
+                 "AA_homology_seq","break_orientation"]]
+            .to_string(), "\n"
         )
+
+# -------------------------------------------
+# Scaffold pipeline (from your notebook)
+# -------------------------------------------
+from Bio import Align
+from Bio.Seq import Seq
+from Bio.Align import substitution_matrices
+import subprocess, shutil
+
+aligner = Align.PairwiseAligner(
+    mode="local", open_gap_score=-10, extend_gap_score=-5,
+    match_score=2, mismatch_score=-2
+)
+
+def extract_region(fasta_file, region):
+    res = subprocess.run(
+        ["samtools","faidx",fasta_file,region],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+    )
+    if res.returncode:
+        raise RuntimeError(res.stderr)
+    return "".join(res.stdout.splitlines()[1:])
+
+def generate_scaffolds(fq1, fq2, out_dir="out"):
+    shutil.rmtree(out_dir, ignore_errors=True)
+    cmd = [
+        "python","./SPAdes-4.2.0-Linux/bin/spades.py","--meta",
+        "--pe1-1", fq1, "--pe1-2", fq2, "-o", out_dir
+    ]
+    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if res.returncode:
+        print(res.stdout)
+        print(res.stderr)
+        raise RuntimeError(res.stderr)
+    seqs = []
+    with open(f"{out_dir}/scaffolds.fasta") as F:
+        for chunk in F.read().split(">")[1:]:
+            seqs.append("".join(chunk.splitlines()[1:]))
+    return seqs
+
+def run_scaffold(args):
+    # load breakpoints
+    df = pd.read_csv(args.file, sep="\t")
+    # build ref windows
+    df["ref1"] = df.break_chrom1 + ":" + (df.break_pos1-350).astype(str) + "-" + (df.break_pos1+350).astype(str)
+    df["ref2"] = df.break_chrom2 + ":" + (df.break_pos2-350).astype(str) + "-" + (df.break_pos2+350).astype(str)
+    df["seq1"] = df.ref1.apply(lambda r: extract_region(args.fasta, r))
+    df["seq2"] = df.ref2.apply(lambda r: extract_region(args.fasta, r))
+
+    # assume fastqs in ./fastq/, names b_chr1_pos1_chr2_pos2_1.fastq.gz & _2
+    def fq_names(row):
+        base = f"b_{row.break_chrom1}:{row.break_pos1}_{row.break_chrom2}:{row.break_pos2}"
+        return f"./fastq/{base}_1.fastq.gz", f"./fastq/{base}_2.fastq.gz"
+
+    scaffs = []
+    for _, row in df.iterrows():
+        fq1, fq2 = fq_names(row)
+        scaffs.append(generate_scaffolds(fq1, fq2, out_dir=args.outdir))
+    df["scaffolds"] = scaffs
+
+    # align & score
+    results = []
+    for idx, row in df.iterrows():
+        scores = [(aligner.align(row.seq1.upper(), sc)[0].score,
+                   aligner.align(row.seq2.upper(), sc)[0].score)
+                  for sc in row.scaffolds]
+        best_left = max(range(len(scores)), key=lambda i: scores[i][0])
+        best_right= max(range(len(scores)), key=lambda i: scores[i][1])
+        print(f"breakpoint {idx}: best_left={best_left} (score {scores[best_left]}), "
+              f"best_right={best_right} (score {scores[best_right]})")
+
+# -------------------------------------------
+# Main & CLI
+# -------------------------------------------
+def main():
+    p = argparse.ArgumentParser(description="AA SV refinement OR scaffold reconstruction")
+    p.add_argument("file", help="input TSV")
+    sub = p.add_argument_group("common options")
+    sub.add_argument("--mode", choices=["refine","scaffold"], default="refine",
+                     help="which pipeline to run")
+    # refine flags
+    sub.add_argument("-l","--list", action="store_true", help="list breakpoints")
+    sub.add_argument("-b","--breakpoints", type=int, nargs="+",
+                     help="which breakpoint indices to do")
+    sub.add_argument("-v","--verbose", action="count", default=0,
+                     help="verbosity (use -vv for full)")
+    # scaffold flags
+    sub.add_argument("--fasta", help="indexed FASTA for extract_region")
+    sub.add_argument("--outdir", default="out", help="SPAdes output directory")
+
+    args = p.parse_args()
+    if args.mode == "refine":
+        run_refine(args)
+    else:
+        if not args.fasta:
+            p.error("--fasta is required in scaffold mode")
+        run_scaffold(args)
+
+if __name__ == "__main__":
+    main()
