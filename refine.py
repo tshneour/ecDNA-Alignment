@@ -348,7 +348,7 @@ def generate_scaffolds(fq1, fq2, out_dir):
     ]
     r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if r.returncode or not os.path.isfile(f"{out_dir}/scaffolds.fasta"):
-        raise RuntimeError(f"SPAdes failed:\n{r.stderr}")
+        raise RuntimeError(f"SPAdes failed:\n{r.stderr, r.stdout}")
     seqs = []
     with open(f"{out_dir}/scaffolds.fasta") as F:
         for block in F.read().split(">")[1:]:
@@ -356,7 +356,7 @@ def generate_scaffolds(fq1, fq2, out_dir):
     return seqs
 
 def run_scaffold(args):
-    df = pd.read_csv(args.file, sep="\t")
+    df = pd.read_csv(args.file, sep="\t")[["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"]].drop_duplicates().reset_index()
     df["ref1"] = df.break_chrom1 + ":" + (df.break_pos1 - 350).astype(str) + "-" + (
         df.break_pos1 + 350
     ).astype(str)
@@ -370,7 +370,7 @@ def run_scaffold(args):
     summary = []
 
     def fq_names(row):
-        b = f"b_{row.break_chrom1}_{row.break_pos1}_{row.break_chrom2}_{row.break_pos2}"
+        b = f"b_{row.break_chrom1}:{row.break_pos1}_{row.break_chrom2}:{row.break_pos2}"
         return f"./fastq/{b}_1.fastq.gz", f"./fastq/{b}_2.fastq.gz"
 
     for idx, row in df.iterrows():
