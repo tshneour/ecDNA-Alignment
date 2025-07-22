@@ -1,0 +1,13 @@
+break_chrom1	break_pos1	break_chrom2	break_pos2	break_sv_type	break_read_support	break_features	break_orientation	AA_homology_len	AA_homology_seq	split_matches	left_sv	right_sv	hom_len	hom	sc_pos1	sc_pos2	sc_hom_len	sc_hom
+chr9	133607147	chr22	23632742	interchromosomal	7	unknown	-+	5.0	GAGTG	8	133607147	23632742	5	CACTC	133607147	23632742	5	GAGTG
+chr9	134155524	chr13	108661411	interchromosomal	6	unknown	++	2.0	AT	6	134155524	108661411	2	AT	134155524	108661411	2	AT
+chr13	81088033	chr13	81469935	inversion	4	ecDNA	--	3.0	AAC	4	81088033	81469935	3	GTT	81088033	81469935	3	AAC
+chr13	81109414	chr13	90438707	deletion-like	3	ecDNA	+-	3.0	TGG	4	81109414	90438707	3	TGG				
+chr13	81470036	chr13	81470311	foldback	3	ecDNA	++	6.0	ATAAAA	2	81470036	81470311	6	ATAAAA				
+chr13	90862774	chr13	90864807	deletion-like	3	ecDNA	+-			2	90862855	90864807	4	AAAT				
+chr13	92474011	chr13	92475758	foldback	3		++	2.0	AA	4	92474011	92475758	2	AA				
+chr13	94023408	chr13	108500973	deletion-like	3	unknown	+-			2	94023408	108500973	0		94023408	108500973	0	
+chr22	18953123	chr22	22935374	inversion	5	unknown	--			2	18953123	22935374	0					
+chr22	20950574	chr22	20953842	deletion-like	4	unknown	+-			0	20950623	20953840	1	C	20950623	20953840	1	C
+chr22	23049708	chr22	23108070	deletion-like	2	unknown	+-			0	23049749	23108142	-1	T				
+chr22	23049911	chr22	23107859	duplication-like	2	ecDNA	-+			0	23049749	23108142	-1	T				
