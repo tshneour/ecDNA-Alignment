@@ -1,0 +1,182 @@
+- STAGE: Before start
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Before_start_I6HF47D0HH43P31FPOOYO9QGYZN0JJFK
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: before_start
+- STAGE: Read error correction
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Read_error_correction_QMHPKH208P3PI577CMRUOAHMJ5M7BXIO
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: ec_start
+- STAGE: Read error correction
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/corrected/configs/config.info
+  config_dir: corrected
+  del_after:
+  - tmp/hammer_846qpnhs
+  job_uuid: SPAdes_Read_error_correction_BAU1H93KICIWJW0MPKKGXDKCXJS08407
+  mpi_support: false
+  output_files:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/corrected/corrected.yaml
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/bin/spades-hammer
+  short_name: ec_runtool
+- STAGE: corrected reads compression
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/share/spades/spades_pipeline/scripts/compress_all.py
+  - --input_file
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/corrected/corrected.yaml
+  - --ext_python_modules_home
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/share/spades
+  - --max_threads
+  - '16'
+  - --output_dir
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/corrected
+  - --gzip_output
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_corrected_reads_compression_KY9KYM1FW0ZOBB34XA5TF3E42S4ZAVWT
+  mpi_support: false
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/venv/bin/python
+  short_name: ec_compress
+- STAGE: Read error correction
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Read_error_correction_EEV94MRZRQOZVR86B478UZ0UM3DAKA9J
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: ec_finish
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Assembling_A9J7MU5D2Y8RZWJF98XVLEE2XNAUIMES
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: as_start
+- STAGE: K21
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K21/configs/config.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K21/configs/mda_mode.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K21/configs/meta_mode.info
+  config_dir: K21
+  del_after: []
+  job_uuid: hpcSPAdes_K21_ARMKYRIFCTKQQHJPFEFU23W5IBVWP4IS
+  mpi_support: true
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/bin/{spades_core}
+  short_name: k21
+- STAGE: K33
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K33/configs/config.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K33/configs/mda_mode.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K33/configs/meta_mode.info
+  config_dir: K33
+  del_after: []
+  job_uuid: hpcSPAdes_K33_TCJU4VAY9NX0KOHK5YKCDXZI26I3S5NI
+  mpi_support: true
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/bin/{spades_core}
+  short_name: k33
+- STAGE: K55
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K55/configs/config.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K55/configs/mda_mode.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K55/configs/meta_mode.info
+  config_dir: K55
+  del_after: []
+  job_uuid: hpcSPAdes_K55_DECV1UKXYLZAV1YMEI4IFZ4L8K1GF5VR
+  mpi_support: true
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/bin/{spades_core}
+  short_name: k55
+- STAGE: K77
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/configs/config.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/configs/mda_mode.info
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/configs/meta_mode.info
+  config_dir: K77
+  del_after: []
+  job_uuid: hpcSPAdes_K77_67JPVIYSWOCSWEV9GHQFOTQM7TB3L25E
+  mpi_support: true
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/bin/{spades_core}
+  short_name: k77
+- STAGE: Copy files
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/share/spades/spades_pipeline/scripts/copy_files.py
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/before_rr.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/before_rr.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/assembly_graph_after_simplification.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/assembly_graph_after_simplification.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/final_contigs.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/contigs.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/first_pe_contigs.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/first_pe_contigs.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/strain_graph.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/strain_graph.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/scaffolds.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/scaffolds.fasta
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/scaffolds.paths
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/scaffolds.paths
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/assembly_graph_with_scaffolds.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/assembly_graph_with_scaffolds.gfa
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/assembly_graph.fastg
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/assembly_graph.fastg
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/K77/final_contigs.paths
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/contigs.paths
+  config_dir: ''
+  del_after:
+  - .bin_reads
+  - tmp/spades_se23r5tw
+  job_uuid: SPAdes_Copy_files_A1H8147HASU2WAD5O5XYPCJC8KYGB43Y
+  mpi_support: false
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/venv/bin/python
+  short_name: copy_files
+- STAGE: Assembling
+  args: []
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Assembling_D1QBWIT4FMX0M5GNZMR0P466XGD54594
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: as_finish
+- STAGE: Breaking scaffolds
+  args:
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/SPAdes-4.2.0-Linux/share/spades/spades_pipeline/scripts/breaking_scaffolds_script.py
+  - --result_scaffolds_filename
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/scaffolds.fasta
+  - --misc_dir
+  - /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_6/misc
+  - --threshold_for_breaking_scaffolds
+  - '3'
+  config_dir: ''
+  del_after: []
+  job_uuid: SPAdes_Breaking_scaffolds_ISNEYEEJY3TEJBNS89HVMXPVE8BNG90Y
+  mpi_support: false
+  output_files: []
+  path: /home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/venv/bin/python
+  short_name: bs
+- STAGE: Terminate
+  args: []
+  config_dir: ''
+  del_after:
+  - configs
+  job_uuid: SPAdes_Terminate_GKELPNI0OJNMV2IAA9B16CY1YTSIKM9S
+  mpi_support: false
+  output_files: []
+  path: 'true'
+  short_name: terminate

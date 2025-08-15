@@ -198,6 +198,7 @@ def fetch_alignments(
     hom_len,
     hom,
     args,
+    amplicon,
     mapq_threshold=15,
 ):
     """
@@ -382,6 +383,7 @@ def fetch_alignments(
                         "query_cigar": read.cigarstring,
                         "query_aln_full": read.query_sequence,
                         "query_aln_sub": read.query_alignment_sequence,
+                        "amplicon": amplicon
                     }
                 )
 
@@ -423,6 +425,7 @@ def fetch_alignments(
                         "query_cigar": read.cigarstring,
                         "query_aln_full": read.query_sequence,
                         "query_aln_sub": read.query_alignment_sequence,
+                        "amplicon": amplicon
                     }
                 )
 
@@ -472,7 +475,7 @@ if __name__ == "__main__":
     # print(samfile.header)
     df = pd.concat(
         [
-            pd.read_csv(os.path.join(args.sum, f), sep="\t")
+            pd.read_csv(os.path.join(args.sum, f), sep="\t").assign(amplicon=f.split("_")[1])
             for f in os.listdir(args.sum)
             if ".tsv" in f
         ],
@@ -496,6 +499,7 @@ if __name__ == "__main__":
         orientation = row["orientation"]
         hom_len = row["homology_length"]
         homology = row["homology_sequence"]
+        amplicon = row["amplicon"]
         # print(chrom1, pos1, chrom2, pos2)
 
         # Fetch the DataFrames for split alignments and paired alignments
@@ -512,6 +516,7 @@ if __name__ == "__main__":
             hom_len,
             homology,
             args,
+            amplicon
         )
         num_split += len(split_df) / 3
         num_paired += (2 * len(split_df) / 3) + len(nonsplit_df)

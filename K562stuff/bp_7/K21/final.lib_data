@@ -1,0 +1,38 @@
+Ñ---
+max read length: 100
+nomerge max read length: 100
+average read length: 98.6406
+average coverage: 3.37136
+libraries:
+  - type:            paired-end
+    number:          1
+    orientation:     fr
+    left reads:
+      - '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/corrected/b_chr13_94023408_chr13_108500973_1.fastq00.0_0.cor.fastq.gz'
+    right reads:
+      - '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/corrected/b_chr13_94023408_chr13_108500973_2.fastq00.0_0.cor.fastq.gz'
+    single reads:
+      - '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/corrected/b_chr13_94023408_chr13_108500973__unpaired00.0_0.cor.fastq.gz'
+    data:
+      unmerged read length: 100
+      merged read length: 0
+      insert size mean: 0
+      insert size deviation: 0
+      insert size left quantile: 0
+      insert size right quantile: 0
+      insert size median: 0
+      insert size mad: 0
+      insert size distribution: {  }
+      pi threshold:    0
+      binary reads info:
+        binary converted: true
+        bin reads info file: '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/.bin_reads/INFO_0'
+        paired read prefix: '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/.bin_reads/paired_0'
+        merged read prefix: '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/.bin_reads/merged_0'
+        single read prefix: '/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_7/.bin_reads/single_0'
+        chunk num:       16
+      single reads mapped: false
+      library index:   0
+      number of reads: 64
+      total nucleotides: 6313
+...

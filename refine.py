@@ -292,12 +292,21 @@ def run_refine(args):
     for bp, sv in svs:
         if picks and bp not in picks:
             continue
-
-        left = sv[(sv["query_pos"] >= bp - 350) & (sv["query_end"] <= bp + 350)]
-        right = sv[
-            (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 350)
-            & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 350)
-        ]
+        
+        # Inversion case
+        if sv["break_chrom1"].iloc[0] == sv["break_chrom2"].iloc[0]:
+            left = sv[(sv["query_pos"] >= bp - 2000) & (sv["query_end"] <= bp + 2000) & (sv["query_end"] < sv["break_pos2"].iloc[0] - 150)]
+            right = sv[
+                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 2000)
+                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 2000)
+                & (sv["query_pos"] > bp + 150)
+            ]
+        else:
+            left = sv[(sv["query_pos"] >= bp - 2000) & (sv["query_end"] <= bp + 2000)]
+            right = sv[
+                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 2000)
+                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 2000)
+            ]
 
         _, lgrp = refine_step1(left, all_reads, args.verbose)
         _, rgrp = refine_step1(right, all_reads, args.verbose)
@@ -374,6 +383,7 @@ def run_refine(args):
                 "break_orientation",
                 "AA_homology_len",
                 "AA_homology_seq",
+                "amplicon"
             ]
         ]
         .first()
@@ -382,10 +392,9 @@ def run_refine(args):
     aug = pd.DataFrame(summary)
     # aug = aug[["break_chrom1", "break_pos1", "break_chrom2", "break_pos2", "break_sv_type", "break_read_support", "break_features", "break_orientation"]]
     out = brk.merge(aug, on="break_pos1", how="left")
-    out = out.iloc[index_natsorted(out["break_chrom1"])]
-    out = out.groupby("break_chrom1", group_keys=False).apply(
-        lambda g: g.sort_values("break_pos1")
-    )
+    out["b_chr1"]= out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
+    out = out.sort_values(by=["b_chr1", "break_pos1"])
+    out = out.drop(['b_chr1'], axis=1)
     out.to_csv(args.out_table, sep="\t", index=False)
     print(f"Augmented SV predictions written to {args.out_table}")
 
@@ -476,9 +485,9 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
         ref_offset = int(ref_offset)
         if i == 0:
             ref_start = (
-                (ref_start - 1) + ref_offset - 350
+                (ref_start - 1) + ref_offset - 2000
                 if ori
-                else (ref_start - 1) + 350 - ref_offset
+                else (ref_start - 1) + 2000 - ref_offset
             )
             ref_fst = ref_start + 1
         ref_start = ref_start + 1
@@ -517,6 +526,11 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
         )
 
     return "\n".join(output), tgt_fst, tgt_lst, ref_fst, ref_end
+
+def test_coordinates(expected_chr, expected_start, expected_end, actual, args):
+    region = expected_chr + ":" + str(expected_start) + "-" + str(expected_end)
+    expected = extract_region(args.fasta, region).upper()
+    print(f"Mismatch\nExpected: {expected}\nActual: {actual}") if expected != actual else print("")
 
 def handle_inversion(a1_sc_range, a1_ref_range, a1_is_rev, a2_sc_range, a2_ref_range, a2_is_rev, row, sc, aligner):
     seq1 = row["seq1"].upper()
@@ -571,6 +585,7 @@ def run_scaffold(args):
                 "break_orientation",
                 "AA_homology_len",
                 "AA_homology_seq",
+                "amplicon"
             ]
         ]
         .drop_duplicates()
@@ -579,16 +594,16 @@ def run_scaffold(args):
     df["ref1"] = (
         df.break_chrom1
         + ":"
-        + (df.break_pos1 - 350).astype(str)
+        + (df.break_pos1 - 2000).astype(str)
         + "-"
-        + (df.break_pos1 + 350).astype(str)
+        + (df.break_pos1 + 2000).astype(str)
     )
     df["ref2"] = (
         df.break_chrom2
         + ":"
-        + (df.break_pos2 - 350).astype(str)
+        + (df.break_pos2 - 2000).astype(str)
         + "-"
-        + (df.break_pos2 + 350).astype(str)
+        + (df.break_pos2 + 2000).astype(str)
     )
     df["seq1"] = df.ref1.apply(lambda r: extract_region(args.fasta, r))
     df["seq2"] = df.ref2.apply(lambda r: extract_region(args.fasta, r))
@@ -644,11 +659,27 @@ def run_scaffold(args):
                 row["break_chrom1"],
                 row["break_pos1"],
             )
+            first_aln_len = len(a1_out.split("\n")[2].split()[2])-1
+            test_coordinates(
+                df["break_chrom1"][idx],
+                a1_ref_fst-first_aln_len if (a1_pos.score < a1_neg.score) else a1_ref_fst,
+                a1_ref_fst if (a1_pos.score < a1_neg.score) else a1_ref_fst+first_aln_len,
+                rev_comp(a1_out.split("\n")[2].split()[2]) if (a1_pos.score < a1_neg.score) else a1_out.split("\n")[2].split()[2],
+                args,
+            )
             a2_out, a2_fst, a2_lst, a2_ref_fst, a2_ref_lst = reformat_alignment(
                 format(a2).split("\n"),
                 (a2_pos.score >= a2_neg.score),
                 row["break_chrom2"],
                 row["break_pos2"],
+            )
+            second_aln_len = len(a2_out.split("\n")[2].split()[2])-1
+            test_coordinates(
+                df["break_chrom2"][idx],
+                a2_ref_fst-second_aln_len if (a2_pos.score < a2_neg.score) else a2_ref_fst,
+                a2_ref_fst if (a2_pos.score < a2_neg.score) else a2_ref_fst+second_aln_len,
+                rev_comp(a2_out.split("\n")[2].split()[2]) if (a2_pos.score < a2_neg.score) else a2_out.split("\n")[2].split()[2],
+                args,
             )
 
             hom = ""
@@ -760,12 +791,16 @@ def run_scaffold(args):
             "break_orientation",
             "AA_homology_len",
             "AA_homology_seq",
+            "amplicon"
         ]
     ]
     aug = pd.DataFrame(summary)
     out = pd.concat([base.reset_index(drop=True), aug], axis=1)
     out["sc_hom_len"] = out["sc_hom_len"].replace("", np.nan)
     out["sc_hom_len"] = out["sc_hom_len"].astype(float).astype("Int64")
+    out["b_chr1"]= out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
+    out = out.sort_values(by=["b_chr1", "break_pos1"])
+    out = out.drop(['b_chr1'], axis=1)
     out.to_csv(args.out_table, sep="\t", index=False)
     print(f"Augmented scaffold predictions written to {args.out_table}")
 
@@ -818,7 +853,8 @@ def main():
     p.add_argument("--fasta", help="indexed FASTA for extract_region")
 
     args = p.parse_args()
-    if args.mode == "refine":
+    args.out_table = args.out_table + ".tsv"
+    if args.mode == "split":
         run_refine(args)
     else:
         if not args.fasta:
