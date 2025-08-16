@@ -1,9 +1,0 @@
-- "left reads":
-  - "/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_4/corrected/b_chr13_81470036_chr13_81470311_1.fastq00.0_0.cor.fastq.gz"
-  "number": !!int "1"
-  "orientation": "fr"
-  "right reads":
-  - "/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_4/corrected/b_chr13_81470036_chr13_81470311_2.fastq00.0_0.cor.fastq.gz"
-  "single reads":
-  - "/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/K562stuff/bp_4/corrected/b_chr13_81470036_chr13_81470311__unpaired00.0_0.cor.fastq.gz"
-  "type": "paired-end"

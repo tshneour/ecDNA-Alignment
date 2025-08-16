@@ -1,0 +1,633 @@
+=== Breakpoint 18953123 ===
+-- Candidate 0 --
+left_sv          18953123
+right_sv         22935374
+hom_sum_left            0
+hom_sum_right           1
+ins_sum_left            1
+ins_sum_right           1
+homology              N/A
+insertion                
+left_len                1
+right_len               1
+split_matches           2
+total_reads             2
+hom_%                 0.5
+ins_%                 1.0
+total_%               1.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                       rev_clipped                                                         query_aln_sub
+580        14734       chr22   18953123      32S68M           False            True  TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA  TCCATCTGGGAAACGGAACAAACCTGCATGCCGCATGGATCATGGTGGCCCAGAGTGGGGTGCCCAGG
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                     query_aln_sub
+579        14734       chr22   22935374      68H32M            True            True              TTGGGTCTCAGAGTTTGTGCTGAGTTAGTTAA
+
+=== Breakpoint 20950574 ===
+-- Candidate 0 --
+left_sv          20950623.0
+right_sv           20953840
+hom_sum_left              1
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                  C
+insertion                  
+left_len                  1
+right_len                 1
+split_matches             0
+total_reads               2
+hom_%                   0.5
+ins_%                   0.0
+total_%                 0.5
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match       rev_clipped                                                                         query_aln_sub
+743        53204       chr22   20950540      84M16S            True           False  TAATTTTTTGTATTTT  GCTACCCCAGAAGTATAGGCATGGCTGCTTGCACCACCAATTTAAATGCTAATTACTTCTGAAAACACCCTCACACACATGCCC
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match        rev_clipped                                                                        query_aln_sub
+758        36079       chr22   20953840      17S83M           False           False  ACCCTCACACACATGCC  CTAATTTTTTGTATTTTTAGTAGAGATGGGGTTTCACCATGTTGCTCAGGCTGGTCTCAAACTCCTGAGCTCAGGCGATCCAC
+
+=== Breakpoint 23049708 ===
+-- Candidate 1 --
+left_sv          23049749.0
+right_sv         23108142.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              1
+ins_sum_right             0
+homology                 TT
+insertion                 T
+left_len                  1
+right_len                 1
+split_matches             0
+total_reads               2
+hom_%                   0.0
+ins_%                   0.5
+total_%                 0.5
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                       query_aln_sub
+869         3472       chr22   23049652       98M2S           False            True          TT  CATGATGATAGCATGATAGAGATAAAAGAGGTAATGATGCTAGTCGGTGAAAGTAGGAATGTATACTGCCGTCCATTCCCCCTGAATACACACTGATT
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                  query_aln_sub
+970         2482       chr22   23108050       93M7S           False           False     GTTTTGT  TAATGCCACTATTGCCCATCTGGGTCTGTACAAATCCAAATTCATCTTCCAGGATCATTCAACTATTGTAGAGATCAGTCCAGTAAACTGAAA
+
+-- Candidate 12 --
+left_sv          23049838.0
+right_sv         23107953.0
+hom_sum_left              1
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                 A
+left_len                  2
+right_len                 1
+split_matches             0
+total_reads               3
+hom_%              0.333333
+ins_%                   0.0
+total_%            0.333333
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                   rev_clipped                                                                                       query_aln_sub
+868         3472       chr22   23049741       98M2S            True           False                                            AG  TCACTGGTTCTGATCTTATTCTATGAGGGATTTGGTCAAGCCCTCAGTATCTGCTTCAGTGATGTAAGTGTGCACCTACTGCCATAGCATTGTGTTCC
+889        17722       chr22   23049783      56M44S           False           False  AAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGT                                            CTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCC
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                    query_aln_sub
+986        80022       chr22   23107953       5S95M           False           False       AGGGA  AATAGACAAGACCTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCCAGGAGATCCCCATCTGGCACAGATATT
+
+-- Candidate 15 --
+left_sv          23049838.0
+right_sv         23108462.0
+hom_sum_left              1
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                 A
+left_len                  2
+right_len                 1
+split_matches             0
+total_reads               3
+hom_%              0.333333
+ins_%                   0.0
+total_%            0.333333
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                   rev_clipped                                                                                       query_aln_sub
+868         3472       chr22   23049741       98M2S            True           False                                            AG  TCACTGGTTCTGATCTTATTCTATGAGGGATTTGGTCAAGCCCTCAGTATCTGCTTCAGTGATGTAAGTGTGCACCTACTGCCATAGCATTGTGTTCC
+889        17722       chr22   23049783      56M44S           False           False  AAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGT                                            CTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCC
+Right reads:
+      query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match                rev_clipped                                                                query_aln_sub
+1011         2861       chr22   23108462  25S34M3I38M           False           False  AGAGAGGTTCTGTGTGGGCTGATGA  AAAAGCTCTGGGGTTGGATAGTGGTGATGTTTGCACAACATTTTTACTGTACTTACTGCTGCTTAATTACACACT
+
+=== Breakpoint 23049911 ===
+-- Candidate 1 --
+left_sv          23049749.0
+right_sv         23108142.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              1
+ins_sum_right             0
+homology                 TT
+insertion                 T
+left_len                  1
+right_len                 1
+split_matches             0
+total_reads               2
+hom_%                   0.0
+ins_%                   0.5
+total_%                 0.5
+Left reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                       query_aln_sub
+1074         3472       chr22   23049652       98M2S           False            True          TT  CATGATGATAGCATGATAGAGATAAAAGAGGTAATGATGCTAGTCGGTGAAAGTAGGAATGTATACTGCCGTCCATTCCCCCTGAATACACACTGATT
+Right reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                  query_aln_sub
+1203         2482       chr22   23108050       93M7S           False           False     GTTTTGT  TAATGCCACTATTGCCCATCTGGGTCTGTACAAATCCAAATTCATCTTCCAGGATCATTCAACTATTGTAGAGATCAGTCCAGTAAACTGAAA
+
+-- Candidate 6 --
+left_sv          23049838.0
+right_sv         23107953.0
+hom_sum_left              1
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                 A
+left_len                  2
+right_len                 1
+split_matches             0
+total_reads               3
+hom_%              0.333333
+ins_%                   0.0
+total_%            0.333333
+Left reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                   rev_clipped                                                                                       query_aln_sub
+1073         3472       chr22   23049741       98M2S            True           False                                            AG  TCACTGGTTCTGATCTTATTCTATGAGGGATTTGGTCAAGCCCTCAGTATCTGCTTCAGTGATGTAAGTGTGCACCTACTGCCATAGCATTGTGTTCC
+1094        17722       chr22   23049783      56M44S           False           False  AAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGT                                            CTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCC
+Right reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                    query_aln_sub
+1219        80022       chr22   23107953       5S95M           False           False       AGGGA  AATAGACAAGACCTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCCAGGAGATCCCCATCTGGCACAGATATT
+
+-- Candidate 7 --
+left_sv          23049838.0
+right_sv         23108142.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                  
+left_len                  2
+right_len                 1
+split_matches             0
+total_reads               3
+hom_%                   0.0
+ins_%                   0.0
+total_%                 0.0
+Left reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                   rev_clipped                                                                                       query_aln_sub
+1073         3472       chr22   23049741       98M2S           False           False                                            AG  TCACTGGTTCTGATCTTATTCTATGAGGGATTTGGTCAAGCCCTCAGTATCTGCTTCAGTGATGTAAGTGTGCACCTACTGCCATAGCATTGTGTTCC
+1094        17722       chr22   23049783      56M44S           False           False  AAGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGT                                            CTCAGTATCTGCTTCAGTGATGTAACTGTGCACCTGCAGCCATAGCATTCTGTTCC
+Right reads:
+      query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                  query_aln_sub
+1203         2482       chr22   23108050       93M7S           False           False     GTTTTGT  TAATGCCACTATTGCCCATCTGGGTCTGTACAAATCCAAATTCATCTTCCAGGATCATTCAACTATTGTAGAGATCAGTCCAGTAAACTGAAA
+
+=== Breakpoint 81088033 ===
+-- Candidate 1 --
+left_sv            81088033
+right_sv         81469935.0
+hom_sum_left              2
+hom_sum_right             2
+ins_sum_left              0
+ins_sum_right             2
+homology                GTT
+insertion                  
+left_len                  2
+right_len                 2
+split_matches             4
+total_reads               4
+hom_%                   1.0
+ins_%                   0.5
+total_%                 1.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                      query_aln_sub
+224        78137       chr13   81088033      35S65M            True           False  TCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC  AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+229        60717       chr13   81088033      35S65M            True           False  TCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC  AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                           query_aln_sub
+225        78137       chr13   81469935      62H38M            True            True              GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+228        60717       chr13   81469935      62H38M            True            True              GTTTCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC
+
+-- Candidate 0 --
+left_sv            81088033
+right_sv         81469870.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                  
+left_len                  2
+right_len                 1
+split_matches             2
+total_reads               3
+hom_%                   0.0
+ins_%                   0.0
+total_%                 0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                      query_aln_sub
+224        78137       chr13   81088033      35S65M           False           False  TCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC  AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+229        60717       chr13   81088033      35S65M           False           False  TCTTTGGTCTTTATTCTTCTGTTTTTTTCATTAAC  AACTTTTATCCTCTCTCATGGGGTGCATTACTTTCCAGTCTGGTACATTGTCTAGAAAAGTGTCG
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                rev_clipped                                                                query_aln_sub
+281        31423       chr13   81469796      75M25S           False           False  AATAATGCACCAAAATGGTGGAATG  CTTGCCTCATGCCTGGATGAGGGGTAAGAGACAGGAAACAGGAGGGCAGGAGATTGTCAGAGAGAAACTGCTTTT
+
+=== Breakpoint 81109414 ===
+-- Candidate 1 --
+left_sv                                   81109414.0
+right_sv                                    90438707
+hom_sum_left                                       7
+hom_sum_right                                      1
+ins_sum_left                                       2
+ins_sum_right                                      1
+homology                                         TGG
+insertion        CTGTCACTGACTGAATTAATTTTACCTCATATGTC
+left_len                                           7
+right_len                                          2
+split_matches                                      4
+total_reads                                        9
+hom_%                                       0.888889
+ins_%                                       0.333333
+total_%                                     0.888889
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                             rev_clipped                                                                           query_aln_sub
+290        53350       chr13   81109377      38M62H            True            True  CTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG                                                  CTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+291        53350       chr13   81109329      86M14S            True           False                          GCAAAATCTTAAGC  GTGCCTATGTGTTTATCTCCACAGTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+294        84698       chr13   81109352      63M37S            True            True   GCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG                         GTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+310        53830       chr13   81109336      79M21S            True           False                   GCAAAATCTTAAGCTCAGTTT         TGTGTTTATCTCCACAGTGCAATGTATTGGTTACATAATAGCTGTCTCTGACTGAATTAATTTTACCTCATATGTCTGG
+316        37286       chr13   81109339      76M24S            True           False                GCAAAATCTTAAGCTCAGTTTTTT            GTTTATCTGCACAGTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+317        14946       chr13   81109341      74M26S            True           False              GCAAAATCTTAAGCTCAGTTTTTTAA              TTATCTCCACAGTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+320        16139       chr13   81109334      81M19S            True           False                     GCAAAATCTTAAGCTCAGT       TATGTGTTTATCTCCACAGTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                      query_aln_sub
+289        53350       chr13   90438707      35S65M           False           False  CTGTCACTGACTGAATTAATTTTACCTCATATGTC  TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTGGTCCATCTTGATTATAATTCTATTT
+293        84698       chr13   90438707      60H40M            True            True                                                                TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
+
+-- Candidate 0 --
+left_sv          81109280.0
+right_sv           90438707
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                  
+left_len                  1
+right_len                 2
+split_matches             2
+total_reads               3
+hom_%                   0.0
+ins_%                   0.0
+total_%                 0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                                                                                       query_aln_sub
+318        14946       chr13   81109280       2S98M           False           False          TT  TGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGCGCGTGCCCATGTGCCTATGTGTTTATCTCCACAGTGCAATGTATTGGTTACATAATAGC
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                      query_aln_sub
+289        53350       chr13   90438707      35S65M           False           False  CTGTCACTGACTGAATTAATTTTACCTCATATGTC  TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTGGTCCATCTTGATTATAATTCTATTT
+293        84698       chr13   90438707      60H40M           False           False                                                                TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTG
+
+=== Breakpoint 81470036 ===
+-- Candidate 1 --
+left_sv                                               81470036.0
+right_sv                                              81470311.0
+hom_sum_left                                                   1
+hom_sum_right                                                  1
+ins_sum_left                                                   0
+ins_sum_right                                                  1
+homology                                                  ATAAAA
+insertion        GTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG
+left_len                                                       1
+right_len                                                      2
+split_matches                                                  2
+total_reads                                                    3
+hom_%                                                   0.666667
+ins_%                                                   0.333333
+total_%                                                 0.666667
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                      rev_clipped                                          query_aln_sub
+349        15030       chr13   81469984      53M47S            True           False  GTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG  ATAAACTATTTATACACATACACACGGATGTTCCATATGAGTCTGAAATAAAA
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                            rev_clipped                                                                                   query_aln_sub
+350        15030       chr13   81470259      53M47H            True            True  ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG                                           CTCTGTTTTAAAAAGTTTATCTATATGTCTTGCCACAGATTTATTACTTTTAT
+370        69813       chr13   81470218       94M6S           False           False                                                 TCTGAA  ATGCCTGAATAATATTGATATTAGTTATTTGTAACTTGTATCTCTGTTTTAAAAAGTTTATCTATATGTCTTGCCACAGATTTATTACTTTTAT
+
+-- Candidate 0 --
+left_sv          81469870.0
+right_sv         81470311.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                N/A
+insertion                  
+left_len                  1
+right_len                 2
+split_matches             1
+total_reads               3
+hom_%                   0.0
+ins_%                   0.0
+total_%                 0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                rev_clipped                                                                query_aln_sub
+380        31423       chr13   81469796      75M25S           False           False  CATTCCACCATTTTGGTGCATTATT  CTTGCCTCATGCCTGGATGAGGGGTAAGAGACAGGAAACAGGAGGGCAGGAGATTGTCAGAGAGAAACTGCTTTT
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                            rev_clipped                                                                                   query_aln_sub
+350        15030       chr13   81470259      53M47H           False           False  ATAAAAGTAATAAATCTGTGGCAAGACATATAGATAAACTTTTTAAAACAGAG                                           CTCTGTTTTAAAAAGTTTATCTATATGTCTTGCCACAGATTTATTACTTTTAT
+370        69813       chr13   81470218       94M6S           False           False                                                 TCTGAA  ATGCCTGAATAATATTGATATTAGTTATTTGTAACTTGTATCTCTGTTTTAAAAAGTTTATCTATATGTCTTGCCACAGATTTATTACTTTTAT
+
+=== Breakpoint 90862774 ===
+-- Candidate 0 --
+left_sv                                      90862855.0
+right_sv                                       90864807
+hom_sum_left                                          1
+hom_sum_right                                         1
+ins_sum_left                                          1
+ins_sum_right                                         0
+homology                                           AAAT
+insertion        TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCC
+left_len                                              1
+right_len                                             1
+split_matches                                         2
+total_reads                                           2
+hom_%                                               1.0
+ins_%                                               0.5
+total_%                                             1.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                 rev_clipped                               query_aln_sub
+391        58267       chr13   90862814      42M58H            True            True  TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCCAAAT  TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCCAAAT
+Right reads:
+     query_short query_chrom  query_pos  query_cigar  hom_clip_match  ins_clip_match                             rev_clipped                                                   query_aln_sub
+390        58267       chr13   90864807  38S24M1D38M            True           False  TGTAACGCTGATCATGGGTTCCTTTCTCAGCCCAGTCC  AAATGCTGCTTCTTTTTCCAAATATTTTAGAAAAATTTTCAAATATGTAGCATAGTTGAAAT
+
+=== Breakpoint 92474011 ===
+-- Candidate 0 --
+left_sv                                   92474011.0
+right_sv                                  92475758.0
+hom_sum_left                                       2
+hom_sum_right                                      2
+ins_sum_left                                       0
+ins_sum_right                                      2
+homology                                          AA
+insertion        TTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT
+left_len                                           2
+right_len                                          2
+split_matches                                      4
+total_reads                                        4
+hom_%                                            1.0
+ins_%                                            0.5
+total_%                                          1.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                          rev_clipped                                                           query_aln_sub
+445        57596       chr13   92473942      70M30S            True           False       TTCTTTAAGTTGAAGTGGGAGCATTAATTT  AGACGTAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAA
+450        83594       chr13   92473947      65M35S            True           False  TTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT       TAATGTGATTTCTTCTAATCTATTCATATGATTATTATATTAATGGATGCTAACTAATCATCAAA
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                            rev_clipped                          query_aln_sub
+446        57596       chr13   92475727      32M68H            True            True       AATTCTTTAAGTTGAAGTGGGAGCATTAATTT       AAATTAATGCTCCCACTTCAACTTAAAGAATT
+449        83594       chr13   92475722      37M63H            True            True  AATTCTTTAAGTTGAAGTGGGAGCATTAATTTACTTT  AAAGTAAATTAATGCTCCCACTTCAACTTAAAGAATT
+
+=== Breakpoint 94023408 ===
+-- Candidate 0 --
+left_sv           94023408.0
+right_sv         108500973.0
+hom_sum_left               0
+hom_sum_right              1
+ins_sum_left               3
+ins_sum_right              1
+homology                 N/A
+insertion                   
+left_len                   3
+right_len                  1
+split_matches              2
+total_reads                4
+hom_%                   0.25
+ins_%                    1.0
+total_%                  1.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                       query_aln_sub
+505        62556       chr13   94023348      61M39S           False            True  ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC                                       GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+545        87256       chr13   94023311       98M2S           False            True                                       AT  AACATAGTCCACAGCTATGTGGATGGTTGTGACAGATGTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+546        93655       chr13   94023322      87M13S           False            True                            ATCTATCCTAAAT             CAGCTATGTGGATGGTTGTGACAGATGTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                            query_aln_sub
+504        62556       chr13  108500973      61H39M            True            True              ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC
+
+-- Candidate 1 --
+left_sv           94023408.0
+right_sv         108501148.0
+hom_sum_left               0
+hom_sum_right              0
+ins_sum_left               0
+ins_sum_right              0
+homology                 TTT
+insertion                   
+left_len                   3
+right_len                  1
+split_matches              1
+total_reads                4
+hom_%                    0.0
+ins_%                    0.0
+total_%                  0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                       query_aln_sub
+505        62556       chr13   94023348      61M39S           False           False  ATCTATCCTAAATTCCCTAAGCATCCTCTGTGTCTCTCC                                       GTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+545        87256       chr13   94023311       98M2S           False           False                                       AT  AACATAGTCCACAGCTATGTGGATGGTTGTGACAGATGTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+546        93655       chr13   94023322      87M13S           False           False                            ATCTATCCTAAAT             CAGCTATGTGGATGGTTGTGACAGATGTTGTATTCTGATTTTGAAAACTAGGTTGAAATGTAACATAGTTCTTGACATATGCATTTT
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                   rev_clipped                                                             query_aln_sub
+509        26096       chr13  108501077      72M28S           False           False  AATTTCCCCCACCTTTTCCATTTACTCC  ACATAATATTTCTCATAACTCTTCAAATGAAAAATTGTGCAAAATGTCTGACCGGTCAAATTTGAAACTAAA
+
+=== Breakpoint 133607147 ===
+-- Candidate 2 --
+left_sv                                   133607147
+right_sv                                 23632742.0
+hom_sum_left                                      7
+hom_sum_right                                     2
+ins_sum_left                                      2
+ins_sum_right                                     2
+homology                                      CACTC
+insertion        CACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCA
+left_len                                          7
+right_len                                         7
+split_matches                                     8
+total_reads                                      14
+hom_%                                      0.642857
+ins_%                                      0.285714
+total_%                                    0.642857
+Left reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                                                   query_aln_sub
+0         92037        chr9  133607147      34S66M            True           False  CACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCA                              GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA
+4         31831        chr9  133607147      56H44M            True            True                                                                                        GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTA
+7         88045        chr9  133607147      69H31M            True            True                                                                                                     GAGTGGGTTTTATCAGCTTCCATACCCAAAC
+9         93025        chr9  133607147      29S71M            True           False       CACAGCGGCCAGGGTCAAAGGTGTCCCGT                         GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAA
+21        42709        chr9  133607147      21S79M            True           False               CACAGCGGCCAGGGTCAAAGG                 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATAGG
+24        55306        chr9  133607147      23S77M            True           False             CACAGCGGCCAGGGTCAAAGGTG                   GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATA
+25        74579        chr9  133607147       6S94M            True           False                              CACAGC  GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATAGGTTTCTTTGATCCTAG
+Right reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                     query_aln_sub
+1         92037       chr22   23632704      39M61H            True            True  CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCA                                                           TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+3         31831       chr22   23632682      61M39S           False           False  TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACC                                     GGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+8         88045       chr22   23632669      74M26S           False           False               GTTTGGGTATGGAAGCTGATAAAACC                        GGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+10        93025       chr22   23632709      34M66H            True            True       CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT                                                                ACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+84        43841       chr22   23632654      89M11S           False           False                              CTGATAAAACC         CAGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+90        83530       chr22   23632647       96M4S           False           False                                     AACC  CTCCACCCAGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+94         7231       chr22   23632655      88M12S           False           False                             GCTGATAAAACC          AGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+
+-- Candidate 1 --
+left_sv           133607147
+right_sv         23632740.0
+hom_sum_left              5
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                CTC
+insertion                 C
+left_len                  7
+right_len                 1
+split_matches             5
+total_reads               8
+hom_%                 0.625
+ins_%                   0.0
+total_%               0.625
+Left reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                         rev_clipped                                                                                   query_aln_sub
+0         92037        chr9  133607147      34S66M            True           False  CACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCA                              GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCA
+4         31831        chr9  133607147      56H44M           False           False                                                                                        GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTA
+7         88045        chr9  133607147      69H31M           False           False                                                                                                     GAGTGGGTTTTATCAGCTTCCATACCCAAAC
+9         93025        chr9  133607147      29S71M            True           False       CACAGCGGCCAGGGTCAAAGGTGTCCCGT                         GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAA
+21        42709        chr9  133607147      21S79M            True           False               CACAGCGGCCAGGGTCAAAGG                 GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATAGG
+24        55306        chr9  133607147      23S77M            True           False             CACAGCGGCCAGGGTCAAAGGTG                   GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATA
+25        74579        chr9  133607147       6S94M            True           False                              CACAGC  GAGTGGGTTTTATCAGCTTCCATACCCAAACAGAAATACCCTTAAGGATTTTCTTCTCTGATTGCACTAAATCTATAGGTTTCTTTGATCCTAG
+Right reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                      rev_clipped                                                          query_aln_sub
+14        98862       chr22   23632672      69M31S           False           False  TCTGTTTGGGTATGGAAGCTGATAAAACCCC  CAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAG
+
+-- Candidate 5 --
+left_sv           133607151
+right_sv         23632742.0
+hom_sum_left              0
+hom_sum_right             0
+ins_sum_left              0
+ins_sum_right             0
+homology                  C
+insertion                  
+left_len                  1
+right_len                 7
+split_matches             5
+total_reads               8
+hom_%                   0.0
+ins_%                   0.0
+total_%                 0.0
+Left reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match rev_clipped                   query_aln_sub
+13        98862        chr9  133607151      70H30M           False           False              GGGTTTTATCAGCTTCCATACCCAAACAGA
+Right reads:
+    query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                     query_aln_sub
+1         92037       chr22   23632704      39M61H           False           False  CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGTGGTCA                                                           TGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+3         31831       chr22   23632682      61M39S           False           False  TAAGGGTATTTCTGTTTGGGTATGGAAGCTGATAAAACC                                     GGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+8         88045       chr22   23632669      74M26S           False           False               GTTTGGGTATGGAAGCTGATAAAACC                        GGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+10        93025       chr22   23632709      34M66H           False           False       CACTCCACAGCGGCCAGGGTCAAAGGTGTCCCGT                                                                ACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+84        43841       chr22   23632654      89M11S           False           False                              CTGATAAAACC         CAGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+90        83530       chr22   23632647       96M4S           False           False                                     AACC  CTCCACCCAGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+94         7231       chr22   23632655      88M12S           False           False                             GCTGATAAAACC          AGGAAGGACTAATCGGGCAGGGTGTGGGGAAACAGGGAGGTTGTTCAGATGACCACGGGACACCTTTGACCCTGGCCGCTGTGGAGTG
+
+=== Breakpoint 134155524 ===
+-- Candidate 2 --
+left_sv                                      134155524.0
+right_sv                                     108661411.0
+hom_sum_left                                           5
+hom_sum_right                                          0
+ins_sum_left                                           3
+ins_sum_right                                          0
+homology                                              AT
+insertion        TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCC
+left_len                                               5
+right_len                                              7
+split_matches                                          6
+total_reads                                           12
+hom_%                                           0.416667
+ins_%                                               0.25
+total_%                                         0.416667
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                                rev_clipped                                                                     query_aln_sub
+112        29921        chr9  134155493      32M68H            True            True           GCAGGAGAAGGGACCAGGAAGCATCAGTCCAT                                                  GCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+115        29524        chr9  134155484      41M59H            True            True  TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCCAT                                         TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCCAT
+118        51161        chr9  134155485      40M60H            True            True   CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT                                          CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+184        28031        chr9  134155451      74M26S            True           False                 TATAATTTTCAAGACAAAGCAGGAAG        TCCCCCTTGACATCACCCCTGCACAGGATGTCATCTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+186        44926        chr9  134155445      80M20S            True           False                       TATAATTTTCAAGACAAAGC  ACCTGCTCCCCCTTGACATCACCCCTGCACAGGATGTCATCTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCCAT
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                   query_aln_sub
+111        29921       chr13  108661342      70M30S           False           False           GCAGGAGAAGGGACCAGGAAGCATCAGTCC                          GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+116        29524       chr13  108661351      61M39S           False           False  TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCC                                   ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+117        51161       chr13  108661350      62M38S           False           False   CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCC                                  TATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+166        77319       chr13  108661338      74M26S           False           False               GAGAAGGGACCAGGAAGCATCAGTCC                      CTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+173        60793       chr13  108661334      78M22S           False           False                   AGGGACCAGGAAGCATCAGTCC                  ATGACTTTGAGTGAAGTATTTAGGACTTGCATCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+214        15460       chr13  108661328      84M16S           False           False                         CAGGAAGCATCAGTCC            AGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+221        38163       chr13  108661318       94M6S           False           False                                   CAGTCC  TAAACATTCAAGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+
+-- Candidate 0 --
+left_sv          134155367.0
+right_sv         108661411.0
+hom_sum_left               0
+hom_sum_right              0
+ins_sum_left               0
+ins_sum_right              0
+homology                 N/A
+insertion                   
+left_len                   1
+right_len                  7
+split_matches              3
+total_reads                8
+hom_%                    0.0
+ins_%                    0.0
+total_%                  0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                               rev_clipped                                                 query_aln_sub
+182        80488        chr9  134155367      40S60M           False           False  AAACTGTCACATCGTTGTCCAGAGTGGATGTCCCTGGCTA  ACTAGGAAGTCCTACCAACAGAGGCGTAGGAGCGCCCACATGCAGAGCACTTGCAAAGTA
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                   query_aln_sub
+111        29921       chr13  108661342      70M30S           False           False           GCAGGAGAAGGGACCAGGAAGCATCAGTCC                          GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+116        29524       chr13  108661351      61M39S           False           False  TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCC                                   ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+117        51161       chr13  108661350      62M38S           False           False   CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCC                                  TATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+166        77319       chr13  108661338      74M26S           False           False               GAGAAGGGACCAGGAAGCATCAGTCC                      CTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+173        60793       chr13  108661334      78M22S           False           False                   AGGGACCAGGAAGCATCAGTCC                  ATGACTTTGAGTGAAGTATTTAGGACTTGCATCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+214        15460       chr13  108661328      84M16S           False           False                         CAGGAAGCATCAGTCC            AGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+221        38163       chr13  108661318       94M6S           False           False                                   CAGTCC  TAAACATTCAAGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+
+-- Candidate 1 --
+left_sv          134155515.0
+right_sv         108661411.0
+hom_sum_left               0
+hom_sum_right              0
+ins_sum_left               0
+ins_sum_right              0
+homology                   A
+insertion                 CC
+left_len                   1
+right_len                  7
+split_matches              3
+total_reads                8
+hom_%                    0.0
+ins_%                    0.0
+total_%                  0.0
+Left reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                           rev_clipped                                                     query_aln_sub
+183        80488        chr9  134155452      64M36S           False           False  CCAGCCCATTATAGTTTTCAAGACAAAGGCGGAAGA  CCCCCTTGACATCACCAAAGCCCAGGACGTCATCTCAGTCTGCCGGAGAAGGGACCAGGAAGCA
+Right reads:
+     query_short query_chrom  query_pos query_cigar  hom_clip_match  ins_clip_match                              rev_clipped                                                                                   query_aln_sub
+111        29921       chr13  108661342      70M30S           False           False           GCAGGAGAAGGGACCAGGAAGCATCAGTCC                          GAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+116        29524       chr13  108661351      61M39S           False           False  TCTCAGTCTGCAGGAGAAGGGACCAAGAAGCATCAGTCC                                   ATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+117        51161       chr13  108661350      62M38S           False           False   CTCAGTCTGCAGGAGAAGGGACCAGGAAGCATCAGTCC                                  TATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+166        77319       chr13  108661338      74M26S           False           False               GAGAAGGGACCAGGAAGCATCAGTCC                      CTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+173        60793       chr13  108661334      78M22S           False           False                   AGGGACCAGGAAGCATCAGTCC                  ATGACTTTGAGTGAAGTATTTAGGACTTGCATCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+214        15460       chr13  108661328      84M16S           False           False                         CAGGAAGCATCAGTCC            AGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+221        38163       chr13  108661318       94M6S           False           False                                   CAGTCC  TAAACATTCAAGTTTTATGACTTTGAGTGAAGTATTTAGGACTTGCTTCTATTGAGGCTATTTTACCTTCCTGCTTTGTCTTGAAAATTATAAT
+

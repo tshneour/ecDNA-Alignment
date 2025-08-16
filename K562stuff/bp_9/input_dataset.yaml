@@ -1,7 +1,0 @@
-- "left reads":
-  - "/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/fastq/b_chr22_20950574_chr22_20953842_1.fastq.gz"
-  "number": !!int "1"
-  "orientation": "fr"
-  "right reads":
-  - "/home/tshneour/Desktop/Bruh_Momentum/Research/ecDNA-Alignment/fastq/b_chr22_20950574_chr22_20953842_2.fastq.gz"
-  "type": "paired-end"

@@ -141,6 +141,8 @@ def check_overlap(left, right):
             seq2 = lr["query_aln_sub"] if lr["begin"] else rev_comp(lr["query_aln_sub"])
 
             hom = get_homology(seq1, seq2)
+            # if hom == "":
+            #     hom = "N/A"
             hlen = len(hom)
             s1_no = seq1[:-hlen]
             s2_no = seq2[hlen:]
@@ -259,7 +261,7 @@ def check_overlap(left, right):
     return out.sort_values(["split_matches", "total_%", "total_reads"], ascending=False)
 
 
-def run_refine(args):
+def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t")
     svs = all_reads.groupby("break_pos1")
 
@@ -295,17 +297,17 @@ def run_refine(args):
         
         # Inversion case
         if sv["break_chrom1"].iloc[0] == sv["break_chrom2"].iloc[0]:
-            left = sv[(sv["query_pos"] >= bp - 2000) & (sv["query_end"] <= bp + 2000) & (sv["query_end"] < sv["break_pos2"].iloc[0] - 150)]
+            left = sv[(sv["query_pos"] >= bp - 500) & (sv["query_end"] <= bp + 500) & (sv["query_end"] < sv["break_pos2"].iloc[0] - 150)]
             right = sv[
-                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 2000)
-                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 2000)
+                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 500)
+                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
                 & (sv["query_pos"] > bp + 150)
             ]
         else:
-            left = sv[(sv["query_pos"] >= bp - 2000) & (sv["query_end"] <= bp + 2000)]
+            left = sv[(sv["query_pos"] >= bp - 500) & (sv["query_end"] <= bp + 500)]
             right = sv[
-                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 2000)
-                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 2000)
+                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 500)
+                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
             ]
 
         _, lgrp = refine_step1(left, all_reads, args.verbose)
@@ -395,8 +397,8 @@ def run_refine(args):
     out["b_chr1"]= out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
     out = out.sort_values(by=["b_chr1", "break_pos1"])
     out = out.drop(['b_chr1'], axis=1)
-    out.to_csv(args.out_table, sep="\t", index=False)
     print(f"Augmented SV predictions written to {args.out_table}")
+    return out
 
 
 # -------------------------------------------
@@ -485,9 +487,9 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
         ref_offset = int(ref_offset)
         if i == 0:
             ref_start = (
-                (ref_start - 1) + ref_offset - 2000
+                (ref_start - 1) + ref_offset - 500
                 if ori
-                else (ref_start - 1) + 2000 - ref_offset
+                else (ref_start - 1) + 500 - ref_offset
             )
             ref_fst = ref_start + 1
         ref_start = ref_start + 1
@@ -530,7 +532,8 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
 def test_coordinates(expected_chr, expected_start, expected_end, actual, args):
     region = expected_chr + ":" + str(expected_start) + "-" + str(expected_end)
     expected = extract_region(args.fasta, region).upper()
-    print(f"Mismatch\nExpected: {expected}\nActual: {actual}") if expected != actual else print("")
+    if expected != actual:
+        print(f"Mismatch\nExpected: {expected}\nActual: {actual}")
 
 def handle_inversion(a1_sc_range, a1_ref_range, a1_is_rev, a2_sc_range, a2_ref_range, a2_is_rev, row, sc, aligner):
     seq1 = row["seq1"].upper()
@@ -570,6 +573,19 @@ def handle_inversion(a1_sc_range, a1_ref_range, a1_is_rev, a2_sc_range, a2_ref_r
         # print(f"{format(a1).split("\n")}\n{format(a2).split("\n")}\n")
         return a1, a2, is_seq1_max
 
+def aln_err_density(alns):
+    """
+    Compute combined density of mismatches ('.') and gaps ('-')
+    from pairwise alignments.
+    """
+    total_errors, total_bases = 0, 0
+
+    for i in range(0, len(alns), 2):
+        midline = alns[i+1].strip()
+        total_errors += midline.count('.') + midline.count('-')
+        total_bases += len(midline)
+
+    return total_errors / total_bases if total_bases else 0.0
 
 def run_scaffold(args):
     df = (
@@ -594,16 +610,16 @@ def run_scaffold(args):
     df["ref1"] = (
         df.break_chrom1
         + ":"
-        + (df.break_pos1 - 2000).astype(str)
+        + (df.break_pos1 - 500).astype(str)
         + "-"
-        + (df.break_pos1 + 2000).astype(str)
+        + (df.break_pos1 + 500).astype(str)
     )
     df["ref2"] = (
         df.break_chrom2
         + ":"
-        + (df.break_pos2 - 2000).astype(str)
+        + (df.break_pos2 - 500).astype(str)
         + "-"
-        + (df.break_pos2 + 2000).astype(str)
+        + (df.break_pos2 + 500).astype(str)
     )
     df["seq1"] = df.ref1.apply(lambda r: extract_region(args.fasta, r))
     df["seq2"] = df.ref2.apply(lambda r: extract_region(args.fasta, r))
@@ -686,24 +702,42 @@ def run_scaffold(args):
             hom_len = None
             l_ref_pos = None
             r_ref_pos = None
-            if (row["break_orientation"] == "++" or row["break_orientation"] == "--") and row["break_sv_type"] != "interchromosomal" and (abs(row["break_pos1"] - row["break_pos2"]) <=1000):
+            if (row["break_orientation"] == "++" or row["break_orientation"] == "--") and row["break_sv_type"] != "interchromosomal" and ((a1_fst >= a2_fst and a1_lst <= a2_lst) or (
+                a2_fst >= a1_fst and a2_lst <= a1_lst
+            )):
                 print("Inversion detected.\n")
                 a1, a2, is_seq1 = handle_inversion((a1_fst, a1_lst), (a1_ref_fst, a1_ref_lst), a1_is_rev, (a2_fst, a2_lst), (a2_ref_fst, a2_ref_lst), a2_is_rev, row, sc, aligner)
                 a1_out, a1_fst, a1_lst, a1_ref_fst, a1_ref_lst = reformat_alignment(
                     format(a1).split("\n"),
-                    (is_seq1 and not a1_is_rev) or (not is_seq1 and a1_is_rev),
+                    (is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev),
                     row["break_chrom1"],
                     row["break_pos1"],
-                )   
+                )
+                first_aln_len = len(a1_out.split("\n")[2].split()[2])-1
+                test_coordinates(
+                    df["break_chrom1"][idx],
+                    a1_ref_fst-first_aln_len if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev)) else a1_ref_fst,
+                    a1_ref_fst if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev)) else a1_ref_fst+first_aln_len,
+                    rev_comp(a1_out.split("\n")[2].split()[2]) if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev)) else a1_out.split("\n")[2].split()[2],
+                    args,
+                )
                 a2_out, a2_fst, a2_lst, a2_ref_fst, a2_ref_lst = reformat_alignment(
                     format(a2).split("\n"),
-                    (is_seq1 and a2_is_rev) or (not is_seq1 and not a2_is_rev),
+                    (is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev),
                     row["break_chrom2"],
                     row["break_pos2"],
                 )
+                second_aln_len = len(a2_out.split("\n")[2].split()[2])-1
+                test_coordinates(
+                    df["break_chrom2"][idx],
+                    a2_ref_fst-second_aln_len if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev)) else a2_ref_fst,
+                    a2_ref_fst if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev)) else a2_ref_fst+second_aln_len,
+                    rev_comp(a2_out.split("\n")[2].split()[2]) if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev)) else a2_out.split("\n")[2].split()[2],
+                    args,
+                )
                 print("Inversion handled.\n")
             
-            if a1.score <= 50 or a2.score <= 50:
+            if a1.score <= 50 or a2.score <= 50 or aln_err_density(a1_out.split("\n")) >= 0.1 or aln_err_density(a2_out.split("\n")) >= 0.1:
                 hom = None
             elif (a1_fst >= a2_fst and a1_lst <= a2_lst) or (
                 a2_fst >= a1_fst and a2_lst <= a1_lst
@@ -801,8 +835,8 @@ def run_scaffold(args):
     out["b_chr1"]= out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
     out = out.sort_values(by=["b_chr1", "break_pos1"])
     out = out.drop(['b_chr1'], axis=1)
-    out.to_csv(args.out_table, sep="\t", index=False)
     print(f"Augmented scaffold predictions written to {args.out_table}")
+    return out
 
 
 # -------------------------------------------
@@ -811,12 +845,12 @@ def run_scaffold(args):
 
 
 def main():
-    p = argparse.ArgumentParser(description="SV refinement OR scaffold reconstruction")
+    p = argparse.ArgumentParser(description="SV split read analysis OR scaffold reconstruction")
     p.add_argument("file", help="input TSV")
     p.add_argument(
         "--mode",
-        choices=["refine", "scaffold"],
-        default="refine",
+        choices=["split", "scaffold", "both"],
+        default="split",
         help="which pipeline to run",
     )
     p.add_argument(
@@ -855,11 +889,20 @@ def main():
     args = p.parse_args()
     args.out_table = args.out_table + ".tsv"
     if args.mode == "split":
-        run_refine(args)
+        out = run_split(args)
+        out.to_csv(args.out_table, sep="\t", index=False)
+    elif args.mode == "scaffold":
+        if not args.fasta:
+            p.error("--fasta is required in scaffold mode")
+        out = run_scaffold(args)
+        out.to_csv(args.out_table, sep="\t", index=False)
     else:
         if not args.fasta:
             p.error("--fasta is required in scaffold mode")
-        run_scaffold(args)
+        out_sc = run_scaffold(args)
+        out_split = run_split(args)
+        final = pd.concat([out_sc.reset_index(drop=True), out_split[["split_matches", "sp_left_sv", "sp_right_sv", "sp_hom_len", "hom"]].reset_index(drop=True)], axis=1)
+        final.to_csv(args.out_table, sep="\t", index=False)
 
 
 if __name__ == "__main__":
