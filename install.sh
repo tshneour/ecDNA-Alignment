@@ -6,7 +6,7 @@ GITHUB_REPO="https://github.com/tshneour/ecDNA-Alignment.git"
 PROJECT_DIR="${PROJECT_DIR:-ecDNA-Alignment}"   
 BRANCH="${BRANCH:-master}"
 
-SPADES_VERSION="3.15.5"
+SPADES_VERSION="4.2.0"
 SPADES_TARBALL="SPAdes-$SPADES_VERSION-Linux.tar.gz"
 SPADES_URL_GH="https://github.com/ablab/spades/releases/download/v$SPADES_VERSION/$SPADES_TARBALL"
 SPADES_URL_FALLBACK="http://cab.spbu.ru/files/release$SPADES_VERSION/$SPADES_TARBALL"
