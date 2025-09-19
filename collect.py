@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import pysam
 import re
 import argparse
@@ -7,6 +8,104 @@ import os
 # import gzip
 import subprocess
 
+# Identify sv orientation from split alignment cigar
+def get_sv_ori(cigar):
+    l_matches = re.search(r"^\d+[SH]", cigar)
+    r_matches = re.search(r"\d+[SH]$", cigar)
+    # print(cigar)
+    # print(l_matches)
+    # print(r_matches)
+
+    if l_matches:
+        return "-"
+    elif r_matches:
+        return "+"
+    else:
+        raise Exception("No clip matches in cigar string")
+
+def filter_for_pos_ori(
+    read1,
+    read2,
+    chrom1,
+    break_pos1,
+    chrom2,
+    break_pos2,
+    sv_type,
+    sv_orientation,
+    sup=None,
+):
+    left, right = None, None
+
+    # If split read, treat read1 as primary alignment and read2 as supplementary alignment
+    if sup is not None:
+        read1 = read1 if sup.is_read1 else read2
+        read2 = sup
+
+    # Check that split alignments/discordant mates are on right chromosomes
+    if not (
+        (read1.reference_name == chrom1 and read2.reference_name == chrom2)
+        or (read1.reference_name == chrom2 and read2.reference_name == chrom1)
+    ):
+        return False
+
+    # Determine which alignment represents left side of sv and which represents right side
+    if chrom1 == chrom2:
+        left = (
+            read1
+            if abs(read1.reference_start - break_pos1)
+            < abs(read2.reference_start - break_pos1)
+            else read2
+        )
+        right = (
+            read1
+            if abs(read1.reference_start - break_pos2)
+            < abs(read2.reference_start - break_pos2)
+            else read2
+        )
+    else:
+        left = read1 if read1.reference_name == chrom1 else read2
+        right = read1 if read1.reference_name == chrom2 else read2
+
+    # Check that splits/mates are reasonably close to AA SV ends
+    if (
+        abs(left.reference_start - break_pos1) >= 500
+        or abs(right.reference_start - break_pos2) >= 500
+    ):
+        return False
+    
+    # Left inversion
+    if sv_orientation == "--":
+        # Expected AA SV direction/Illumina orientations
+        if sup is not None and not (get_sv_ori(left.cigarstring) == "-" and get_sv_ori(right.cigarstring) == "-"):
+            return False
+        if sup is None and sv_type != "interchromosomal" and not (left.is_reverse and right.is_reverse):
+            return False
+
+    # Right inversion
+    elif sv_orientation == "++":
+        # Expected AA SV direction/Illumina orientations
+        if sup is not None and not (get_sv_ori(left.cigarstring) == "+" and get_sv_ori(right.cigarstring) == "+"):
+            return False
+        if sup is None and sv_type != "interchromosomal" and not (left.is_forward and right.is_forward):
+            return False
+    # Deletion
+    elif sv_orientation == "+-":
+        # Expected AA SV direction/Illumina orientations
+        if sup is not None and not (get_sv_ori(left.cigarstring) == "+" and get_sv_ori(right.cigarstring) == "-"):
+            return False
+        if sup is None and sv_type != "interchromosomal" and not (left.is_forward and right.is_reverse):
+            return False
+    # Duplication
+    elif sv_orientation == "-+":
+        # Expected AA SV direction/Illumina orientations
+        if sup is not None and not (get_sv_ori(left.cigarstring) == "-" and get_sv_ori(right.cigarstring) == "+"):
+            return False
+        if sup is None and sv_type != "interchromosomal" and not (left.is_reverse and right.is_forward):
+            return False
+
+    return True
+
+
 def check_strict(read1, read2, pos1, pos2, region_size, sup=None):
     def overlaps_region(read, center, region_size):
         region_start = center - region_size
@@ -14,17 +113,19 @@ def check_strict(read1, read2, pos1, pos2, region_size, sup=None):
         return read.reference_start <= region_end and read.reference_end >= region_start
 
     def overlaps_either_region(read):
-        return (overlaps_region(read, pos1, region_size) or
-                overlaps_region(read, pos2, region_size))
+        return overlaps_region(read, pos1, region_size) or overlaps_region(
+            read, pos2, region_size
+        )
 
     # Check reads overlap with one of either region
     if sup is not None:
-        return (overlaps_either_region(read1) and
-                overlaps_either_region(read2) and
-                overlaps_either_region(sup))
+        return (
+            overlaps_either_region(read1)
+            and overlaps_either_region(read2)
+            and overlaps_either_region(sup)
+        )
     else:
-        return (overlaps_either_region(read1) and
-                overlaps_either_region(read2))
+        return overlaps_either_region(read1) and overlaps_either_region(read2)
 
 
 def rev_comp(dna):
@@ -33,7 +134,9 @@ def rev_comp(dna):
     return "".join(complement[base] for base in reversed_dna)
 
 
-def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
+def get_pairs(
+    regions, chrom1, chrom2, break_pos1, break_pos2, sv_type, sv_orientation, args
+):
     """
     Fetch all paired reads, including those with split alignments
 
@@ -62,13 +165,27 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                 continue
 
             if not (aln.is_mapped):
-                # print("Unmapped read")
+                print("Unmapped read found")
+                # print(aln.query_sequence)
+                # mate = samfile.mate(aln)
+                # print(mate.reference_name)
+                # print(mate.reference_start)
+                # print("+" if mate.is_forward else "-")
+                # print("read1" if mate.is_read1 else "read2")
+                # print(mate.query_sequence)
+                # print()
                 continue
 
             try:
                 mate = samfile.mate(aln)
             except ValueError as e:
                 print(e)
+                # print(aln.reference_name)
+                # print(aln.reference_start)
+                # print("+" if aln.is_forward else "-")
+                # print("read1" if aln.is_read1 else "read2")
+                # print(aln.query_sequence)
+                # print()
                 continue
 
             # Filter out unhelpful discordant pairs
@@ -80,8 +197,8 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                     and (
                         not mate.reference_name == chrom2
                         or not (
-                            break_pos2 - 500 < mate.reference_start
-                            and break_pos2 + 500 > mate.reference_start
+                            break_pos2 - args.refine < mate.reference_start
+                            and break_pos2 + args.refine > mate.reference_start
                         )
                     )
                 ) or (
@@ -89,13 +206,46 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                     and (
                         not mate.reference_name == chrom1
                         or not (
-                            break_pos1 - 500 < mate.reference_start
-                            and break_pos1 + 500 > mate.reference_start
+                            break_pos1 - args.refine < mate.reference_start
+                            and break_pos1 + args.refine > mate.reference_start
                         )
                     )
                 ):
                     continue
 
+            # Avoid inclusion of non-informative region to the right of foldback
+            # if sv_type == "foldback":
+            #     if (
+            #         i == 0
+            #         and (
+            #             aln.reference_end <= break_pos1 - 20
+            #             or (
+            #                 mate.reference_name == chrom1
+            #                 and mate.reference_end <= break_pos1 - 20
+            #             )
+            #         )
+            #         or (
+            #             mate.reference_name == chrom2
+            #             and mate.reference_start > break_pos2 + 20
+            #         )
+            #     ):
+            #         continue
+            #     if (
+            #         i == 1
+            #         and (
+            #             aln.reference_start > break_pos2 + 20
+            #             or (
+            #                 mate.reference_name == chrom2
+            #                 and mate.reference_start > break_pos2 + 20
+            #             )
+            #         )
+            #         or (
+            #             mate.reference_name == chrom1
+            #             and mate.reference_end <= break_pos1 - 20
+            #         )
+            #     ):
+            #         continue
+            read1, sup, read2 = None, None, None
             if aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"):
                 sa_tag = (aln.get_tag("SA")).split(";")[:-1]
                 sa_tag = sa_tag[0]
@@ -126,12 +276,27 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                         )
                         read1 = non_sup if non_sup.is_read1 else mate
                         read2 = non_sup if non_sup.is_read2 else mate
-                        split_alignments.append((read1, sup, read2))
                         found_split2 = True
                         break
                 if not found_split2:
                     print(sup_name, sup_pos, sup_cigar, sup_tlen)
                     raise NameError("split mate not found")
+
+                if not filter_for_pos_ori(
+                    read1,
+                    read2,
+                    chrom1,
+                    break_pos1,
+                    chrom2,
+                    break_pos2,
+                    sv_type,
+                    sv_orientation,
+                    sup,
+                ):
+                    continue
+
+                split_alignments.append((read1, sup, read2))
+                split_alignments.append((read1, sup, read2))
 
             elif mate.is_supplementary or mate.is_secondary or mate.has_tag("SA"):
                 sa_tag = (mate.get_tag("SA")).split(";")[:-1]
@@ -163,18 +328,48 @@ def get_pairs(regions, chrom1, chrom2, break_pos1, break_pos2):
                         )
                         read1 = non_sup if non_sup.is_read1 else aln
                         read2 = non_sup if non_sup.is_read2 else aln
-                        split_alignments.append((read1, sup, read2))
                         found_split2 = True
                         break
+
                 if not found_split2:
                     print(sup_name, sup_pos, sup_cigar, sup_tlen)
                     raise NameError("split mate not found")
+
+                if not filter_for_pos_ori(
+                    read1,
+                    read2,
+                    chrom1,
+                    break_pos1,
+                    chrom2,
+                    break_pos2,
+                    sv_type,
+                    sv_orientation,
+                    sup,
+                ):
+                    continue
+
+                split_alignments.append((read1, sup, read2))
+                split_alignments.append((read1, sup, read2))
 
             elif not aln.is_proper_pair and aln.next_reference_name == (
                 chrom2 if i == 0 else chrom1
             ):
                 read1 = aln if aln.is_read1 else mate
                 read2 = aln if aln.is_read2 else mate
+
+                if not filter_for_pos_ori(
+                    read1,
+                    read2,
+                    chrom1,
+                    break_pos1,
+                    chrom2,
+                    break_pos2,
+                    sv_type,
+                    sv_orientation,
+                ):
+                    continue
+
+                nonsplit_alignments.append((read1, read2))
                 nonsplit_alignments.append((read1, read2))
 
             elif aln.is_proper_pair:
@@ -227,126 +422,130 @@ def fetch_alignments(
     region2 = samfile.fetch(chrom2, pos2 - args.refine, pos2 + args.refine + 1)
 
     split_alignments, nonsplit_alignments = get_pairs(
-        [region1, region2], chrom1, chrom2, pos1, pos2
+        [region1, region2], chrom1, chrom2, pos1, pos2, sv_type, orientation, args
     )
 
-    fast1_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_1.fastq"
-    fast2_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_2.fastq"
-    os.makedirs("fastq", exist_ok=True)
-    with open(fast1_name, "w") as fast1:
-        with open(fast2_name, "w") as fast2:
-            for pair in nonsplit_alignments:
-                read1, read2 = pair
-                fast1.write(
-                    "@"
-                    + read1.query_name
-                    + "\n"
-                    + (
-                        read1.query_sequence
-                        if read1.is_forward
-                        else rev_comp(read1.query_sequence)
-                    )
-                    + "\n"
-                    + "+\n"
-                    + "".join(
-                        list(
-                            map(
-                                lambda x: chr(x + 33),
-                                (
-                                    read1.query_qualities
-                                    if read1.is_forward
-                                    else read1.query_qualities[::-1]
-                                ),
-                            )
-                        )
-                    )
-                    + "\n"
-                )
-                fast2.write(
-                    "@"
-                    + read2.query_name
-                    + "\n"
-                    + (
-                        read2.query_sequence
-                        if read2.is_forward
-                        else rev_comp(read2.query_sequence)
-                    )
-                    + "\n"
-                    + "+\n"
-                    + "".join(
-                        list(
-                            map(
-                                lambda x: chr(x + 33),
-                                (
-                                    read2.query_qualities
-                                    if read2.is_forward
-                                    else read2.query_qualities[::-1]
-                                ),
-                            )
-                        )
-                    )
-                    + "\n"
-                )
-            for pair in split_alignments:
-                read1_1, read1_2, read2 = pair
-                fast1.write(
-                    "@"
-                    + read1_1.query_name
-                    + "\n"
-                    + (
-                        read1_1.query_sequence
-                        if read1_1.is_forward
-                        else rev_comp(read1_1.query_sequence)
-                    )
-                    + "\n"
-                    + "+\n"
-                    + "".join(
-                        list(
-                            map(
-                                lambda x: chr(x + 33),
-                                (
-                                    read1_1.query_qualities
-                                    if read1_1.is_forward
-                                    else read1_1.query_qualities[::-1]
-                                ),
-                            )
-                        )
-                    )
-                    + "\n"
-                )
-                fast2.write(
-                    "@"
-                    + read2.query_name
-                    + "\n"
-                    + (
-                        read2.query_sequence
-                        if read2.is_forward
-                        else rev_comp(read2.query_sequence)
-                    )
-                    + "\n"
-                    + "+\n"
-                    + "".join(
-                        list(
-                            map(
-                                lambda x: chr(x + 33),
-                                (
-                                    read2.query_qualities
-                                    if read2.is_forward
-                                    else read2.query_qualities[::-1]
-                                ),
-                            )
-                        )
-                    )
-                    + "\n"
-                )
-    subprocess.run(["gzip", fast1_name, "-f"])
-    subprocess.run(["gzip", fast2_name, "-f"])
+    # fast1_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_1.fastq"
+    # print(fast1_name)
+    # fast2_name = f"fastq/b_{chrom1}_{pos1 + 1}_{chrom2}_{pos2 + 1}_2.fastq"
+    # os.makedirs("fastq", exist_ok=True)
+    # with open(fast1_name, "w") as fast1:
+    #     with open(fast2_name, "w") as fast2:
+    #         for pair in nonsplit_alignments:
+    #             read1, read2 = pair
+    #             fast1.write(
+    #                 "@"
+    #                 + read1.query_name
+    #                 + "\n"
+    #                 + (
+    #                     read1.query_sequence
+    #                     if read1.is_forward
+    #                     else rev_comp(read1.query_sequence)
+    #                 )
+    #                 + "\n"
+    #                 + "+\n"
+    #                 + "".join(
+    #                     list(
+    #                         map(
+    #                             lambda x: chr(x + 33),
+    #                             (
+    #                                 read1.query_qualities
+    #                                 if read1.is_forward
+    #                                 else read1.query_qualities[::-1]
+    #                             ),
+    #                         )
+    #                     )
+    #                 )
+    #                 + "\n"
+    #             )
+    #             fast2.write(
+    #                 "@"
+    #                 + read2.query_name
+    #                 + "\n"
+    #                 + (
+    #                     read2.query_sequence
+    #                     if read2.is_forward
+    #                     else rev_comp(read2.query_sequence)
+    #                 )
+    #                 + "\n"
+    #                 + "+\n"
+    #                 + "".join(
+    #                     list(
+    #                         map(
+    #                             lambda x: chr(x + 33),
+    #                             (
+    #                                 read2.query_qualities
+    #                                 if read2.is_forward
+    #                                 else read2.query_qualities[::-1]
+    #                             ),
+    #                         )
+    #                     )
+    #                 )
+    #                 + "\n"
+    #             )
+    #         for pair in split_alignments:
+    #             read1_1, read1_2, read2 = pair
+    #             fast1.write(
+    #                 "@"
+    #                 + read1_1.query_name
+    #                 + "\n"
+    #                 + (
+    #                     read1_1.query_sequence
+    #                     if read1_1.is_forward
+    #                     else rev_comp(read1_1.query_sequence)
+    #                 )
+    #                 + "\n"
+    #                 + "+\n"
+    #                 + "".join(
+    #                     list(
+    #                         map(
+    #                             lambda x: chr(x + 33),
+    #                             (
+    #                                 read1_1.query_qualities
+    #                                 if read1_1.is_forward
+    #                                 else read1_1.query_qualities[::-1]
+    #                             ),
+    #                         )
+    #                     )
+    #                 )
+    #                 + "\n"
+    #             )
+    #             fast2.write(
+    #                 "@"
+    #                 + read2.query_name
+    #                 + "\n"
+    #                 + (
+    #                     read2.query_sequence
+    #                     if read2.is_forward
+    #                     else rev_comp(read2.query_sequence)
+    #                 )
+    #                 + "\n"
+    #                 + "+\n"
+    #                 + "".join(
+    #                     list(
+    #                         map(
+    #                             lambda x: chr(x + 33),
+    #                             (
+    #                                 read2.query_qualities
+    #                                 if read2.is_forward
+    #                                 else read2.query_qualities[::-1]
+    #                             ),
+    #                         )
+    #                     )
+    #                 )
+    #                 + "\n"
+    #             )
+    # subprocess.run(["gzip", fast1_name, "-f"])
+    # subprocess.run(["gzip", fast2_name, "-f"])
+
 
     # Collect details of split alignments
     split_alignment_details = []
     for pair in split_alignments:
         read1_1, read1_2, read2 = pair
-        if args.strict and not check_strict(read1_1, read2, pos1, pos2, args.refine, sup=read1_2):
+        if args.strict and not check_strict(
+            read1_1, read2, pos1, pos2, args.refine, sup=read1_2
+        ):
             break
         # Filter out low quality reads
         if (
@@ -357,6 +556,11 @@ def fetch_alignments(
             or read2.mapping_quality > mapq_threshold
         ) or ((read1_1.is_mapped and read1_2.is_mapped) or read2.is_mapped):
             for read in pair:
+                query_aln_full = read.query_sequence
+                if read.is_secondary or read.is_supplementary:
+                    prim_read = read1_1 if read1_1.has_tag("SA") else read2
+                    query_aln_full = prim_read.query_sequence if prim_read.is_forward == read.is_forward else rev_comp(prim_read.query_sequence)
+
                 split_alignment_details.append(
                     {
                         "break_chrom1": chrom1,
@@ -381,9 +585,10 @@ def fetch_alignments(
                         "query_end": read.reference_end,
                         "query_orientation": "+" if read.is_forward else "-",
                         "query_cigar": read.cigarstring,
-                        "query_aln_full": read.query_sequence,
+                        "query_aln_full": query_aln_full,
                         "query_aln_sub": read.query_alignment_sequence,
-                        "amplicon": amplicon
+                        "amplicon": amplicon,
+                        "query_qualities": read.query_qualities
                     }
                 )
 
@@ -425,7 +630,8 @@ def fetch_alignments(
                         "query_cigar": read.cigarstring,
                         "query_aln_full": read.query_sequence,
                         "query_aln_sub": read.query_alignment_sequence,
-                        "amplicon": amplicon
+                        "amplicon": amplicon,
+                        "query_qualities": read.query_qualities
                     }
                 )
 
@@ -475,7 +681,9 @@ if __name__ == "__main__":
     # print(samfile.header)
     df = pd.concat(
         [
-            pd.read_csv(os.path.join(args.sum, f), sep="\t").assign(amplicon=f.split("_")[1])
+            pd.read_csv(os.path.join(args.sum, f), sep="\t").assign(
+                amplicon=f.split("_")[1]
+            )
             for f in os.listdir(args.sum)
             if ".tsv" in f
         ],
@@ -516,7 +724,7 @@ if __name__ == "__main__":
             hom_len,
             homology,
             args,
-            amplicon
+            amplicon,
         )
         num_split += len(split_df) / 3
         num_paired += (2 * len(split_df) / 3) + len(nonsplit_df)
@@ -530,7 +738,148 @@ if __name__ == "__main__":
         output = pd.concat([output, split_df], ignore_index=True)
         output = pd.concat([output, nonsplit_df], ignore_index=True)
 
-    output.to_csv(
+    # Get split reads to determine how to filter concordant reads
+    output_copy = output.copy()
+    mask_split = output_copy["split"]
+    output_copy = output_copy.loc[mask_split]
+    output_copy["ref_pos"] = output_copy.apply(lambda row: row["query_end"] if row["query_cigar"].endswith("S") or row["query_cigar"].endswith("H") else row["query_pos"], axis=1)
+
+    # Determine sv end (left or right) of split alignments
+    left_is_first = ((output_copy["break_chrom1"] != output_copy["break_chrom2"]) & (output_copy["query_chrom"] == output_copy["break_chrom1"])) | ((output_copy["break_chrom1"] == output_copy["break_chrom2"]) & ((output_copy["query_pos"] - output_copy["break_pos1"]).abs() < (output_copy["query_pos"] - output_copy["break_pos2"]).abs()))
+    output_copy["is_left"]  = left_is_first
+
+    sv_cols = ["break_chrom1", "break_pos1"]
+
+    # Turn groups of split reads into aggregated series
+    def sv_summary(grp):
+        mask_left = grp["is_left"]
+        mask_right = ~mask_left
+
+        left_pos = (grp.loc[mask_left, "ref_pos"].value_counts().idxmax())
+        right_pos = (grp.loc[mask_right, "ref_pos"].value_counts().idxmax())
+
+        all_left_within_10 = (grp.loc[mask_left, "ref_pos"]
+                                .sub(grp.loc[mask_left, "break_pos1"])
+                                .abs()
+                                .le(10).all())
+        all_right_within_10 = (grp.loc[mask_right, "ref_pos"]
+                                .sub(grp.loc[mask_right, "break_pos2"])
+                                .abs()
+                                .le(10).all())
+
+        return pd.Series({
+            "left_pos": left_pos,
+            "right_pos": right_pos,
+            "all_left_within_10": all_left_within_10,
+            "all_right_within_10": all_right_within_10
+        })
+
+    df_sv = output_copy.groupby(sv_cols).apply(sv_summary).reset_index()
+
+    df_sv = df_sv[(df_sv["all_left_within_10"]) & (df_sv["all_right_within_10"])].copy()
+    out = output.merge(df_sv, on=sv_cols, how="left")
+
+    # Determine sv end (left or right) of split alignments
+    left_is_first = ((out["break_chrom1"] != out["break_chrom2"]) & (out["query_chrom"] == out["break_chrom1"])) | ((out["break_chrom1"] == out["break_chrom2"]) & ((out["query_pos"] - out["break_pos1"]).abs() < (out["query_pos"] - out["break_pos2"]).abs()))
+    out["is_left"]  = left_is_first
+
+    drop_mask = pd.Series(False, index=out.index)
+
+    is_concordant = out["proper_pair"] == "Concordant"
+    ori0 = out["break_orientation"].str.get(0)
+    ori1 = out["break_orientation"].str.get(1)
+
+    left_present = out["left_pos"].notna()
+    cond_left_plus = is_concordant & left_present & out["is_left"] & (ori0 == "+") & (out["query_end"] > out["left_pos"])
+    cond_left_minus = is_concordant & left_present & out["is_left"] & (ori0 == "-") & (out["query_pos"] < out["left_pos"])
+    drop_mask |= (cond_left_plus | cond_left_minus)
+    # print(drop_mask.iloc[406])
+
+    right_present = out["right_pos"].notna()
+    cond_right_plus = is_concordant & right_present & ~(out["is_left"]) & (ori1 == "+") & (out["query_end"] > out["right_pos"])
+    # print(cond_right_plus.iloc[406])
+    cond_right_minus = is_concordant & right_present & ~(out["is_left"]) & (ori1 == "-") & (out["query_pos"] < out["right_pos"])
+    # print(cond_right_minus.iloc[406])
+    # print(out["query_pos"].iloc[406], out["right_pos"].iloc[406])
+    drop_mask |= (cond_right_plus | cond_right_minus)
+    # print(drop_mask.iloc[406])
+
+    remove = out.loc[drop_mask, "query_name"]
+    final_output = out.copy()
+    final_output["prune"] = drop_mask
+
+    for sv, reads in final_output.groupby(["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"]):
+        chrom1, pos1, chrom2, pos2 = sv
+        fast1_name = f"fastq/b_{chrom1}_{pos1}_{chrom2}_{pos2}_1.fastq"
+        fast2_name = f"fastq/b_{chrom1}_{pos1}_{chrom2}_{pos2}_2.fastq"
+        os.makedirs("fastq", exist_ok=True)
+        with open(fast1_name, "w") as fast1:
+            with open(fast2_name, "w") as fast2:
+                it = reads.iterrows()
+                for idx, read in it:
+                    if "H" in read["query_cigar"]:
+                        continue
+                    if (read["read_num"] == "1") and ((read["prune"]) or (reads.loc[idx+1, "prune"])):
+                        next(it)
+                        continue
+                    if read["read_num"] == "1":
+                        fast1.write(
+                            "@"
+                            + read["query_name"]
+                            + "\n"
+                            + (
+                                read["query_aln_full"]
+                                if read["query_orientation"] == "+"
+                                else rev_comp(read["query_aln_full"])
+                            )
+                            + "\n"
+                            + "+\n"
+                            + "".join(
+                                list(
+                                    map(
+                                        lambda x: chr(x + 33),
+                                        (
+                                            read["query_qualities"]
+                                            if read["query_orientation"] == "+"
+                                            else read["query_qualities"][::-1]
+                                        ),
+                                    )
+                                )
+                            )
+                            + "\n"
+                        )
+                    else:
+                        fast2.write(
+                            "@"
+                            + read["query_name"]
+                            + "\n"
+                            + (
+                                read["query_aln_full"]
+                                if read["query_orientation"] == "+"
+                                else rev_comp(read["query_aln_full"])
+                            )
+                            + "\n"
+                            + "+\n"
+                            + "".join(
+                                list(
+                                    map(
+                                        lambda x: chr(x + 33),
+                                        (
+                                            read["query_qualities"]
+                                            if read["query_orientation"] == "+"
+                                            else read["query_qualities"][::-1]
+                                        ),
+                                    )
+                                )
+                            )
+                            + "\n"
+                        )
+        subprocess.run(["gzip", fast1_name, "-f"])
+        subprocess.run(["gzip", fast2_name, "-f"])
+    
+    final_output = final_output.drop(columns=["all_left_within_10", "all_right_within_10", "query_qualities"])
+
+    final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
         sep="\t",
         index=False,

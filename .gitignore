@@ -1,17 +1,6 @@
-alignment.ipynb
-TCGA_analysis.tsv
-K562/*
-hg19
-COLO320DM
+*
 
-!K562/K562_summaries.tsv
-venv
-HCC827_SV_summaries
-
-COLO320DM*
-out
-fastq
-SPAdes-4.2.0-Linux
-reads_R1.fastq
-reads_R2.fastq
-Trimmomatic*
+!collect.py
+!refine.py
+!README.md
+!install.sh
