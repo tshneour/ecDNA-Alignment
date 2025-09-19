@@ -56,9 +56,18 @@ PYTHON_BIN=python3            # which Python to use
 
 ## Quickstart
 
-1. **Collect reads** for all AA breakpoints into an alignment table + per-breakpoint read pairs:
+
+1. **Setup**
 
 ```bash
+./install.sh
+cd ecDNA-Alignment
+source activate_env.sh
+```
+
+2. **Collect reads** for all AA breakpoints into an alignment table + per-breakpoint read pairs:
+
+
 python collect.py 350 path/to/AA_summaries/ path/to/sample.bam \
   --strict \
   -v \
@@ -73,31 +82,7 @@ This writes:
   * `fastq/b_<chr1>_<pos1+1>_<chr2>_<pos2+1>_1.fastq.gz`
   * `fastq/b_<chr1>_<pos1+1>_<chr2>_<pos2+1>_2.fastq.gz`
 
-2. **Refine breakpoints** (split-read evidence only):
-
-```bash
-python refine.py alignments.tsv \
-  --mode split \
-  --out-table refined_split \
-  --split-log split_read_alignments.txt \
-  -v
-# Produces refined_split.tsv
-```
-
-3. **(Optional) Scaffold** (needs FASTA + samtools index):
-
-```bash
-python refine.py alignments.tsv \
-  --mode scaffold \
-  --fasta /path/to/genome.fa \
-  --outdir out \
-  --scaffold-log scaffold_alignments.txt \
-  --out-table refined_scaffold \
-  -v
-# Produces refined_scaffold.tsv
-```
-
-4. **(Optional) Run both** and get a combined table:
+3. **Run Scaffold and Split Read** and get a combined table:
 
 ```bash
 python refine.py alignments.tsv \
@@ -202,25 +187,5 @@ usage: refine.py FILE [--mode {split,scaffold,both}]
   ```bash
   samtools faidx /path/to/genome.fa
   ```
-
----
-
-## Repro checklist
-
-```bash
-# 1) Setup
-./install.sh
-cd ecDNA-Alignment
-source activate_env.sh
-
-# 2) Collect
-python collect.py 350 AA_summaries/ sample.bam --strict -v -f alignments
-
-# 3) Split-only refine
-python refine.py alignments.tsv --mode split --out-table refined_split -v
-
-# 4) Scaffold refine (requires FASTA + samtools index)
-python refine.py alignments.tsv --mode scaffold --fasta GRCh38.fa --out-table refined_scaffold -v
-```
 
 ---
