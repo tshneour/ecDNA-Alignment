@@ -306,7 +306,7 @@ def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t")
     svs = all_reads.groupby("break_pos1")
 
-    split_log = open(args.split_log, "w")
+    split_log = open(args.split_log + ".txt", "w")
     summary = []
 
     if args.list:
@@ -726,7 +726,7 @@ def run_scaffold(args):
     df["seq1"] = df.ref1.apply(lambda r: extract_region(args.fasta, r))
     df["seq2"] = df.ref2.apply(lambda r: extract_region(args.fasta, r))
 
-    scaffold_log = open(args.scaffold_log, "w")
+    scaffold_log = open(args.scaffold_log + ".txt", "w")
     summary = []
 
     def fq_names(row):
@@ -945,8 +945,6 @@ def run_scaffold(args):
             scaffold_log.write(f"Homology Length: {hom_len}\n")
             scores.append((a1.score, a2.score))
 
-            if hom == "TAGC":
-                print(a1_fst, a2_lst)
             if hom is not None and hom != "N/A" and a1_lst >= a2_lst:
                 hom = rev_comp(hom)
 
@@ -1032,11 +1030,11 @@ def main():
         help="path for augmented output TSV",
     )
     p.add_argument(
-        "--split-log", default="split_read_alignments.txt", help="refine pipeline log"
+        "--split-log", default="split_read_alignments", help="refine pipeline log"
     )
     p.add_argument(
         "--scaffold-log",
-        default="scaffold_alignments.txt",
+        default="scaffold_alignments",
         help="scaffold pipeline log",
     )
     p.add_argument("--outdir", default="out", help="SPAdes output base directory")
