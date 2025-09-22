@@ -67,7 +67,7 @@ source activate_env.sh
 
 2. **Collect reads** for all AA breakpoints into an alignment table + per-breakpoint read pairs:
 
-
+```
 python collect.py 350 path/to/AA_summaries/ path/to/sample.bam \
   --strict \
   -v \
