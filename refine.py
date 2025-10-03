@@ -515,7 +515,7 @@ def generate_scaffolds(fq1, fq2, out_dir):
     shutil.rmtree(out_dir, ignore_errors=True)
     cmd = [
         "python",
-        "./SPAdes-4.2.0-Linux/bin/spades.py",
+        "spades.py",
         "--meta",
         "--pe1-1",
         fq1,
