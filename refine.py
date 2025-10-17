@@ -7,6 +7,7 @@ from Bio import Align
 import subprocess, shutil
 from natsort import index_natsorted
 import numpy as np
+import marisa_trie
 
 # suppress pandas warnings
 warnings.filterwarnings("ignore")
@@ -16,6 +17,21 @@ pd.set_option("mode.chained_assignment", None)
 # Utility functions
 # -------------------------------------------
 
+trans = str.maketrans("ACGT", "TGCA")
+
+def rev_comp_vec(arr):
+    return np.frompyfunc(lambda s: s[::-1].translate(trans), 1, 1)(arr).astype(str)
+
+def find_longest_common_variant(strs):
+    trie = marisa_trie.Trie(strs.tolist())
+    result = None
+    count = 0
+    for strn in strs:
+        num_prefixes = len(trie.prefixes(strn))
+        if num_prefixes > count:
+            count = num_prefixes
+            result = strn
+    return result
 
 def rev_comp(seq):
     trans = str.maketrans("ACGT", "TGCA")
@@ -57,14 +73,17 @@ print_cols2 = [
     "query_aln_sub",
 ]
 
-
-def refine_step1(reads, all_reads, verbose):
+# @profile
+def refine_step1(reads, all_reads, verbose, is_left):
     reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
     reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
     reads["end"] = reads["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
     reads["sv_end"] = reads["query_pos"].where(reads["begin"])
     reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
     reads.dropna(subset=["sv_end"], inplace=True)
+    # print(reads[["break_orientation", "query_cigar"]]).top(20)
+    mask = ((reads["break_orientation"].str.get(0) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(0) == "-") & reads["begin"]) if is_left else ((reads["break_orientation"].str.get(1) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(1) == "-") & reads["begin"])
+    reads = reads[mask]
 
     if verbose >= 2:
         print(
@@ -88,7 +107,7 @@ def refine_step1(reads, all_reads, verbose):
 
     return best, reads
 
-
+# @profile
 def check_overlap(left, right):
     # filter splits
     left = left[
@@ -133,10 +152,30 @@ def check_overlap(left, right):
     results = []
     for lv, ldf in left.groupby("sv_end"):
         for rv, rdf in right.groupby("sv_end"):
-            # pick the longest sub-alignment from each
-            fr = ldf.loc[ldf["query_aln_sub"].str.len().idxmax()]
-            lr = rdf.loc[rdf["query_aln_sub"].str.len().idxmax()]
+            # # pick the longest sub-alignment from each
+            lmask = (~ldf["end"]).to_numpy()
+            rmask = (~rdf["begin"]).to_numpy()
 
+            ldf["rev_clipped"] = np.where(lmask, rev_comp_vec(ldf["clipped"].to_numpy().astype(str)), ldf["clipped"])
+            rdf["rev_clipped"] = np.where(rmask, rev_comp_vec(rdf["clipped"].to_numpy().astype(str)), rdf["clipped"])
+
+            # ldf["rev_clipped"] = ldf["clipped"].mask(~(ldf["end"]), ldf["clipped"].map(rev_comp))
+            # rdf["rev_clipped"] = rdf["clipped"].mask(~(rdf["begin"]), rdf["clipped"].map(rev_comp))
+
+            # fr = ldf.loc[ldf["query_aln_sub"].str.len().idxmax()]
+            # lr = rdf.loc[rdf["query_aln_sub"].str.len().idxmax()]
+            fr = find_longest_common_variant(ldf["query_aln_sub"]) if ldf["break_orientation"].iloc[0][0] == "-" else rev_comp(find_longest_common_variant(ldf["query_aln_sub"].map(rev_comp)))
+            mask = ldf["query_aln_sub"].to_numpy() == fr
+            idx = np.flatnonzero(mask)[0]
+            fr = ldf.iloc[idx]
+
+            lr = find_longest_common_variant(rdf["query_aln_sub"]) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["query_aln_sub"].map(rev_comp)))
+            mask = rdf["query_aln_sub"].to_numpy() == lr
+            idx = np.flatnonzero(mask)[0]
+            lr = rdf.iloc[idx]
+
+            lcommon_var = fr["rev_clipped"]
+            rcommon_var = lr["rev_clipped"]
             # CIGAR strings already in pos dir so just use soft clipped side to find sv ori
             l_ori = "+" if fr["end"] else "-"
             r_ori = "+" if lr["end"] else "-"
@@ -151,7 +190,7 @@ def check_overlap(left, right):
             # if hom == "":
             #     hom = "N/A"
             hlen = len(hom)
-            s1_no = seq1[:-hlen]
+            s1_no = seq1[:-hlen] if hlen != 0 else seq1
             s2_no = seq2[hlen:]
 
             # homology matching
@@ -159,24 +198,34 @@ def check_overlap(left, right):
                 (ldf, s2_no, "hom_clip_match"),
                 (rdf, s1_no, "hom_clip_match"),
             ):
-                df["rev_clipped"] = df["clipped"].where(
-                    df["end"] if df is ldf else df["begin"], rev_comp
-                )
-                df[name] = df["rev_clipped"].apply(lambda x: target_no.startswith(x)) if df is ldf else df["rev_clipped"].apply(lambda x: target_no.endswith(x))
+                # if df is ldf:
+                #     msk = df["end"]
+                # else:
+                #     msk = df["begin"]
+
+                # df["rev_clipped"] = df["clipped"].mask(~msk, df["clipped"].map(rev_comp))
+                def check_starts(seq):
+                    return target_no.startswith(seq) or target_no in seq
+                def check_ends(seq):
+                    return target_no.endswith(seq) or target_no in seq
+                if df is ldf:
+                    df[name] = np.frompyfunc(check_starts, 1, 1)(df["rev_clipped"])
+                else:
+                    df[name] = np.frompyfunc(check_ends, 1, 1)(df["rev_clipped"])
                 # fix split reads if necessary
-                df.loc[df["split"], name] = df.loc[df["split"]].apply(
-                    lambda x: (
-                        x["query_short"]
-                        in (
-                            (rdf if df is ldf else ldf).loc[
-                                (rdf if df is ldf else ldf)["split"], "query_short"
-                            ]
-                        ).values
-                        if "H" in x["query_cigar"]
-                        else x[name]
-                    ),
-                    axis=1,
-                )
+                # df.loc[df["split"], name] = df.loc[df["split"]].apply(
+                #     lambda x: (
+                #         x["query_short"]
+                #         in (
+                #             (rdf if df is ldf else ldf).loc[
+                #                 (rdf if df is ldf else ldf)["split"], "query_short"
+                #             ]
+                #         ).values
+                #         if "H" in x["query_cigar"]
+                #         else x[name]
+                #     ),
+                #     axis=1,
+                # )
 
             hsum_l = ldf["hom_clip_match"].sum()
             hsum_r = rdf["hom_clip_match"].sum()
@@ -188,6 +237,22 @@ def check_overlap(left, right):
             # ins           CTGTCACTGACTGAATTAATTTTACCTCATATGTC
 
             # insertion matching
+            # c1 = find_longest_common_variant(ldf["rev_clipped"]) if ldf["break_orientation"].iloc[0][0] == "-" else rev_comp(find_longest_common_variant(ldf["clipped"]))
+            # mask = ldf["rev_clipped"].to_numpy() == c1
+            # idx = np.flatnonzero(mask)[0]
+            # c1 = ldf.iloc[idx]["rev_clipped"]
+
+            # c2 = rev_comp(find_longest_common_variant(rdf["clipped"])) if rdf["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(rdf["rev_clipped"])
+            # mask = rdf["rev_clipped"].to_numpy() == c2
+            # if not True in mask:
+            #     print(rdf["rev_clipped"])
+            #     print(rdf["query_cigar"])
+            #     print(c2)
+            # else:
+            #     print(rdf["query_cigar"])
+            #     print(mask)
+            # idx = np.flatnonzero(mask)[0]
+            # c2 = rdf.iloc[idx]["rev_clipped"]
             c1 = ldf.loc[ldf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
             c2 = rdf.loc[rdf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
             ins = get_homology(c2, c1)
@@ -213,43 +278,43 @@ def check_overlap(left, right):
             # print(ldf["ins_clip_match"])
             # print(rdf["ins_clip_match"])
             # fix split reads for insertion
-            for df in (ldf, rdf):
-                df.loc[df["split"], "ins_clip_match"] = df.loc[df["split"]].apply(
-                    lambda x: (
-                        x["query_short"]
-                        in (
-                            (rdf if df is ldf else ldf).loc[
-                                (rdf if df is ldf else ldf)["split"], "query_short"
-                            ]
-                        ).values
-                        if "H" in x["query_cigar"]
-                        else x["ins_clip_match"]
-                    ),
-                    axis=1,
-                )
+            # for df in (ldf, rdf):
+            #     df.loc[df["split"], "ins_clip_match"] = df.loc[df["split"]].apply(
+            #         lambda x: (
+            #             x["query_short"]
+            #             in (
+            #                 (rdf if df is ldf else ldf).loc[
+            #                     (rdf if df is ldf else ldf)["split"], "query_short"
+            #                 ]
+            #             ).values
+            #             if "H" in x["query_cigar"]
+            #             else x["ins_clip_match"]
+            #         ),
+            #         axis=1,
+            #     )
 
             isum_l = ldf["ins_clip_match"].sum()
             isum_r = rdf["ins_clip_match"].sum()
 
+            if (isum_l == 0 or isum_r == 0) and (hsum_l == 0 or hsum_r == 0):
+                continue
+
             # Output collection
             total_reads = len(ldf) + len(rdf)
-            num_split_reads = (ldf["split"].sum() + rdf["split"].sum()) / 2
+            lmask_split = (ldf["split"] & ldf["query_short"].isin(rdf["query_short"]))
+            rmask_split = (rdf["split"] & rdf["query_short"].isin(ldf["query_short"]))
+            num_split_reads = min(lmask_split.sum(), rmask_split.sum())
 
-            left_disc_mask = (ldf["proper_pair"] == "Discordant") & (~ldf["split"])
-            right_disc_mask = (rdf["proper_pair"] == "Discordant") & (~rdf["split"])
-            left_conc_mask = (ldf["proper_pair"] == "Concordant") & (~ldf["split"])
-            right_conc_mask = (rdf["proper_pair"] == "Concordant") & (~rdf["split"])
-            left_disc_matches_hom = ldf.drop_duplicates().loc[left_disc_mask, "hom_clip_match"].sum()
-            right_disc_matches_hom = rdf.drop_duplicates().loc[right_disc_mask, "hom_clip_match"].sum()
-            left_disc_matches_ins = ldf.drop_duplicates().loc[left_disc_mask, "ins_clip_match"].sum()
-            right_disc_matches_ins = rdf.drop_duplicates().loc[right_disc_mask, "ins_clip_match"].sum()
-            left_conc_matches_hom = ldf.loc[left_conc_mask, "hom_clip_match"].sum()
-            right_conc_matches_hom = rdf.loc[right_conc_mask, "hom_clip_match"].sum()
-            left_conc_matches_ins = ldf.loc[left_conc_mask, "ins_clip_match"].sum()
-            right_conc_matches_ins = rdf.loc[right_conc_mask, "ins_clip_match"].sum()
+            lmask = (~ldf["split"])
+            rmask = (~rdf["split"])
+
+            left_matches_hom = ldf["hom_clip_match"].where(lmask).sum()
+            right_matches_hom = rdf["hom_clip_match"].where(rmask).sum()
+            left_matches_ins = ldf["ins_clip_match"].where(lmask).sum()
+            right_matches_ins = rdf["ins_clip_match"].where(rmask).sum()
             
-            num_left_soft_reads = len(ldf) - ldf["split"].sum() - (len(ldf.drop_duplicates().loc[left_disc_mask]))
-            num_right_soft_reads = len(rdf) - rdf["split"].sum() - (len(rdf.drop_duplicates().loc[right_disc_mask]))
+            num_left_soft_reads = (~ldf["split"]).sum()
+            num_right_soft_reads = (~rdf["split"]).sum()
 
             # Filter out cases with poor soft clip matches
             if num_split_reads == 0:
@@ -259,7 +324,7 @@ def check_overlap(left, right):
                 ins_right = isum_r / num_right_soft_reads
                 if (hom_left < 0.33 and hom_right < 0.33) and (
                     ins_left < 0.33 and ins_right < 0.33
-                ):
+                ) or ((hom_left == 0 or hom_right == 0) and (ins_left == 0 or ins_right == 0)):
                     continue
 
             results.append(
@@ -275,13 +340,15 @@ def check_overlap(left, right):
                         "insertion": [ins],
                         "left_len": [len(ldf)],
                         "right_len": [len(rdf)],
-                        "split_support": [num_split_reads // 2],
+                        "split_support": [num_split_reads],
                         "soft_support": [num_left_soft_reads + num_right_soft_reads],
-                        "left_soft_matches_hom": [left_disc_matches_hom + left_conc_matches_hom],
-                        "right_soft_matches_hom": [right_disc_matches_hom + right_conc_matches_hom],
-                        "left_soft_matches_ins": [left_disc_matches_ins + left_conc_matches_ins],
-                        "right_soft_matches_ins": [right_disc_matches_ins + right_conc_matches_ins],
+                        "left_soft_matches_hom": [left_matches_hom],
+                        "right_soft_matches_hom": [right_matches_hom],
+                        "left_soft_matches_ins": [left_matches_ins],
+                        "right_soft_matches_ins": [right_matches_ins],
                         "total_reads": [total_reads],
+                        "lcommon_var": [lcommon_var],
+                        "rcommon_var": [rcommon_var],
                         # <-- store DataFrame directly, not as tuple
                         "left": [ldf.copy()],
                         "right": [rdf.copy()],
@@ -301,9 +368,9 @@ def check_overlap(left, right):
 
     return out
 
-
+# @profile
 def run_split(args):
-    all_reads = pd.read_csv(args.file, sep="\t")
+    all_reads = pd.read_csv(args.file, sep="\t").drop_duplicates()
     svs = all_reads.groupby("break_pos1")
 
     split_log = open(args.split_log + ".txt", "w")
@@ -355,8 +422,8 @@ def run_split(args):
                 & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
             ]
 
-        _, lgrp = refine_step1(left, all_reads, args.verbose)
-        _, rgrp = refine_step1(right, all_reads, args.verbose)
+        _, lgrp = refine_step1(left, all_reads, args.verbose, True)
+        _, rgrp = refine_step1(right, all_reads, args.verbose, False)
 
         res = check_overlap(lgrp, rgrp)
 
@@ -384,7 +451,7 @@ def run_split(args):
 
         # res["homology"] = res["homology"].apply(lambda x: x if break_ori[0] == "+" else rev_comp(x))
         # res["insertion"] = res["insertion"].apply(lambda x: x if break_ori[0] == "+" else rev_comp(x))
-
+        pd.set_option('display.max_colwidth', None)
         split_log.write(f"=== Breakpoint {bp} ===\n")
         for idx, row in res.iterrows():
             split_log.write(f"-- Candidate {idx} --\n")
@@ -395,14 +462,19 @@ def run_split(args):
             split_log.write(
                 "Right reads:\n" + row["right"][print_cols2].to_string() + "\n\n"
             )
+            # split_log.write(
+            #     "Left dominant variant: " + row["left"][["lcommon_var"]].to_string() + "\n"
+            #     + "Right dominant variant: " + row["right"][["rcommon_var"]].to_string()
+            # )
 
-        for i in range(len(res) - 1, -1, -1):
-            row = res.iloc[i]
-            print("_" * 80)
-            print(row.drop(["left", "right"]).to_string())
-            print("Left reads:\n", row["left"][print_cols2].to_string())
-            print("Right reads:\n", row["right"][print_cols2].to_string())
-            print("_" * 80, "\n")
+        if args.breakpoints:
+            for i in range(len(res) - 1, -1, -1):
+                row = res.iloc[i]
+                print("_" * 80)
+                print(row.drop(["left", "right"]).to_string())
+                print("Left reads:\n", row["left"][print_cols2].to_string())
+                print("Right reads:\n", row["right"][print_cols2].to_string())
+                print("_" * 80, "\n")
 
         top = res.iloc[0]
         # print(top.index)
@@ -426,21 +498,22 @@ def run_split(args):
             }
         )
 
-        orig = sv.iloc[0]
-        print(
-            "Original AA breakpoint:\n",
-            orig[
-                [
-                    "break_chrom1",
-                    "break_pos1",
-                    "break_chrom2",
-                    "break_pos2",
-                    "AA_homology_seq",
-                    "break_orientation",
-                ]
-            ].to_string(),
-            "\n",
-        )
+        if args.breakpoints:
+            orig = sv.iloc[0]
+            print(
+                "Original AA breakpoint:\n",
+                orig[
+                    [
+                        "break_chrom1",
+                        "break_pos1",
+                        "break_chrom2",
+                        "break_pos2",
+                        "AA_homology_seq",
+                        "break_orientation",
+                    ]
+                ].to_string(),
+                "\n",
+            )
 
     split_log.close()
 
@@ -496,6 +569,7 @@ aligner = Align.PairwiseAligner(
     match_score=2,
     mismatch_score=-10,
 )
+aligner.wildcard = "?"
 
 
 def extract_region(fasta, region):
@@ -511,6 +585,7 @@ def extract_region(fasta, region):
 
 
 # Return list of scaffolds for some breakpoint
+# @profile
 def generate_scaffolds(fq1, fq2, out_dir):
     shutil.rmtree(out_dir, ignore_errors=True)
     cmd = [
@@ -536,6 +611,7 @@ def generate_scaffolds(fq1, fq2, out_dir):
 
 
 # Reformats formatted PairwiseAlignment lists by adding a custom reference chrom and pos, accounting for orientation
+# @profile
 def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
     output = []
     tgt_fst = None
@@ -571,9 +647,9 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
         ref_offset = int(ref_offset)
         if i == 0:
             ref_start = (
-                (ref_start - 1) + ref_offset - 500
+                (ref_start - 1) + ref_offset - 1000
                 if ori
-                else (ref_start - 1) + 500 - ref_offset
+                else (ref_start - 1) + 1000 - ref_offset
             )
             ref_fst = ref_start + 1
         ref_start = ref_start + 1
@@ -618,7 +694,7 @@ def test_coordinates(expected_chr, expected_start, expected_end, actual, args):
     if expected != actual:
         print(f"Mismatch\nExpected: {expected}\nActual: {actual}")
 
-
+# @profile
 def handle_inversion(
     a1_sc_range,
     a1_ref_range,
@@ -688,7 +764,7 @@ def aln_err_density(alns):
 
     return total_errors / total_bases if total_bases else 0.0
 
-
+# @profile
 def run_scaffold(args):
     df = (
         pd.read_csv(args.file, sep="\t")[
@@ -712,16 +788,16 @@ def run_scaffold(args):
     df["ref1"] = (
         df.break_chrom1
         + ":"
-        + (df.break_pos1 - 500).astype(str)
+        + (df.break_pos1 - 1000).astype(str)
         + "-"
-        + (df.break_pos1 + 500).astype(str)
+        + (df.break_pos1 + 1000).astype(str)
     )
     df["ref2"] = (
         df.break_chrom2
         + ":"
-        + (df.break_pos2 - 500).astype(str)
+        + (df.break_pos2 - 1000).astype(str)
         + "-"
-        + (df.break_pos2 + 500).astype(str)
+        + (df.break_pos2 + 1000).astype(str)
     )
     df["seq1"] = df.ref1.apply(lambda r: extract_region(args.fasta, r))
     df["seq2"] = df.ref2.apply(lambda r: extract_region(args.fasta, r))
@@ -767,10 +843,23 @@ def run_scaffold(args):
         break_pos2 = row["break_pos2"]
         for i, sc in enumerate(scaffs):
             # print(sc)
-            a1_pos = aligner.align(sc, row.seq1.upper())[0]
-            a1_neg = aligner.align(sc, rev_comp(row.seq1.upper()))[0]
-            a2_pos = aligner.align(sc, row.seq2.upper())[0]
-            a2_neg = aligner.align(sc, rev_comp(row.seq2.upper()))[0]
+            a1_pos = aligner.align(sc, row.seq1.upper())
+            a1_neg = aligner.align(sc, rev_comp(row.seq1.upper()))
+            a2_pos = aligner.align(sc, row.seq2.upper())
+            a2_neg = aligner.align(sc, rev_comp(row.seq2.upper()))
+
+            if (len(a1_pos) == 0 or len(a1_neg) == 0) or (len(a2_pos) == 0 or len(a2_neg) == 0):
+                print("Alignment score too low")
+                scaffold_log.write(
+                f"-- scaffold {i + 1} --\nscaffold {sc}\nAlignment score too low\n"
+                )
+                continue
+
+            a1_pos = a1_pos[0]
+            a1_neg = a1_neg[0]
+            a2_pos = a2_pos[0]
+            a2_neg = a2_neg[0]
+
             a1, a1_is_rev = max(
                 (a1_pos, True), (a1_neg, False), key=lambda aln: aln[0].score
             )
@@ -953,8 +1042,12 @@ def run_scaffold(args):
             else:
                 homs.append((None, None, None, None))
 
-        li = max(range(len(scores)), key=lambda j: scores[j][0])
-        ri = max(range(len(scores)), key=lambda j: scores[j][1])
+        if len(scores) != 0:
+            li = max(range(len(scores)), key=lambda j: scores[j][0])
+            ri = max(range(len(scores)), key=lambda j: scores[j][1])
+            print(
+                f"breakpoint {idx + 1}: left={li}({scores[li]}), right={ri}({scores[ri]})"
+            )
         # summary.append(
         #     {
         #         "best_left_scaffold": li,
@@ -973,9 +1066,6 @@ def run_scaffold(args):
                 "sc_hom_len": best_prediction[0],
                 "sc_hom": best_prediction[1],
             }
-        )
-        print(
-            f"breakpoint {idx + 1}: left={li}({scores[li]}), right={ri}({scores[ri]})"
         )
         homs = []
 
@@ -1012,7 +1102,7 @@ def run_scaffold(args):
 # Main & CLI
 # -------------------------------------------
 
-
+# @profile
 def main():
     p = argparse.ArgumentParser(
         description="SV split read analysis OR scaffold reconstruction"
@@ -1061,7 +1151,8 @@ def main():
     args.out_table = args.out_table + ".tsv"
     if args.mode == "split":
         out = run_split(args)
-        out.to_csv(args.out_table, sep="\t", index=False)
+        if out is not None:
+            out.to_csv(args.out_table, sep="\t", index=False)
     elif args.mode == "scaffold":
         if not args.fasta:
             p.error("--fasta is required in scaffold mode")
