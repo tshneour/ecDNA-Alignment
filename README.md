@@ -8,48 +8,25 @@ Tools to collect reads around structural-variant (SV) breakpoints and refine AA 
 ## Prerequisites
 
 * Linux / macOS (bash)
-* **git**, **tar**, **curl** or **wget**
-* **Python 3** (and `venv`, `pip`)
-* **samtools** (required for FASTA region extraction in scaffold mode)
-* **gzip** (for FASTQ compression)
-* SPAdes assembler (installed by our script; see version note below)
+* **git**
+* **conda** or **mamba**
 
 ---
 
-## Install
+## Installation
 
-### One-time automated setup
-
-From a terminal:
-
+### 1. Clone the repository
 ```bash
-# Run the installer (clones repo, installs SPAdes 3.15.5, creates .venv, installs Python deps)
-./install.sh
-
-# Enter the project and activate tools & venv
-cd ecDNA-Alignment
-source activate_env.sh
+git clone https://github.com/tshneour/ecDNA-Alignment.git
 ```
-
-What the installer does:
-
-* Clones or updates `https://github.com/tshneour/ecDNA-Alignment.git` (branch via `$BRANCH`, default `master`).
-* Downloads and unpacks **SPAdes 3.15.5** into `SPAdes-3.15.5-Linux/`.
-* Creates a local virtual environment `.venv/` and installs project deps (from `pyproject.toml`/`setup.py` or `requirements.txt` if present).
-* Writes `activate_env.sh` to add SPAdes to `PATH` and activate the venv.
-
-> **Notes**
->
-> * If you don’t see `spades.py` on your path after `source activate_env.sh`, call it directly via `./SPAdes-3.15.5-Linux/bin/spades.py`.
-> * **Scaffold mode** in `refine.py` currently calls a *hard-coded* path `./SPAdes-4.2.0-Linux/bin/spades.py`. Either (A) place SPAdes **4.2.0** at the repo root using that exact directory name, or (B) edit `refine.py` to invoke `spades.py` from your `PATH`.
-
-Environment variables you can override for the installer:
-
+ 
+### 2. Create conda environment and install requirements
 ```bash
-PROJECT_DIR=ecDNA-Alignment   # where to clone
-BRANCH=master                 # git branch
-CREATE_VENV=true              # create .venv and install deps
-PYTHON_BIN=python3            # which Python to use
+conda create -n sv-analysis -c conda-forge -c bioconda \
+  python>=3.11 spades=4.2.0 samtools pysam biopython pandas numpy natsort
+
+conda activate sv-analysis
+
 ```
 
 ---
@@ -60,15 +37,13 @@ PYTHON_BIN=python3            # which Python to use
 1. **Setup**
 
 ```bash
-./install.sh
-cd ecDNA-Alignment
-source activate_env.sh
+conda activate sv-analysis
 ```
 
 2. **Collect reads** for all AA breakpoints into an alignment table + per-breakpoint read pairs:
 
-
-python collect.py 350 path/to/AA_summaries/ path/to/sample.bam \
+```
+python /path/to/collect.py 350 path/to/AA_summaries/ path/to/sample.bam \
   --strict \
   -v \
   -f alignments.tsv
@@ -85,7 +60,7 @@ This writes:
 3. **Run Scaffold and Split Read** and get a combined table:
 
 ```bash
-python refine.py alignments.tsv \
+python /path/to/refine.py alignments.tsv \
   --mode both \
   --fasta /path/to/genome.fa \
   --out-table final_augmented \
