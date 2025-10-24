@@ -177,14 +177,14 @@ def check_overlap(left, right):
             lcommon_var = fr["rev_clipped"]
             rcommon_var = lr["rev_clipped"]
             # CIGAR strings already in pos dir so just use soft clipped side to find sv ori
-            l_ori = "+" if fr["end"] else "-"
-            r_ori = "+" if lr["end"] else "-"
+            l_ori = fr["break_orientation"][0] if fr["begin"] and fr["end"] else ("+" if fr["end"] else "-")
+            r_ori = lr["break_orientation"][1] if lr["begin"] and lr["end"] else ("+" if lr["end"] else "-")
             sv_ori = l_ori + r_ori
             if sv_ori != fr["break_orientation"]:
                 continue
 
-            seq1 = fr["query_aln_sub"] if fr["end"] else rev_comp(fr["query_aln_sub"])
-            seq2 = lr["query_aln_sub"] if lr["begin"] else rev_comp(lr["query_aln_sub"])
+            seq1 = fr["query_aln_sub"] if l_ori == "+" else rev_comp(fr["query_aln_sub"])
+            seq2 = lr["query_aln_sub"] if r_ori == "-" else rev_comp(lr["query_aln_sub"])
 
             hom = get_homology(seq1, seq2)
             # if hom == "":
@@ -326,7 +326,7 @@ def check_overlap(left, right):
                     ins_left < 0.33 and ins_right < 0.33
                 ) or ((hom_left == 0 or hom_right == 0) and (ins_left == 0 or ins_right == 0)):
                     continue
-
+                
             results.append(
                 pd.DataFrame(
                     {
@@ -586,7 +586,7 @@ def extract_region(fasta, region):
 
 # Return list of scaffolds for some breakpoint
 # @profile
-def generate_scaffolds(fq1, fq2, out_dir):
+def generate_scaffolds(fq1, fq2, out_dir, args):
     shutil.rmtree(out_dir, ignore_errors=True)
     cmd = [
         "python",
@@ -598,7 +598,9 @@ def generate_scaffolds(fq1, fq2, out_dir):
         fq2,
         "-o",
         out_dir,
-        "--pe1-fr"
+        "--pe1-fr",
+        "-t",
+        args.threads
     ]
     r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if r.returncode or not os.path.isfile(f"{out_dir}/scaffolds.fasta"):
@@ -814,7 +816,7 @@ def run_scaffold(args):
         bp_out = os.path.join(args.outdir, f"bp_{idx}")
         scaffs = None
         try:
-            scaffs = generate_scaffolds(fq1, fq2, bp_out)
+            scaffs = generate_scaffolds(fq1, fq2, bp_out, args)
         except RuntimeError as ex:
             print(
                 f"breakpoint {idx + 1}: SpAdes ran into an error. Check that your input arguments are correct. This may also be due to low coverage.\n"
@@ -1143,6 +1145,13 @@ def main():
         action="count",
         default=0,
         help="verbosity (use -vv for more)",
+    )
+    p.add_argument(
+        "-t",
+        "--threads",
+        type=int,
+        default=16,
+        help="how many threads to use for the assembler",
     )
     # scaffold flags
     p.add_argument("--fasta", help="indexed FASTA for extract_region")
