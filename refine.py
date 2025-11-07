@@ -82,8 +82,9 @@ def refine_step1(reads, all_reads, verbose, is_left):
     reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
     reads.dropna(subset=["sv_end"], inplace=True)
     # print(reads[["break_orientation", "query_cigar"]]).top(20)
-    mask = ((reads["break_orientation"].str.get(0) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(0) == "-") & reads["begin"]) if is_left else ((reads["break_orientation"].str.get(1) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(1) == "-") & reads["begin"])
-    reads = reads[mask]
+    mask_ori = ((reads["break_orientation"].str.get(0) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(0) == "-") & reads["begin"]) if is_left else ((reads["break_orientation"].str.get(1) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(1) == "-") & reads["begin"])
+    mask_not_mul_clips = (reads["begin"] ^ reads["end"])
+    reads = reads[(mask_ori & mask_not_mul_clips)]
 
     if verbose >= 2:
         print(
@@ -237,13 +238,14 @@ def check_overlap(left, right):
             # ins           CTGTCACTGACTGAATTAATTTTACCTCATATGTC
 
             # insertion matching
-            # c1 = find_longest_common_variant(ldf["rev_clipped"]) if ldf["break_orientation"].iloc[0][0] == "-" else rev_comp(find_longest_common_variant(ldf["clipped"]))
-            # mask = ldf["rev_clipped"].to_numpy() == c1
-            # idx = np.flatnonzero(mask)[0]
-            # c1 = ldf.iloc[idx]["rev_clipped"]
+            c1 = find_longest_common_variant(ldf["rev_clipped"]) if ldf["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(ldf["clipped"])
+            mask = ldf["rev_clipped"].to_numpy() == c1
+            idx = np.flatnonzero(mask)[0]
+            c1 = ldf.iloc[idx]["rev_clipped"]
 
-            # c2 = rev_comp(find_longest_common_variant(rdf["clipped"])) if rdf["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(rdf["rev_clipped"])
-            # mask = rdf["rev_clipped"].to_numpy() == c2
+            c2 = rev_comp(find_longest_common_variant(rev_comp_vec(rdf["clipped"]))) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["clipped"]))
+            # print(rdf["break_orientation"])
+            mask = rdf["rev_clipped"].to_numpy() == c2
             # if not True in mask:
             #     print(rdf["rev_clipped"])
             #     print(rdf["query_cigar"])
@@ -251,10 +253,10 @@ def check_overlap(left, right):
             # else:
             #     print(rdf["query_cigar"])
             #     print(mask)
-            # idx = np.flatnonzero(mask)[0]
-            # c2 = rdf.iloc[idx]["rev_clipped"]
-            c1 = ldf.loc[ldf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
-            c2 = rdf.loc[rdf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
+            idx = np.flatnonzero(mask)[0]
+            c2 = rdf.iloc[idx]["rev_clipped"]
+            # c1 = ldf.loc[ldf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
+            # c2 = rdf.loc[rdf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
             ins = get_homology(c2, c1)
             ilen = len(ins)
             # print(c1)
@@ -297,7 +299,57 @@ def check_overlap(left, right):
             isum_r = rdf["ins_clip_match"].sum()
 
             if (isum_l == 0 or isum_r == 0) and (hsum_l == 0 or hsum_r == 0):
-                continue
+                if hlen != 0:
+                    for df, target_no, name in (
+                    (ldf, seq2, "hom_clip_match"),
+                    (rdf, seq1, "hom_clip_match"),
+                    ):
+                        # if df is ldf:
+                        #     msk = df["end"]
+                        # else:
+                        #     msk = df["begin"]
+
+                        # df["rev_clipped"] = df["clipped"].mask(~msk, df["clipped"].map(rev_comp))
+                        def check_starts(seq):
+                            return target_no.startswith(seq) or target_no in seq
+                        def check_ends(seq):
+                            return target_no.endswith(seq) or target_no in seq
+                        if df is ldf:
+                            df[name] = np.frompyfunc(check_starts, 1, 1)(df["rev_clipped"])
+                        else:
+                            df[name] = np.frompyfunc(check_ends, 1, 1)(df["rev_clipped"])
+                        # fix split reads if necessary
+                        # df.loc[df["split"], name] = df.loc[df["split"]].apply(
+                        #     lambda x: (
+                        #         x["query_short"]
+                        #         in (
+                        #             (rdf if df is ldf else ldf).loc[
+                        #                 (rdf if df is ldf else ldf)["split"], "query_short"
+                        #             ]
+                        #         ).values
+                        #         if "H" in x["query_cigar"]
+                        #         else x[name]
+                        #     ),
+                        #     axis=1,
+                        # )
+
+                    hsum_l = ldf["hom_clip_match"].sum()
+                    hsum_r = rdf["hom_clip_match"].sum()
+                    hom = ""
+                    # if lv == 53854464 and rv == 53862920:
+                    #     pd.set_option('display.max_colwidth', None)
+                    #     print(f"Homology {hom}")
+                    #     print(f"Insertion {ins}")
+                    #     print(hsum_l, hsum_r)
+                    #     print(seq1)
+                    #     print(seq2)
+                    #     print(ldf["rev_clipped"])
+                    #     print(rdf["rev_clipped"])
+                    #     print(rdf["query_aln_sub"])
+                    if (hsum_l == 0 or hsum_r == 0):
+                        continue
+                else:
+                    continue
 
             # Output collection
             total_reads = len(ldf) + len(rdf)
@@ -600,7 +652,7 @@ def generate_scaffolds(fq1, fq2, out_dir, args):
         out_dir,
         "--pe1-fr",
         "-t",
-        args.threads
+        str(args.threads)
     ]
     r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     if r.returncode or not os.path.isfile(f"{out_dir}/scaffolds.fasta"):
