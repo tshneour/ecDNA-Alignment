@@ -429,6 +429,7 @@ def get_pairs(
     """
     split_alignments = []
     nonsplit_alignments = []
+    split_leftover_alignments = []
 
     # Collect alignments from left and right regions
     reads_by_name = {}  # query_name -> list[AlignedSegment]
@@ -463,14 +464,6 @@ def get_pairs(
         primary = [a for a in alns_set if not (a.is_supplementary or a.is_secondary)]
         sup_or_sec = [a for a in alns_set if (a.is_supplementary or a.is_secondary)]
 
-        # Strategy:
-        # - if we have primary + supplementary for same qname, try to pair them
-        # - if we have two primaries (possible if both mates fetched), pair them
-        # - if only one alignment present (mate may be outside regions), fall back to samfile.mate (rare)
-        #
-        # Note: you might see both reads in the same qname list if your region fetch included both ends.
-        # if len(primary) != 2:
-        #     print(len(primary))
         # If we have complete pairs, assign to lists
         if len(primary) == 2:
             # Assign the nonsplit pairs
@@ -498,7 +491,6 @@ def get_pairs(
                 nonsplit_alignments.append((read1, read2))
                 nonsplit_alignments.append((read1, read2))
                 continue
-
             # Assign pairs with split
             if primary and sup_or_sec:
                 if len(sup_or_sec) == 1:
@@ -515,11 +507,14 @@ def get_pairs(
                         split_alignments.append((read1, sup, read2))
                         split_alignments.append((read1, sup, read2))
                         continue
+                    else:
+                        split_leftover_alignments.append((read1, sup, read2))
+
                 else:
-                    print(qname)
-                    print(sup_or_sec[0].reference_name, sup_or_sec[1].reference_name)
-                    print(sup_or_sec[0].reference_start, sup_or_sec[1].reference_start)
-                    print()
+                    # print(qname)
+                    # print(sup_or_sec[0].reference_name, sup_or_sec[1].reference_name)
+                    # print(sup_or_sec[0].reference_start, sup_or_sec[1].reference_start)
+                    # print()
 
                     sup1, sup2 = (
                         sup_or_sec[0],
@@ -542,37 +537,10 @@ def get_pairs(
                         split_alignments.append((read1, sup1, read2, sup2))
                         split_alignments.append((read1, sup1, read2, sup2))
                         continue
+                    else:
+                        split_leftover_alignments.append((read1, sup1, read2, sup2))
 
-        # Fallback: if we don't have the mate in regions, use samfile.mate() only now.
-        # This is rare because we collected reads overlapping the SV regions.
-        # Use try/except and only call mate once per alignment.
-        # Choose one aln from alns to attempt mate lookup
-
-        # aln = primary[0] if primary else alns[0]
-        # try:
-        #     mate = samfile.mate(aln)
-        # except ValueError:
-        #     # mate not found: skip
-        #     continue
-
-        # # Now we have aln + mate: apply original filters
-        # # detect if supplementary is present in mate or aln (SA tags)
-        # sup = None
-        # if (aln.is_supplementary or aln.is_secondary or aln.has_tag("SA")):
-        #     # prefer to find pair among alns (we already tried) - if not found, try samfile.fetch on SA
-        #     # (you could still need to call fetch; keep it rare)
-        #     pass
-
-        # # determine read1/read2 ordering
-        # read1 = aln if aln.is_read1 else mate
-        # read2 = aln if aln.is_read2 else mate
-        # if not aln.is_proper_pair and mate.reference_name in (chrom1, chrom2):
-        #     if passes_pos_filter(read1, read2):
-        #         nonsplit_alignments.append((read1, read2))
-        # elif aln.is_proper_pair and passes_pos_filter(read1, read2):
-        #     nonsplit_alignments.append((read1, read2))
-
-    return split_alignments, nonsplit_alignments
+    return split_alignments, nonsplit_alignments, split_leftover_alignments
 
 
 # @profile
@@ -616,7 +584,7 @@ def fetch_alignments(
     region1 = list(samfile.fetch(chrom1, pos1 - args.refine, pos1 + args.refine + 1))
     region2 = list(samfile.fetch(chrom2, pos2 - args.refine, pos2 + args.refine + 1))
 
-    split_alignments, nonsplit_alignments = get_pairs(
+    split_alignments, nonsplit_alignments, split_leftover_alignments = get_pairs(
         [region1, region2], chrom1, chrom2, pos1, pos2, sv_type, orientation, args
     )
 
@@ -738,6 +706,113 @@ def fetch_alignments(
                             "query_qualities": read.query_qualities,
                         }
                     )
+    
+    split_leftover_alignment_details = []
+    for pair in split_leftover_alignments:
+        if len(pair) == 3:
+            read1_1, read1_2, read2 = pair
+            # Filter out low quality reads
+            if (
+                (
+                    read1_1.mapping_quality > mapq_threshold
+                    and read1_2.mapping_quality > mapq_threshold
+                )
+                or read2.mapping_quality > mapq_threshold
+            ) or ((read1_1.is_mapped and read1_2.is_mapped) or read2.is_mapped):
+                for read in pair:
+                    query_aln_full = read.query_sequence
+                    if read.is_secondary or read.is_supplementary:
+                        prim_read = read1_1 if read1_1.has_tag("SA") else read2
+                        query_aln_full = (
+                            prim_read.query_sequence
+                            if prim_read.is_forward == read.is_forward
+                            else rev_comp(prim_read.query_sequence)
+                        )
+
+                    split_leftover_alignment_details.append(
+                        {
+                            "break_chrom1": chrom1,
+                            "break_pos1": pos1 + 1,
+                            "break_chrom2": chrom2,
+                            "break_pos2": pos2 + 1,
+                            "break_sv_type": sv_type,
+                            "break_read_support": read_support,
+                            "break_features": features,
+                            "break_orientation": orientation,
+                            "AA_homology_len": hom_len,
+                            "AA_homology_seq": hom,
+                            "query_name": read.query_name,
+                            "query_short": ":".join(read.query_name.split(":")[-2:]),
+                            "split": read.has_tag("SA"),
+                            "proper_pair": (
+                                "Concordant" if read.is_proper_pair else "Discordant"
+                            ),
+                            "read_num": "1" if read.is_read1 else "2",
+                            "query_chrom": read.reference_name,
+                            "query_pos": read.reference_start + 1,
+                            "query_end": read.reference_end,
+                            "query_orientation": "+" if read.is_forward else "-",
+                            "query_cigar": read.cigarstring,
+                            "query_aln_full": query_aln_full,
+                            "query_aln_sub": read.query_alignment_sequence,
+                            "amplicon": amplicon,
+                            "query_qualities": read.query_qualities,
+                        }
+                    )
+        if len(pair) == 4:
+            read1_1, read1_2, read2_1, read2_2 = pair
+            # Filter out low quality reads
+            if (
+                read1_1.mapping_quality > mapq_threshold
+                and read1_2.mapping_quality > mapq_threshold
+                and read2_1.mapping_quality > mapq_threshold
+                and read2_2.mapping_quality > mapq_threshold
+            ) or (
+                (read1_1.is_mapped and read1_2.is_mapped)
+                or (read2_1.is_mapped and read2_2.is_mapped)
+            ):
+                for read in pair:
+                    query_aln_full = read.query_sequence
+                    if read.is_secondary or read.is_supplementary:
+                        prim_read = (
+                            read1_1 if (read1_1.is_read1 == read.is_read1) else read2_1
+                        )
+                        query_aln_full = (
+                            prim_read.query_sequence
+                            if prim_read.is_forward == read.is_forward
+                            else rev_comp(prim_read.query_sequence)
+                        )
+
+                    split_leftover_alignment_details.append(
+                        {
+                            "break_chrom1": chrom1,
+                            "break_pos1": pos1 + 1,
+                            "break_chrom2": chrom2,
+                            "break_pos2": pos2 + 1,
+                            "break_sv_type": sv_type,
+                            "break_read_support": read_support,
+                            "break_features": features,
+                            "break_orientation": orientation,
+                            "AA_homology_len": hom_len,
+                            "AA_homology_seq": hom,
+                            "query_name": read.query_name,
+                            "query_short": ":".join(read.query_name.split(":")[-2:]),
+                            "split": read.has_tag("SA"),
+                            "proper_pair": (
+                                "Concordant" if read.is_proper_pair else "Discordant"
+                            ),
+                            "read_num": "1" if read.is_read1 else "2",
+                            "query_chrom": read.reference_name,
+                            "query_pos": read.reference_start + 1,
+                            "query_end": read.reference_end,
+                            "query_orientation": "+" if read.is_forward else "-",
+                            "query_cigar": read.cigarstring,
+                            "query_aln_full": query_aln_full,
+                            "query_aln_sub": read.query_alignment_sequence,
+                            "amplicon": amplicon,
+                            "query_qualities": read.query_qualities,
+                        }
+                    )
 
     # Collect details of nonsplit alignments
     nonsplit_alignment_details = []
@@ -785,9 +860,10 @@ def fetch_alignments(
     # Convert details to pandas DataFrames
     split_df = pd.DataFrame(split_alignment_details)
     nonsplit_df = pd.DataFrame(nonsplit_alignment_details)
+    split_leftover_df = pd.DataFrame(split_leftover_alignment_details)
     # paired_df = pd.DataFrame(paired_alignment_details)
 
-    return split_df, nonsplit_df
+    return split_df, nonsplit_df, split_leftover_df
 
 
 if __name__ == "__main__":
@@ -842,6 +918,7 @@ if __name__ == "__main__":
     num_paired = 0
 
     output = []
+    leftover_output = []
     for index, row in enumerate(df.itertuples(index=False), 1):
         print(f"Breakpoint {index}")
         chrom1 = row.chrom1
@@ -858,7 +935,7 @@ if __name__ == "__main__":
         # print(chrom1, pos1, chrom2, pos2)
 
         # Fetch the DataFrames for split alignments and paired alignments
-        split_df, nonsplit_df = fetch_alignments(
+        split_df, nonsplit_df, split_leftover_df = fetch_alignments(
             bamfile,
             chrom1,
             pos1,
@@ -888,10 +965,13 @@ if __name__ == "__main__":
             output.append(split_df)
         if not nonsplit_df.empty:
             output.append(nonsplit_df)
+        if not split_leftover_df.empty:
+            leftover_output.append(split_leftover_df)
 
     samfile.close()
 
     output = pd.concat(output, ignore_index=True) if output else pd.DataFrame()
+    leftover_output = pd.concat(leftover_output, ignore_index=True) if leftover_output else pd.DataFrame()
 
     # Get split reads to determine how to filter concordant reads
     output_copy = output.copy()
@@ -923,8 +1003,16 @@ if __name__ == "__main__":
         mask_left = grp["is_left"]
         mask_right = ~mask_left
 
-        left_pos = grp.loc[mask_left, "ref_pos"].value_counts().idxmax()
-        right_pos = grp.loc[mask_right, "ref_pos"].value_counts().idxmax()
+        def most_common(series):
+            if series is None or series.empty:
+                return pd.NA
+            vc = series.value_counts()
+            if vc.empty:
+                return pd.NA
+            return vc.idxmax()
+
+        left_pos = most_common(grp.loc[mask_left, "ref_pos"])
+        right_pos = most_common(grp.loc[mask_right, "ref_pos"])
 
         all_left_within_10 = (
             grp.loc[mask_left, "ref_pos"]
@@ -951,7 +1039,7 @@ if __name__ == "__main__":
         )
 
     if output_copy.shape[0] != 0:
-        df_sv = output_copy.groupby(sv_cols).apply(sv_summary, include_groups=False).reset_index()
+        df_sv = output_copy.groupby(sv_cols).apply(sv_summary).reset_index()
 
         df_sv = df_sv[(df_sv["all_left_within_10"]) & (df_sv["all_right_within_10"])].copy()
         out = output.merge(df_sv, on=sv_cols, how="left")
@@ -1100,6 +1188,11 @@ if __name__ == "__main__":
 
     final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
+        sep="\t",
+        index=False,
+    )
+    leftover_output.to_csv(
+        args.file if args.file else args.bam.split("/")[-1].split(".")[0] + "_leftover.tsv",
         sep="\t",
         index=False,
     )

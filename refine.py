@@ -8,6 +8,7 @@ import subprocess, shutil
 from natsort import index_natsorted
 import numpy as np
 import marisa_trie
+import math
 
 # suppress pandas warnings
 warnings.filterwarnings("ignore")
@@ -32,6 +33,16 @@ def find_longest_common_variant(strs):
             count = num_prefixes
             result = strn
     return result
+
+def top3_find_longest_common_variant(strs):
+    strs_list = strs.tolist()
+    str_counts = dict({ k:0 for k in strs_list })
+    trie = marisa_trie.Trie(strs_list)
+    for strn in strs:
+        num_prefixes = len(trie.prefixes(strn))
+        str_counts[strn] += num_prefixes if strn not in str_counts else 1
+    sorted_str_counts = list(sorted(str_counts.items(), key = lambda item: item[1]))
+    return np.array([seq for seq, val in sorted_str_counts[-3:]])
 
 def rev_comp(seq):
     trans = str.maketrans("ACGT", "TGCA")
@@ -63,12 +74,14 @@ print_cols = [
     "query_aln_full",
 ]
 print_cols2 = [
+    "query_name",
     "query_short",
     "query_chrom",
     "query_pos",
     "query_cigar",
     "hom_clip_match",
     "ins_clip_match",
+    "split",
     "rev_clipped",
     "query_aln_sub",
 ]
@@ -106,25 +119,16 @@ def refine_step1(reads, all_reads, verbose, is_left):
             sel.to_string(index=False), "\nMates:\n", mates.to_string(index=False), "\n"
         )
 
+    reads['query_name'] = np.where(reads['read_num']==1,
+                      reads['query_name'] + '_1',
+                      np.where(reads['read_num']==2,
+                               reads['query_name'] + '_2',
+                               reads['query_name']))
+
     return best, reads
 
 # @profile
-def check_overlap(left, right):
-    # filter splits
-    left = left[
-        ~left["split"]
-        | (
-            left["split"]
-            & left["query_name"].isin(right.loc[right["split"], "query_name"])
-        )
-    ]
-    right = right[
-        ~right["split"]
-        | (
-            right["split"]
-            & right["query_name"].isin(left.loc[left["split"], "query_name"])
-        )
-    ]
+def check_overlap(left, right, leftover):
 
     # compute clipped sequences
     for df in (left, right):
@@ -153,260 +157,194 @@ def check_overlap(left, right):
     results = []
     for lv, ldf in left.groupby("sv_end"):
         for rv, rdf in right.groupby("sv_end"):
-            # # pick the longest sub-alignment from each
-            lmask = (~ldf["end"]).to_numpy()
-            rmask = (~rdf["begin"]).to_numpy()
+            # filter splits
+            ldf_copy = ldf.copy()
+            ldf_copy = ldf_copy[
+                ~ldf_copy["split"]
+                | (
+                    ldf_copy["split"]
+                    & ldf_copy["query_name"].isin(rdf.loc[rdf["split"], "query_name"])
+                )
+            ]
+            rdf = rdf[
+                ~rdf["split"]
+                | (
+                    rdf["split"]
+                    & rdf["query_name"].isin(ldf_copy.loc[ldf_copy["split"], "query_name"])
+                )
+            ]
 
-            ldf["rev_clipped"] = np.where(lmask, rev_comp_vec(ldf["clipped"].to_numpy().astype(str)), ldf["clipped"])
-            rdf["rev_clipped"] = np.where(rmask, rev_comp_vec(rdf["clipped"].to_numpy().astype(str)), rdf["clipped"])
-
-            # ldf["rev_clipped"] = ldf["clipped"].mask(~(ldf["end"]), ldf["clipped"].map(rev_comp))
-            # rdf["rev_clipped"] = rdf["clipped"].mask(~(rdf["begin"]), rdf["clipped"].map(rev_comp))
-
-            # fr = ldf.loc[ldf["query_aln_sub"].str.len().idxmax()]
-            # lr = rdf.loc[rdf["query_aln_sub"].str.len().idxmax()]
-            fr = find_longest_common_variant(ldf["query_aln_sub"]) if ldf["break_orientation"].iloc[0][0] == "-" else rev_comp(find_longest_common_variant(ldf["query_aln_sub"].map(rev_comp)))
-            mask = ldf["query_aln_sub"].to_numpy() == fr
-            idx = np.flatnonzero(mask)[0]
-            fr = ldf.iloc[idx]
-
-            lr = find_longest_common_variant(rdf["query_aln_sub"]) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["query_aln_sub"].map(rev_comp)))
-            mask = rdf["query_aln_sub"].to_numpy() == lr
-            idx = np.flatnonzero(mask)[0]
-            lr = rdf.iloc[idx]
-
-            lcommon_var = fr["rev_clipped"]
-            rcommon_var = lr["rev_clipped"]
-            # CIGAR strings already in pos dir so just use soft clipped side to find sv ori
-            l_ori = fr["break_orientation"][0] if fr["begin"] and fr["end"] else ("+" if fr["end"] else "-")
-            r_ori = lr["break_orientation"][1] if lr["begin"] and lr["end"] else ("+" if lr["end"] else "-")
-            sv_ori = l_ori + r_ori
-            if sv_ori != fr["break_orientation"]:
+            if ldf_copy.empty or rdf.empty or len(ldf_copy) < 3 or len(rdf) < 3:
                 continue
 
-            seq1 = fr["query_aln_sub"] if l_ori == "+" else rev_comp(fr["query_aln_sub"])
-            seq2 = lr["query_aln_sub"] if r_ori == "-" else rev_comp(lr["query_aln_sub"])
+            # # pick the longest sub-alignment from each
+            lmask = (~ldf_copy["end"]).to_numpy()
+            rmask = (~rdf["begin"]).to_numpy()
 
-            hom = get_homology(seq1, seq2)
-            # if hom == "":
-            #     hom = "N/A"
-            hlen = len(hom)
-            s1_no = seq1[:-hlen] if hlen != 0 else seq1
-            s2_no = seq2[hlen:]
+            ldf_copy["rev_clipped"] = np.where(lmask, rev_comp_vec(ldf_copy["clipped"].to_numpy().astype(str)), ldf_copy["clipped"])
+            rdf["rev_clipped"] = np.where(rmask, rev_comp_vec(rdf["clipped"].to_numpy().astype(str)), rdf["clipped"])
 
-            # homology matching
-            for df, target_no, name in (
-                (ldf, s2_no, "hom_clip_match"),
-                (rdf, s1_no, "hom_clip_match"),
-            ):
-                # if df is ldf:
-                #     msk = df["end"]
-                # else:
-                #     msk = df["begin"]
+            fr = top3_find_longest_common_variant(ldf_copy["query_aln_sub"]) if ldf_copy["break_orientation"].iloc[0][0] == "-" else [rev_comp(x) for x in top3_find_longest_common_variant(ldf_copy["query_aln_sub"].map(rev_comp))]
+            mask = np.isin(ldf_copy["query_aln_sub"].to_numpy(), fr)
+            idx = np.flatnonzero(mask)
+            fr = ldf_copy.iloc[idx].drop_duplicates(subset="query_aln_sub")
 
-                # df["rev_clipped"] = df["clipped"].mask(~msk, df["clipped"].map(rev_comp))
-                def check_starts(seq):
-                    return target_no.startswith(seq) or target_no in seq
-                def check_ends(seq):
-                    return target_no.endswith(seq) or target_no in seq
-                if df is ldf:
-                    df[name] = np.frompyfunc(check_starts, 1, 1)(df["rev_clipped"])
-                else:
-                    df[name] = np.frompyfunc(check_ends, 1, 1)(df["rev_clipped"])
-                # fix split reads if necessary
-                # df.loc[df["split"], name] = df.loc[df["split"]].apply(
-                #     lambda x: (
-                #         x["query_short"]
-                #         in (
-                #             (rdf if df is ldf else ldf).loc[
-                #                 (rdf if df is ldf else ldf)["split"], "query_short"
-                #             ]
-                #         ).values
-                #         if "H" in x["query_cigar"]
-                #         else x[name]
-                #     ),
-                #     axis=1,
-                # )
+            lr = top3_find_longest_common_variant(rdf["query_aln_sub"]) if rdf["break_orientation"].iloc[0][1] == "-" else [rev_comp(x) for x in top3_find_longest_common_variant(rdf["query_aln_sub"].map(rev_comp))]
+            mask = np.isin(rdf["query_aln_sub"].to_numpy(), lr)
+            idx = np.flatnonzero(mask)
+            lr = rdf.iloc[idx].drop_duplicates(subset="query_aln_sub")
 
-            hsum_l = ldf["hom_clip_match"].sum()
-            hsum_r = rdf["hom_clip_match"].sum()
+            for row_l in fr.itertuples():
+                for row_r in lr.itertuples():
+                    lcommon_var = row_l.rev_clipped
+                    rcommon_var = row_r.rev_clipped
+                    l_ori = row_l.break_orientation[0] if row_l.begin and row_l.end else ("+" if row_l.end else "-")
+                    r_ori = row_r.break_orientation[1] if row_r.begin and row_r.end else ("+" if row_r.end else "-")
 
-            # left_clip     CTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
-            # right_clip    CTGTCACTGACTGAATTAATTTTACCTCATATGTC
-            # seq1          GTGCCTATGTGTTTATCTCCACAGTGCAATGTATTGGTTACATAATAGCTGTCACTGACTGAATTAATTTTACCTCATATGTCTGG
-            # seq2          TGGGCAAAATCTTAAGCTCAGTTTTTTAACTTTATTTTTGGTCCATCTTGATTATAATTCTATTT
-            # ins           CTGTCACTGACTGAATTAATTTTACCTCATATGTC
+                    seq1 = row_l.query_aln_sub if l_ori == "+" else rev_comp(row_l.query_aln_sub)
+                    seq2 = row_r.query_aln_sub if r_ori == "-" else rev_comp(row_r.query_aln_sub)
 
-            # insertion matching
-            c1 = find_longest_common_variant(ldf["rev_clipped"]) if ldf["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(ldf["clipped"])
-            mask = ldf["rev_clipped"].to_numpy() == c1
-            idx = np.flatnonzero(mask)[0]
-            c1 = ldf.iloc[idx]["rev_clipped"]
+                    hom = get_homology(seq1, seq2)
+                    hlen = len(hom)
+                    s1_no = seq1[:-hlen] if hlen != 0 else seq1
+                    s2_no = seq2[hlen:]
 
-            c2 = rev_comp(find_longest_common_variant(rev_comp_vec(rdf["clipped"]))) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["clipped"]))
-            # print(rdf["break_orientation"])
-            mask = rdf["rev_clipped"].to_numpy() == c2
-            # if not True in mask:
-            #     print(rdf["rev_clipped"])
-            #     print(rdf["query_cigar"])
-            #     print(c2)
-            # else:
-            #     print(rdf["query_cigar"])
-            #     print(mask)
-            idx = np.flatnonzero(mask)[0]
-            c2 = rdf.iloc[idx]["rev_clipped"]
-            # c1 = ldf.loc[ldf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
-            # c2 = rdf.loc[rdf["rev_clipped"].str.len().idxmax(), "rev_clipped"]
-            ins = get_homology(c2, c1)
-            ilen = len(ins)
-            # print(c1)
-            # print(c2)
-            # print(seq1)
-            # print(seq2)
-            # print(ins, "\n")
-            # print(ldf["rev_clipped"].str.slice(start=ilen))
-            # print(rdf["rev_clipped"].str.slice(stop=-ilen))
-
-            ldf["ins_clip_match"] = (
-                ldf["rev_clipped"]
-                .str.slice(start=ilen)
-                .apply(lambda x: seq2.startswith(x) if len(x) != 0 else True)
-            )
-            rdf["ins_clip_match"] = (
-                rdf["rev_clipped"]
-                .str.slice(stop=-ilen)
-                .apply(lambda x: (seq1.endswith(x) if len(x) != 0 else True) if ilen != 0 else False)
-            )
-            # print(ldf["ins_clip_match"])
-            # print(rdf["ins_clip_match"])
-            # fix split reads for insertion
-            # for df in (ldf, rdf):
-            #     df.loc[df["split"], "ins_clip_match"] = df.loc[df["split"]].apply(
-            #         lambda x: (
-            #             x["query_short"]
-            #             in (
-            #                 (rdf if df is ldf else ldf).loc[
-            #                     (rdf if df is ldf else ldf)["split"], "query_short"
-            #                 ]
-            #             ).values
-            #             if "H" in x["query_cigar"]
-            #             else x["ins_clip_match"]
-            #         ),
-            #         axis=1,
-            #     )
-
-            isum_l = ldf["ins_clip_match"].sum()
-            isum_r = rdf["ins_clip_match"].sum()
-
-            if (isum_l == 0 or isum_r == 0) and (hsum_l == 0 or hsum_r == 0):
-                if hlen != 0:
+                    # homology matching
                     for df, target_no, name in (
-                    (ldf, seq2, "hom_clip_match"),
-                    (rdf, seq1, "hom_clip_match"),
+                        (ldf_copy, s2_no, "hom_clip_match"),
+                        (rdf, s1_no, "hom_clip_match"),
                     ):
-                        # if df is ldf:
-                        #     msk = df["end"]
-                        # else:
-                        #     msk = df["begin"]
-
-                        # df["rev_clipped"] = df["clipped"].mask(~msk, df["clipped"].map(rev_comp))
                         def check_starts(seq):
                             return target_no.startswith(seq) or target_no in seq
                         def check_ends(seq):
                             return target_no.endswith(seq) or target_no in seq
-                        if df is ldf:
+                        if df is ldf_copy:
                             df[name] = np.frompyfunc(check_starts, 1, 1)(df["rev_clipped"])
                         else:
                             df[name] = np.frompyfunc(check_ends, 1, 1)(df["rev_clipped"])
-                        # fix split reads if necessary
-                        # df.loc[df["split"], name] = df.loc[df["split"]].apply(
-                        #     lambda x: (
-                        #         x["query_short"]
-                        #         in (
-                        #             (rdf if df is ldf else ldf).loc[
-                        #                 (rdf if df is ldf else ldf)["split"], "query_short"
-                        #             ]
-                        #         ).values
-                        #         if "H" in x["query_cigar"]
-                        #         else x[name]
-                        #     ),
-                        #     axis=1,
-                        # )
-
-                    hsum_l = ldf["hom_clip_match"].sum()
+                    
+                    hsum_l = ldf_copy["hom_clip_match"].sum()
                     hsum_r = rdf["hom_clip_match"].sum()
-                    hom = ""
-                    # if lv == 53854464 and rv == 53862920:
-                    #     pd.set_option('display.max_colwidth', None)
-                    #     print(f"Homology {hom}")
-                    #     print(f"Insertion {ins}")
-                    #     print(hsum_l, hsum_r)
-                    #     print(seq1)
-                    #     print(seq2)
-                    #     print(ldf["rev_clipped"])
-                    #     print(rdf["rev_clipped"])
-                    #     print(rdf["query_aln_sub"])
-                    if (hsum_l == 0 or hsum_r == 0):
+
+                    # insertion matching
+                    c1 = find_longest_common_variant(ldf_copy["rev_clipped"]) if ldf_copy["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(ldf_copy["clipped"])
+                    mask = ldf_copy["rev_clipped"].to_numpy() == c1
+                    idx = np.flatnonzero(mask)[0]
+                    c1 = ldf_copy.iloc[idx]["rev_clipped"]
+
+                    c2 = rev_comp(find_longest_common_variant(rev_comp_vec(rdf["clipped"]))) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["clipped"]))
+                    mask = rdf["rev_clipped"].to_numpy() == c2
+                    idx = np.flatnonzero(mask)[0]
+                    c2 = rdf.iloc[idx]["rev_clipped"]
+
+                    ins = get_homology(c2, c1)
+                    ilen = len(ins)
+
+                    def check_starts(seq):
+                        return seq2.startswith(seq[ilen:]) if len(seq) != 0 else True
+                    def check_ends(seq):
+                        return (seq1.endswith(seq[:-ilen]) if len(seq) != 0 else True) if ilen != 0 else False
+                    
+                    ldf_copy["ins_clip_match"] = np.frompyfunc(check_starts, 1, 1)(ldf_copy["rev_clipped"])
+                    rdf["ins_clip_match"] = np.frompyfunc(check_ends, 1, 1)(rdf["rev_clipped"])
+
+                    isum_l = ldf_copy["ins_clip_match"].sum()
+                    isum_r = rdf["ins_clip_match"].sum()
+
+                    if hsum_l == 0 and hsum_r == 0 and hlen != 0:
+                        for df, target_no, name in (
+                        (ldf_copy, seq2, "hom_clip_match"),
+                        (rdf, seq1, "hom_clip_match"),
+                        ):
+
+                            def check_starts(seq):
+                                return target_no.startswith(seq) or target_no in seq
+                            def check_ends(seq):
+                                return target_no.endswith(seq) or target_no in seq
+                            if df is ldf:
+                                df[name] = np.frompyfunc(check_starts, 1, 1)(df["rev_clipped"])
+                            else:
+                                df[name] = np.frompyfunc(check_ends, 1, 1)(df["rev_clipped"])
+
+                        hsum_l = ldf_copy["hom_clip_match"].sum()
+                        hsum_r = rdf["hom_clip_match"].sum()
+                        hom = ""
+                        hlen = 0
+                    
+                    if lv == 47895121 and rv == 48516338:
+                        pd.set_option('display.max_colwidth', None)
+                        print(f"Homology {hom}")
+                        print(f"Insertion {ins}")
+                        print(hsum_l, hsum_r)
+                        print(seq1)
+                        print(seq2)
+                        print(f"lcommon_var: {lcommon_var}")
+                        print(f"rcommon_var: {rcommon_var}")
+                        print(ldf_copy[print_cols2].to_string())
+                        print(rdf[print_cols2].to_string())
+                    
+                    if (hsum_l == 0 or hsum_r == 0) and (isum_l == 0 or isum_r == 0):
                         continue
-                else:
-                    continue
 
-            # Output collection
-            total_reads = len(ldf) + len(rdf)
-            lmask_split = (ldf["split"] & ldf["query_short"].isin(rdf["query_short"]))
-            rmask_split = (rdf["split"] & rdf["query_short"].isin(ldf["query_short"]))
-            num_split_reads = min(lmask_split.sum(), rmask_split.sum())
+                    # NOTE: We already filter based on orientation so I don't think this matters 
 
-            lmask = (~ldf["split"])
-            rmask = (~rdf["split"])
+                    # sv_ori = l_ori.str.cat(r_ori.str)
+                    # fr = fr[(fr["break_orientation"] == sv_ori)]
+                    # lr = lr[(lr["break_orientation"] == sv_ori)]
 
-            left_matches_hom = ldf["hom_clip_match"].where(lmask).sum()
-            right_matches_hom = rdf["hom_clip_match"].where(rmask).sum()
-            left_matches_ins = ldf["ins_clip_match"].where(lmask).sum()
-            right_matches_ins = rdf["ins_clip_match"].where(rmask).sum()
-            
-            num_left_soft_reads = (~ldf["split"]).sum()
-            num_right_soft_reads = (~rdf["split"]).sum()
+                    # Output collection
+                    total_reads = len(ldf_copy) + len(rdf)
+                    num_split_reads = ldf_copy["split"].sum()
 
-            # Filter out cases with poor soft clip matches
-            if num_split_reads == 0:
-                hom_left = hsum_l / num_left_soft_reads
-                hom_right = hsum_r / num_right_soft_reads
-                ins_left = isum_l / num_left_soft_reads
-                ins_right = isum_r / num_right_soft_reads
-                if (hom_left < 0.33 and hom_right < 0.33) and (
-                    ins_left < 0.33 and ins_right < 0.33
-                ) or ((hom_left == 0 or hom_right == 0) and (ins_left == 0 or ins_right == 0)):
-                    continue
-                
-            results.append(
-                pd.DataFrame(
-                    {
-                        "left_sv": [lv],
-                        "right_sv": [rv],
-                        "hom_sum_left": [hsum_l],
-                        "hom_sum_right": [hsum_r],
-                        "ins_sum_left": [isum_l],
-                        "ins_sum_right": [isum_r],
-                        "homology": [hom],
-                        "insertion": [ins],
-                        "left_len": [len(ldf)],
-                        "right_len": [len(rdf)],
-                        "split_support": [num_split_reads],
-                        "soft_support": [num_left_soft_reads + num_right_soft_reads],
-                        "left_soft_matches_hom": [left_matches_hom],
-                        "right_soft_matches_hom": [right_matches_hom],
-                        "left_soft_matches_ins": [left_matches_ins],
-                        "right_soft_matches_ins": [right_matches_ins],
-                        "total_reads": [total_reads],
-                        "lcommon_var": [lcommon_var],
-                        "rcommon_var": [rcommon_var],
-                        # <-- store DataFrame directly, not as tuple
-                        "left": [ldf.copy()],
-                        "right": [rdf.copy()],
-                    }
-                )
-            )
+                    lmask = (~ldf_copy["split"])
+                    rmask = (~rdf["split"])
+
+                    left_matches_hom = ldf_copy["hom_clip_match"].where(lmask).sum()
+                    right_matches_hom = rdf["hom_clip_match"].where(rmask).sum()
+                    left_matches_ins = ldf_copy["ins_clip_match"].where(lmask).sum()
+                    right_matches_ins = rdf["ins_clip_match"].where(rmask).sum()
+                    
+                    num_left_soft_reads = (~ldf_copy["split"]).sum()
+                    num_right_soft_reads = (~rdf["split"]).sum()
+
+                    # Filter out cases with poor soft clip matches
+                    if num_split_reads == 0:
+                        hom_left = hsum_l / num_left_soft_reads
+                        hom_right = hsum_r / num_right_soft_reads
+                        ins_left = isum_l / num_left_soft_reads
+                        ins_right = isum_r / num_right_soft_reads
+
+                        if not (((hom_left >= 0.33) and (hom_right >= 0.33)) or ((ins_left >= 0.33) and (ins_right >= 0.33))):
+                            continue
+
+                    results.append(
+                        pd.DataFrame(
+                            {
+                                "left_sv": [lv],
+                                "right_sv": [rv],
+                                "hom_sum_left": [hsum_l],
+                                "hom_sum_right": [hsum_r],
+                                "ins_sum_left": [isum_l],
+                                "ins_sum_right": [isum_r],
+                                "homology": [hom],
+                                "insertion": [ins],
+                                "left_len": [len(ldf_copy)],
+                                "right_len": [len(rdf)],
+                                "split_support": [num_split_reads],
+                                "soft_support": [num_left_soft_reads + num_right_soft_reads],
+                                "left_soft_matches_hom": [left_matches_hom],
+                                "right_soft_matches_hom": [right_matches_hom],
+                                "left_soft_matches_ins": [left_matches_ins],
+                                "right_soft_matches_ins": [right_matches_ins],
+                                "total_reads": [total_reads],
+                                "lcommon_var": [lcommon_var],
+                                "rcommon_var": [rcommon_var],
+                                # <-- store DataFrame directly, not as tuple
+                                "left": [ldf_copy.copy()],
+                                "right": [rdf.copy()],
+                            }
+                        )
+                    )
     if not results:
         return None
     out = pd.concat(results, ignore_index=True)
@@ -423,6 +361,8 @@ def check_overlap(left, right):
 # @profile
 def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t").drop_duplicates()
+    leftover_splits = pd.read_csv(args.file[:-4] + "_leftover" + ".tsv", sep="\t").drop_duplicates()
+    leftover_splits[["break_pos1", "break_pos2"]] = leftover_splits[["break_pos1", "break_pos2"]].astype(int)
     svs = all_reads.groupby("break_pos1")
 
     split_log = open(args.split_log + ".txt", "w")
@@ -477,7 +417,7 @@ def run_split(args):
         _, lgrp = refine_step1(left, all_reads, args.verbose, True)
         _, rgrp = refine_step1(right, all_reads, args.verbose, False)
 
-        res = check_overlap(lgrp, rgrp)
+        res = check_overlap(lgrp, rgrp, leftover_splits)
 
         if res is None or len(res) == 0:
             print("No overlap found")
@@ -493,7 +433,7 @@ def run_split(args):
         right_match_ori = (res["right_sv"] <= break_pos2) if break_ori[1] == "-" else (res["right_sv"] >= break_pos2)
         res_mask = (left_within_20 | left_match_ori) & (right_within_20 | right_match_ori)
         res = res[res_mask]
-        res = res.sort_values(["split_support", "total_%", "total_reads"], ascending=False)
+        res = res.sort_values(["split_support", "total_%", "total_reads"], ascending=False).drop_duplicates(subset=["left_sv", "right_sv", "split_support", "total_%", "homology", "insertion"])
 
         res = res.head(3)
 
@@ -545,7 +485,7 @@ def run_split(args):
                 "sp_right_sv": int(top.right_sv),
                 "sp_hom_len": len(top.homology)
                 if top["hom_%"] > top["ins_%"]
-                else -len(top.insertion),
+                else -len(top.insertion) if not math.isnan(top.insertion) else "N/A",
                 "hom": top.homology if top["hom_%"] > top["ins_%"] else top.insertion,
             }
         )
@@ -589,6 +529,7 @@ def run_split(args):
         .reset_index(drop=True)
     )
     aug = pd.DataFrame(summary)
+    # print(aug)
     aug = aug.astype(
         {
             "break_pos1": "Int64",
@@ -598,7 +539,7 @@ def run_split(args):
             "right_soft_matches": "Int64",
             "sp_left_sv": "Int64",
             "sp_right_sv": "Int64",
-            "sp_hom_len": "Int64",
+            "sp_hom_len": "str",
         }
     )
     # aug = aug[["break_chrom1", "break_pos1", "break_chrom2", "break_pos2", "break_sv_type", "break_read_support", "break_features", "break_orientation"]]
