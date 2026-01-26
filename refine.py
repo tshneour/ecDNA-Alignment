@@ -14,6 +14,8 @@ import math
 warnings.filterwarnings("ignore")
 pd.set_option("mode.chained_assignment", None)
 
+bp_to_read_idxs = {}
+
 # -------------------------------------------
 # Utility functions
 # -------------------------------------------
@@ -154,9 +156,17 @@ def check_overlap(left, right, leftover):
         else:
             df["clipped"] = pd.Series(dtype=str)
 
+    print(right[["query_pos", "query_end"]])
+    if left["break_pos1"].iloc[0] in bp_to_read_idxs:
+        idxs = bp_to_read_idxs[left["break_pos1"].iloc[0]][0]
+        last_is_rev = leftover.loc[idxs[0], "query_orientation"] != leftover.loc[idxs[-1], "query_orientation"]
+        print("Possible templated insertion case")
+        print("Hypothetical SV ends", leftover.loc[idxs[0], "query_chrom"], leftover.loc[idxs[0], "query_end"], leftover.loc[idxs[-1], "query_chrom"], leftover.loc[idxs[-1], "query_end"] if last_is_rev else leftover.loc[idxs[-1], "query_pos"])
+
     results = []
     for lv, ldf in left.groupby("sv_end"):
         for rv, rdf in right.groupby("sv_end"):
+
             # filter splits
             ldf_copy = ldf.copy()
             ldf_copy = ldf_copy[
@@ -362,7 +372,10 @@ def check_overlap(left, right, leftover):
 def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t").drop_duplicates()
     leftover_splits = pd.read_csv(args.file[:-4] + "_leftover" + ".tsv", sep="\t").drop_duplicates()
-    leftover_splits[["break_pos1", "break_pos2"]] = leftover_splits[["break_pos1", "break_pos2"]].astype(int)
+    for group, reads in leftover_splits.groupby(["break_pos1", "query_name", "read_num"]):
+        if len(reads) > 2:
+            bp_to_read_idxs.setdefault(group[0], []).append(reads.index.to_list())
+    # leftover_splits[["break_pos1", "break_pos2"]] = leftover_splits[["break_pos1", "break_pos2"]].astype(int)
     svs = all_reads.groupby("break_pos1")
 
     split_log = open(args.split_log + ".txt", "w")
@@ -528,8 +541,7 @@ def run_split(args):
         .first()
         .reset_index(drop=True)
     )
-    aug = pd.DataFrame(summary)
-    # print(aug)
+    aug = pd.DataFrame(summary, columns=["break_pos1","split_support","soft_support","left_soft_matches","right_soft_matches","sp_left_sv","sp_right_sv","sp_hom_len","hom"])
     aug = aug.astype(
         {
             "break_pos1": "Int64",
