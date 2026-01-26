@@ -1,6 +1,3 @@
-
----
-
 # ecDNA-Alignment
 
 Tools to collect reads around structural-variant (SV) breakpoints and refine AA (AmpliconArchitect) predictions using split-read evidence and optional de-novo scaffolds.
@@ -9,30 +6,39 @@ Tools to collect reads around structural-variant (SV) breakpoints and refine AA 
 
 * Linux / macOS (bash)
 * **git**
-* **conda** or **mamba**
+* **conda** (with the **libmamba** solver enabled; conda ≥ 23 recommended)
 
 ---
 
 ## Installation
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/tshneour/ecDNA-Alignment.git
 ```
- 
-### 2. Create conda environment and install requirements
+
+### 2. Create conda environment and install requirements (libmamba)
+
+Use conda with the libmamba solver for faster and more reliable dependency resolution:
+
 ```bash
-conda create -n sv-analysis -c conda-forge -c bioconda \
+conda create --solver libmamba -n sv-analysis \
+  -c conda-forge -c bioconda \
   python>=3.11 spades=4.2.0 samtools pysam biopython pandas numpy natsort
 
 conda activate sv-analysis
-
 ```
+
+> Tip: If libmamba is not yet enabled in your conda installation, update conda first:
+>
+> ```bash
+> conda update -n base conda
+> ```
 
 ---
 
 ## Quickstart
-
 
 1. **Setup**
 
@@ -72,11 +78,40 @@ python /path/to/refine.py alignments.tsv \
 
 ---
 
+## Input format
+
+### SV summary (`sum`) files
+
+`collect.py` expects one or more **tab-separated (****`.tsv`****) files** describing structural-variant breakpoints with a fixed set of required columns.
+
+Each TSV in the `sum/` directory represents a collection of SV breakpoints. The filename is used only to derive an `amplicon` identifier (taken as `filename.split("_")[1]`).
+
+#### Required columns
+
+Each input TSV **must** contain the following columns (case-sensitive):
+
+| Column name         | Type   | Description                                                                               |
+| ------------------- | ------ | ----------------------------------------------------------------------------------------- |
+| `chrom1`            | string | Chromosome of the first breakpoint end (e.g. `chr8`)                                      |
+| `pos1`              | int    | 0-based genomic coordinate of the first breakpoint                                        |
+| `chrom2`            | string | Chromosome of the second breakpoint end                                                   |
+| `pos2`              | int    | 0-based genomic coordinate of the second breakpoint                                       |
+| `sv_type`           | string | Structural variant type (e.g. `deletion`, `duplication`, `interchromosomal`, `inversion`) |
+| `read_support`      | int    | Number of reads supporting the breakpoint (used for reporting only)                       |
+| `features`          | string | Arbitrary annotation or metadata for the breakpoint                                       |
+| `orientation`       | string | Breakpoint orientation as a 2-character string (`++`, `--`, `+-`, `-+`)                   |
+| `homology_length`   | int    | Length of homology reported for the breakpoint (may be 0)                                 |
+| `homology_sequence` | string | Homology or inserted sequence (may be empty)                                              |
+
+Coordinates in the output tables are reported as **1-based**, but the input `pos1` / `pos2` values are treated as **0-based** internally.
+
+---
+
 ## Usage
 
 ### `collect.py`
 
-Collect reads from the ends of AA SVs for refinement and write per-breakpoint read pairs (FASTQs) plus a combined TSV of read evidence.
+Collect reads around SV breakpoints for refinement and write per-breakpoint paired FASTQs plus a combined TSV of read evidence.
 
 ```
 usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
@@ -85,7 +120,7 @@ usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
 **Positional arguments**
 
 * `refine` (int): Radius (bp) around each breakpoint to fetch alignments (e.g., 350).
-* `sum` (path): Directory containing AA amplicon summary `.tsv` files.
+* `sum` (path): Directory containing SV summary `.tsv` files in the format described above.
 * `bam` (path): Coordinate-sorted BAM with index (`.bai`).
 
 **Options**
@@ -98,69 +133,66 @@ usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
 
 * TSV of reads (`split` and `nonsplit`) with columns including:
 
-  * `break_chrom1`, `break_pos1`, `break_chrom2`, `break_pos2`, `break_sv_type`, `break_read_support`, `break_features`, `break_orientation`, `AA_homology_len`, `AA_homology_seq`, `query_*`, `proper_pair`, `split`, `amplicon`
-* Per-breakpoint FASTQs in `fastq/`, gzipped.
+  * `break_chrom1`, `break_pos1`, `break_chrom2`, `break_pos2`
+  * `break_sv_type`, `break_read_support`, `break_features`, `break_orientation`
+  * `AA_homology_len`, `AA_homology_seq`
+  * `query_*` (read-level alignment details)
+  * `proper_pair`, `split`, `amplicon`
+
+* Per-breakpoint FASTQs in `fastq/`, gzipped:
+
+  * `fastq/b_<chr1>_<pos1>_<chr2>_<pos2>_1.fastq.gz`
+  * `fastq/b_<chr1>_<pos1>_<chr2>_<pos2>_2.fastq.gz`
 
 ### `refine.py`
 
-Refine AA SVs using split reads and/or a de-novo scaffold reconstruction around each breakpoint.
+Refine SV breakpoints using split-read evidence and/or local de-novo scaffold reconstruction.
 
 ```
 usage: refine.py FILE [--mode {split,scaffold,both}]
                      [--out-table OUT] [--split-log PATH]
                      [--scaffold-log PATH] [--outdir DIR]
                      [-l | --list] [-b IDX [IDX ...]] [-v ...]
-                     [--fasta FASTA]   # required for scaffold/both
+                     [--fasta FASTA]
 ```
 
 **Required**
 
-* `FILE` (path): TSV from `collect.py`.
+* `FILE` (path): TSV produced by `collect.py`.
 
-**Core options**
+**Modes**
 
-* `--mode {split,scaffold,both}`   Default: `split`.
-* `--out-table OUT`                Basename for output table (program appends `.tsv`).
-* `--split-log PATH`               Log of split-read candidate evidence (default: `split_read_alignments.txt`).
-* `--scaffold-log PATH`            Log of scaffold alignments per breakpoint (default: `scaffold_alignments.txt`).
-* `--outdir DIR`                   SPAdes output base directory (default: `out/`).
-
-**Breakpoint selection & verbosity**
-
-* `-l, --list`                     Print a table of all breakpoints (with indices) and exit.
-* `-b, --breakpoints IDX ...`      Only process these `breakpoint_index` values (see `--list`).
-* `-v`                             Increase verbosity (`-v`, `-vv`, …).
-
-**Scaffold mode requirement**
-
-* `--fasta FASTA`                  FASTA with `samtools faidx` index present (`.fai`).
+* `split`: infer refined breakpoint positions and homology using split-read evidence only.
+* `scaffold`: perform local assembly (SPAdes) around each breakpoint and align scaffolds to the reference.
+* `both`: run scaffold refinement first, then augment with split-read results.
 
 **Outputs**
 
-* **Split mode** columns added (per breakpoint):
+* **Split mode** columns added:
 
-  * `split_matches`, `sp_left_sv`, `sp_right_sv`,
-  * `sp_hom_len` (positive=homology length, negative=insertion length),
-  * `hom` (sequence of homology or insertion).
+  * `split_support`, `soft_support`
+  * `sp_left_sv`, `sp_right_sv`
+  * `sp_hom_len` (positive = homology, negative = insertion)
+  * `hom` (homology or insertion sequence)
+
 * **Scaffold mode** columns added:
 
-  * `sc_pos1`, `sc_pos2` (estimated refined positions),
-  * `sc_hom_len` (Int64; negative=insertion, 0=abutting, positive=homology),
-  * `sc_hom` (sequence).
-* **Both**: scaffold + split columns combined in one table.
+  * `sc_pos1`, `sc_pos2` (refined breakpoint coordinates)
+  * `sc_hom_len` (Int64; negative = insertion, 0 = abutting, positive = homology)
+  * `sc_hom` (sequence)
+
+* **Both**: combined scaffold and split-read columns in a single TSV.
 
 ---
 
 ## Working assumptions & tips
 
 * **BAM**: Coordinate-sorted, indexed (`.bai` present).
-* **AA summaries**: `collect.py` expects `.tsv` files in the summaries folder with AA breakpoints and metadata (e.g., `chrom1/pos1/chrom2/pos2/sv_type/...`). Filenames are used to derive `amplicon` IDs.
-* **Mapping quality**: `collect.py` keeps reads with MAPQ > 15 (or mapped status) and writes both split and non-split pairs.
-* **FASTQs**: Reconstructed from reads overlapping each pair of breakpoints and written to `fastq/` (gzipped). These are used by scaffold mode.
-* **FASTA**: For scaffold mode, index your reference first:
+* **SV summaries**: Input TSVs must conform exactly to the column specification above.
+* **Mapping quality**: Reads with MAPQ > 15 (or mapped status) are retained.
+* **FASTQs**: Reconstructed from reads overlapping each breakpoint pair and used by scaffold mode.
+* **FASTA**: Required for scaffold mode; must be indexed first:
 
   ```bash
   samtools faidx /path/to/genome.fa
   ```
-
----
