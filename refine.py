@@ -55,7 +55,6 @@ def rev_comp(seq):
         else seq.str[::-1].str.translate(trans)
     )
 
-
 def get_homology(first, last):
     for i in range(len(first), -1, -1):
         if last.startswith(first[-i:]):
@@ -89,8 +88,7 @@ print_cols2 = [
     "query_aln_sub",
 ]
 
-# @profile
-def refine_step1(reads, all_reads, leftover, verbose, is_left):
+def refine_step1(reads, all_reads, verbose, is_left):
     reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
     reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
     leftover["begin"] = leftover["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
@@ -99,7 +97,6 @@ def refine_step1(reads, all_reads, leftover, verbose, is_left):
     reads["sv_end"] = reads["query_pos"].where(reads["begin"])
     reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
     reads.dropna(subset=["sv_end"], inplace=True)
-    # print(reads[["break_orientation", "query_cigar"]]).top(20)
     mask_ori = ((reads["break_orientation"].str.get(0) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(0) == "-") & reads["begin"]) if is_left else ((reads["break_orientation"].str.get(1) == "+") & reads["end"]) | ((reads["break_orientation"].str.get(1) == "-") & reads["begin"])
     mask_not_mul_clips = (reads["begin"] ^ reads["end"])
     reads = reads[(mask_ori & mask_not_mul_clips)]
@@ -242,7 +239,6 @@ def check_overlap(left, right, leftover):
     # compute clipped sequences
     for df in (left, right, leftover):
         df["clip_len"] = df["query_aln_full"].str.len() - df["query_aln_sub"].str.len()
-
         if not df.empty:
             df["clipped"] = df.apply(
                 lambda x: (
@@ -467,13 +463,6 @@ def check_overlap(left, right, leftover):
                     if (hsum_l == 0 or hsum_r == 0) and (isum_l == 0 or isum_r == 0):
                         continue
 
-                    # NOTE: We already filter based on orientation so I don't think this matters 
-
-                    # sv_ori = l_ori.str.cat(r_ori.str)
-                    # fr = fr[(fr["break_orientation"] == sv_ori)]
-                    # lr = lr[(lr["break_orientation"] == sv_ori)]
-
-                    # Output collection
                     total_reads = len(ldf_copy) + len(rdf)
                     num_split_reads = ldf_copy["split"].sum()
 
@@ -488,7 +477,6 @@ def check_overlap(left, right, leftover):
                     num_left_soft_reads = (~ldf_copy["split"]).sum()
                     num_right_soft_reads = (~rdf["split"]).sum()
 
-                    # Filter out cases with poor soft clip matches
                     if num_split_reads == 0:
                         hom_left = hsum_l / num_left_soft_reads
                         hom_right = hsum_r / num_right_soft_reads
@@ -521,7 +509,6 @@ def check_overlap(left, right, leftover):
                                 "total_reads": [total_reads],
                                 "lcommon_var": [lcommon_var],
                                 "rcommon_var": [rcommon_var],
-                                # <-- store DataFrame directly, not as tuple
                                 "left": [ldf_copy.copy()],
                                 "right": [rdf.copy()],
                             }
@@ -540,33 +527,24 @@ def check_overlap(left, right, leftover):
 
     return out
 
-# @profile
 def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t").drop_duplicates()
     leftover_splits = pd.read_csv(args.file[:-4] + "_leftover" + ".tsv", sep="\t").drop_duplicates()
+    has_homology = ("AA_homology_len" in all_reads.columns) and ("AA_homology_seq" in all_reads.columns)
+
     for group, reads in leftover_splits.groupby(["break_pos1", "query_name", "read_num"]):
         if len(reads) > 2:
             bp_to_read_idxs.setdefault(group[0], []).append(reads.index.to_list())
-    # leftover_splits[["break_pos1", "break_pos2"]] = leftover_splits[["break_pos1", "break_pos2"]].astype(int)
     svs = all_reads.groupby("break_pos1")
 
     split_log = open(args.split_log + ".txt", "w")
     summary = []
 
     if args.list:
-        tbl = (
-            svs[
-                [
-                    "break_chrom1",
-                    "break_pos1",
-                    "break_chrom2",
-                    "break_pos2",
-                    "AA_homology_seq",
-                ]
-            ]
-            .first()
-            .reset_index(drop=True)
-        )
+        cols = ["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"]
+        if has_homology:
+            cols.append("AA_homology_seq")
+        tbl = svs[cols].first().reset_index(drop=True)
         tbl.index.name = "breakpoint_index"
         print(tbl.to_string())
         return
@@ -580,7 +558,6 @@ def run_split(args):
         if picks and bp not in picks:
             continue
 
-        # Inversion case
         if sv["break_chrom1"].iloc[0] == sv["break_chrom2"].iloc[0]:
             left = sv[
                 (sv["query_pos"] >= bp - 500)
@@ -626,8 +603,6 @@ def run_split(args):
             print("No overlap found")
             continue
 
-        # res["homology"] = res["homology"].apply(lambda x: x if break_ori[0] == "+" else rev_comp(x))
-        # res["insertion"] = res["insertion"].apply(lambda x: x if break_ori[0] == "+" else rev_comp(x))
         pd.set_option('display.max_colwidth', None)
         split_log.write(f"=== Breakpoint {bp} ===\n")
         for idx, row in res.iterrows():
@@ -639,10 +614,6 @@ def run_split(args):
             split_log.write(
                 "Right reads:\n" + row["right"][print_cols2].to_string() + "\n\n"
             )
-            # split_log.write(
-            #     "Left dominant variant: " + row["left"][["lcommon_var"]].to_string() + "\n"
-            #     + "Right dominant variant: " + row["right"][["rcommon_var"]].to_string()
-            # )
 
         if args.breakpoints:
             for i in range(len(res) - 1, -1, -1):
@@ -654,7 +625,6 @@ def run_split(args):
                 print("_" * 80, "\n")
 
         top = res.iloc[0]
-        # print(top.index)
         summary.append(
             {
                 "break_pos1": bp,
@@ -675,7 +645,7 @@ def run_split(args):
             }
         )
 
-        if args.breakpoints:
+        if args.breakpoints and has_homology:
             orig = sv.iloc[0]
             print(
                 "Original AA breakpoint:\n",
@@ -694,25 +664,23 @@ def run_split(args):
 
     split_log.close()
 
-    brk = (
-        svs[
-            [
-                "break_chrom1",
-                "break_pos1",
-                "break_chrom2",
-                "break_pos2",
-                "break_sv_type",
-                "break_read_support",
-                "break_features",
-                "break_orientation",
-                "AA_homology_len",
-                "AA_homology_seq",
-                "amplicon",
-            ]
-        ]
-        .first()
-        .reset_index(drop=True)
-    )
+    brk_cols = [
+        "break_chrom1",
+        "break_pos1",
+        "break_chrom2",
+        "break_pos2",
+        "break_sv_type",
+        "break_read_support",
+        "break_features",
+        "break_orientation",
+        "amplicon",
+    ]
+    if has_homology:
+        brk_cols.insert(8, "AA_homology_len")
+        brk_cols.insert(9, "AA_homology_seq")
+
+    brk = svs[brk_cols].first().reset_index(drop=True)
+
     aug = pd.DataFrame(summary, columns=["break_pos1","split_support","soft_support","left_soft_matches","right_soft_matches","sp_left_sv","sp_right_sv","sp_hom_len","hom"])
     aug = aug.astype(
         {
@@ -726,7 +694,6 @@ def run_split(args):
             "sp_hom_len": "str",
         }
     )
-    # aug = aug[["break_chrom1", "break_pos1", "break_chrom2", "break_pos2", "break_sv_type", "break_read_support", "break_features", "break_orientation"]]
     out = brk.merge(aug, on="break_pos1", how="left")
     out["b_chr1"] = out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
     out = out.sort_values(by=["b_chr1", "break_pos1"])
@@ -748,7 +715,6 @@ aligner = Align.PairwiseAligner(
 )
 aligner.wildcard = "?"
 
-
 def extract_region(fasta, region):
     r = subprocess.run(
         ["samtools", "faidx", fasta, region],
@@ -760,9 +726,7 @@ def extract_region(fasta, region):
         raise RuntimeError(r.stderr)
     return "".join(r.stdout.splitlines()[1:])
 
-
 # Return list of scaffolds for some breakpoint
-# @profile
 def generate_scaffolds(fq1, fq2, out_dir, args):
     shutil.rmtree(out_dir, ignore_errors=True)
     cmd = [
@@ -788,9 +752,7 @@ def generate_scaffolds(fq1, fq2, out_dir, args):
             seqs.append("".join(block.splitlines()[1:]))
     return seqs
 
-
 # Reformats formatted PairwiseAlignment lists by adding a custom reference chrom and pos, accounting for orientation
-# @profile
 def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
     output = []
     tgt_fst = None
@@ -802,9 +764,6 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
         if i + 2 >= len(arr) or not arr[i].strip():
             continue
 
-        # --- parse target ---
-        # if i == 0:
-        #     print('\n'.join(arr))
         if len(arr[i].split()) < 3:
             continue
         _, tgt_start, seq, *rest_t = arr[i].split()
@@ -866,14 +825,12 @@ def reformat_alignment(arr, ori, ref_chr, ref_start=0, query_start=0):
 
     return "\n".join(output), tgt_fst, tgt_lst, ref_fst, ref_end
 
-
 def test_coordinates(expected_chr, expected_start, expected_end, actual, args):
     region = expected_chr + ":" + str(expected_start) + "-" + str(expected_end)
     expected = extract_region(args.fasta, region).upper()
     if expected != actual:
         print(f"Mismatch\nExpected: {expected}\nActual: {actual}")
 
-# @profile
 def handle_inversion(
     a1_sc_range,
     a1_ref_range,
@@ -909,7 +866,6 @@ def handle_inversion(
             a1 = aligner.align(sc, seq1 if a1_is_rev else rev_comp(seq1))[0]
             a2 = aligner.align(sc, rev_comp(seq2) if a2_is_rev else seq2)[0]
         else:
-            # Not 100% about this
             a1 = aligner.align(sc, rev_comp(seq1) if a1_is_rev else seq1)[0]
             a2 = aligner.align(sc, seq2 if a2_is_rev else rev_comp(seq2))[0]
         return a1, a2
@@ -919,15 +875,10 @@ def handle_inversion(
         abs(max_ref - b_pos1), abs(max_ref - b_pos2)
     ):
         a1, a2 = do_realignment(is_seq1_min)
-        # print(f"{format(a1).split("\n")}\n{format(a2).split("\n")}\n")
-        # print(f"{format(a1).split("\n")}\n{format(a2).split("\n")}\n")
         return a1, a2, is_seq1_min
     else:
         a1, a2 = do_realignment(is_seq1_max)
-        # print(f"{format(a1).split("\n")}\n{format(a2).split("\n")}\n")
-        # print(f"{format(a1).split("\n")}\n{format(a2).split("\n")}\n")
         return a1, a2, is_seq1_max
-
 
 def aln_err_density(alns):
     """
@@ -943,27 +894,26 @@ def aln_err_density(alns):
 
     return total_errors / total_bases if total_bases else 0.0
 
-# @profile
 def run_scaffold(args):
-    df = (
-        pd.read_csv(args.file, sep="\t")[
-            [
-                "break_chrom1",
-                "break_pos1",
-                "break_chrom2",
-                "break_pos2",
-                "break_sv_type",
-                "break_read_support",
-                "break_features",
-                "break_orientation",
-                "AA_homology_len",
-                "AA_homology_seq",
-                "amplicon",
-            ]
-        ]
-        .drop_duplicates()
-        .reset_index()
-    )
+    df_all = pd.read_csv(args.file, sep="\t")
+    has_homology = ("AA_homology_len" in df_all.columns) and ("AA_homology_seq" in df_all.columns)
+
+    cols = [
+        "break_chrom1",
+        "break_pos1",
+        "break_chrom2",
+        "break_pos2",
+        "break_sv_type",
+        "break_read_support",
+        "break_features",
+        "break_orientation",
+        "amplicon",
+    ]
+    if has_homology:
+        cols.insert(8, "AA_homology_len")
+        cols.insert(9, "AA_homology_seq")
+
+    df = df_all[cols].drop_duplicates().reset_index()
     df["ref1"] = (
         df.break_chrom1
         + ":"
@@ -1021,7 +971,6 @@ def run_scaffold(args):
         break_pos1 = row["break_pos1"]
         break_pos2 = row["break_pos2"]
         for i, sc in enumerate(scaffs):
-            # print(sc)
             a1_pos = aligner.align(sc, row.seq1.upper())
             a1_neg = aligner.align(sc, rev_comp(row.seq1.upper()))
             a2_pos = aligner.align(sc, row.seq2.upper())
@@ -1051,40 +1000,12 @@ def run_scaffold(args):
                 row["break_chrom1"],
                 row["break_pos1"],
             )
-            first_aln_len = len(a1_out.split("\n")[2].split()[2]) - 1
-            # test_coordinates(
-            #     df["break_chrom1"][idx],
-            #     a1_ref_fst - first_aln_len
-            #     if (a1_pos.score < a1_neg.score)
-            #     else a1_ref_fst,
-            #     a1_ref_fst
-            #     if (a1_pos.score < a1_neg.score)
-            #     else a1_ref_fst + first_aln_len,
-            #     rev_comp(a1_out.split("\n")[2].split()[2])
-            #     if (a1_pos.score < a1_neg.score)
-            #     else a1_out.split("\n")[2].split()[2],
-            #     args,
-            # )
             a2_out, a2_fst, a2_lst, a2_ref_fst, a2_ref_lst = reformat_alignment(
                 format(a2).split("\n"),
                 (a2_pos.score >= a2_neg.score),
                 row["break_chrom2"],
                 row["break_pos2"],
             )
-            second_aln_len = len(a2_out.split("\n")[2].split()[2]) - 1
-            # test_coordinates(
-            #     df["break_chrom2"][idx],
-            #     a2_ref_fst - second_aln_len
-            #     if (a2_pos.score < a2_neg.score)
-            #     else a2_ref_fst,
-            #     a2_ref_fst
-            #     if (a2_pos.score < a2_neg.score)
-            #     else a2_ref_fst + second_aln_len,
-            #     rev_comp(a2_out.split("\n")[2].split()[2])
-            #     if (a2_pos.score < a2_neg.score)
-            #     else a2_out.split("\n")[2].split()[2],
-            #     args,
-            # )
 
             hom = ""
             hom_len = None
@@ -1117,40 +1038,12 @@ def run_scaffold(args):
                     row["break_chrom1"],
                     row["break_pos1"],
                 )
-                first_aln_len = len(a1_out.split("\n")[2].split()[2]) - 1
-                # test_coordinates(
-                #     df["break_chrom1"][idx],
-                #     a1_ref_fst - first_aln_len
-                #     if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev))
-                #     else a1_ref_fst,
-                #     a1_ref_fst
-                #     if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev))
-                #     else a1_ref_fst + first_aln_len,
-                #     rev_comp(a1_out.split("\n")[2].split()[2])
-                #     if not ((is_seq1 and a1_is_rev) or (not is_seq1 and not a1_is_rev))
-                #     else a1_out.split("\n")[2].split()[2],
-                #     args,
-                # )
                 a2_out, a2_fst, a2_lst, a2_ref_fst, a2_ref_lst = reformat_alignment(
                     format(a2).split("\n"),
                     (is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev),
                     row["break_chrom2"],
                     row["break_pos2"],
                 )
-                second_aln_len = len(a2_out.split("\n")[2].split()[2]) - 1
-                # test_coordinates(
-                #     df["break_chrom2"][idx],
-                #     a2_ref_fst - second_aln_len
-                #     if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev))
-                #     else a2_ref_fst,
-                #     a2_ref_fst
-                #     if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev))
-                #     else a2_ref_fst + second_aln_len,
-                #     rev_comp(a2_out.split("\n")[2].split()[2])
-                #     if not ((is_seq1 and not a2_is_rev) or (not is_seq1 and a2_is_rev))
-                #     else a2_out.split("\n")[2].split()[2],
-                #     args,
-                # )
                 print("Inversion handled.\n")
 
             if (
@@ -1227,17 +1120,8 @@ def run_scaffold(args):
             print(
                 f"breakpoint {idx + 1}: left={li}({scores[li]}), right={ri}({scores[ri]})"
             )
-        # summary.append(
-        #     {
-        #         "best_left_scaffold": li,
-        #         "best_left_scores": scores[li],
-        #         "best_right_scaffold": ri,
-        #         "best_right_scores": scores[ri],
-        #     }
-        # )
-        # print([s for s in homs if s[1]])
+
         best_prediction = next((s for s in homs if s[1]), ("", "", "", ""))
-        # print(best_prediction)
         summary.append(
             {
                 "sc_pos1": best_prediction[2],
@@ -1250,22 +1134,22 @@ def run_scaffold(args):
 
     scaffold_log.close()
 
-    base = df.drop(columns=["ref1", "ref2", "seq1", "seq2"])
-    base = df[
-        [
-            "break_chrom1",
-            "break_pos1",
-            "break_chrom2",
-            "break_pos2",
-            "break_sv_type",
-            "break_read_support",
-            "break_features",
-            "break_orientation",
-            "AA_homology_len",
-            "AA_homology_seq",
-            "amplicon",
-        ]
+    base_cols = [
+        "break_chrom1",
+        "break_pos1",
+        "break_chrom2",
+        "break_pos2",
+        "break_sv_type",
+        "break_read_support",
+        "break_features",
+        "break_orientation",
+        "amplicon",
     ]
+    if has_homology:
+        base_cols.insert(8, "AA_homology_len")
+        base_cols.insert(9, "AA_homology_seq")
+
+    base = df[base_cols]
     aug = pd.DataFrame(summary)
     out = pd.concat([base.reset_index(drop=True), aug], axis=1)
     out["sc_hom_len"] = out["sc_hom_len"].replace("", np.nan)
@@ -1276,12 +1160,6 @@ def run_scaffold(args):
     print(f"Augmented scaffold predictions written to {args.out_table}")
     return out
 
-
-# -------------------------------------------
-# Main & CLI
-# -------------------------------------------
-
-# @profile
 def main():
     p = argparse.ArgumentParser(
         description="SV split read analysis OR scaffold reconstruction"
@@ -1307,7 +1185,6 @@ def main():
         help="scaffold pipeline log",
     )
     p.add_argument("--outdir", default="out", help="SPAdes output base directory")
-    # refine flags
     p.add_argument("-l", "--list", action="store_true", help="list breakpoints")
     p.add_argument(
         "-b",
@@ -1330,7 +1207,6 @@ def main():
         default=16,
         help="how many threads to use for the assembler",
     )
-    # scaffold flags
     p.add_argument("--fasta", help="indexed FASTA for extract_region")
 
     args = p.parse_args()
@@ -1368,7 +1244,6 @@ def main():
             axis=1,
         )
         final.to_csv(args.out_table, sep="\t", index=False)
-
 
 if __name__ == "__main__":
     main()
