@@ -165,253 +165,6 @@ def rev_comp(dna):
     return "".join(complement[base] for base in reversed_dna)
 
 
-# @profile
-# def get_pairs(
-#     regions, chrom1, chrom2, break_pos1, break_pos2, sv_type, sv_orientation, args
-# ):
-#     """
-#     Fetch all paired reads, including those with split alignments
-
-#     Parameters:
-#     - regions: the two SV regions to collect reads from
-#     - chrom1: chromosome # of first region
-#     - chrom2: chromosome # of second region
-
-#     Returns:
-#     - split_alignments: contains all sets of paired reads with split alignments
-#     - paired_alignments: contains all sets of paired reads without split alignments
-#     """
-#     split_alignments = []
-#     nonsplit_alignments = []
-
-#     # Iterate over first breakpoint end
-#     for i, region in enumerate(regions):
-#         for aln in region:
-#             # If we've seen this read before, skip it
-#             if (
-#                 aln.is_duplicate
-#                 or any(aln in tup for tup in split_alignments)
-#                 or any(aln in tup for tup in nonsplit_alignments)
-#             ):
-#                 # print("Duplicate read or read already seen")
-#                 continue
-
-#             if not (aln.is_mapped):
-#                 print("Unmapped read found")
-#                 # print(aln.query_sequence)
-#                 # mate = samfile.mate(aln)
-#                 # print(mate.reference_name)
-#                 # print(mate.reference_start)
-#                 # print("+" if mate.is_forward else "-")
-#                 # print("read1" if mate.is_read1 else "read2")
-#                 # print(mate.query_sequence)
-#                 # print()
-#                 continue
-
-#             try:
-#                 mate = samfile.mate(aln)
-#             except ValueError as e:
-#                 print(e)
-#                 # print(aln.reference_name)
-#                 # print(aln.reference_start)
-#                 # print("+" if aln.is_forward else "-")
-#                 # print("read1" if aln.is_read1 else "read2")
-#                 # print(aln.query_sequence)
-#                 # print()
-#                 continue
-
-#             # Filter out unhelpful discordant pairs
-#             if not aln.is_proper_pair and not (
-#                 aln.is_supplementary or aln.is_secondary or aln.has_tag("SA")
-#             ):
-#                 if (
-#                     i == 0
-#                     and (
-#                         not mate.reference_name == chrom2
-#                         or not (
-#                             break_pos2 - args.refine < mate.reference_start
-#                             and break_pos2 + args.refine > mate.reference_start
-#                         )
-#                     )
-#                 ) or (
-#                     i == 1
-#                     and (
-#                         not mate.reference_name == chrom1
-#                         or not (
-#                             break_pos1 - args.refine < mate.reference_start
-#                             and break_pos1 + args.refine > mate.reference_start
-#                         )
-#                     )
-#                 ):
-#                     continue
-
-#             # Avoid inclusion of non-informative region to the right of foldback
-#             # if sv_type == "foldback":
-#             #     if (
-#             #         i == 0
-#             #         and (
-#             #             aln.reference_end <= break_pos1 - 20
-#             #             or (
-#             #                 mate.reference_name == chrom1
-#             #                 and mate.reference_end <= break_pos1 - 20
-#             #             )
-#             #         )
-#             #         or (
-#             #             mate.reference_name == chrom2
-#             #             and mate.reference_start > break_pos2 + 20
-#             #         )
-#             #     ):
-#             #         continue
-#             #     if (
-#             #         i == 1
-#             #         and (
-#             #             aln.reference_start > break_pos2 + 20
-#             #             or (
-#             #                 mate.reference_name == chrom2
-#             #                 and mate.reference_start > break_pos2 + 20
-#             #             )
-#             #         )
-#             #         or (
-#             #             mate.reference_name == chrom1
-#             #             and mate.reference_end <= break_pos1 - 20
-#             #         )
-#             #     ):
-#             #         continue
-#             read1, sup, read2 = None, None, None
-#             if aln.is_supplementary or aln.is_secondary or aln.has_tag("SA"):
-#                 sa_tag = (aln.get_tag("SA")).split(";")[:-1]
-#                 sa_tag = sa_tag[0]
-#                 sup_name, sup_pos, sup_strand, sup_cigar, sup_mapq, sup_tlen = (
-#                     sa_tag.split(",")
-#                 )
-#                 sup_pos = int(sup_pos)
-#                 sup_tlen = int(sup_tlen)
-
-#                 found_split2 = False
-#                 for sup_read in samfile.fetch(sup_name, sup_pos, sup_pos + 1):
-#                     if (
-#                         sup_read.query_name == aln.query_name
-#                         and sup_read.reference_name == sup_name
-#                         and (sup_read.reference_start + 1) == sup_pos
-#                         and _sh_re.sub("", sup_read.cigarstring)
-#                         == _sh_re.sub("", sup_cigar)
-#                     ):
-#                         non_sup = (
-#                             aln
-#                             if not aln.is_supplementary and not aln.is_secondary
-#                             else sup_read
-#                         )
-#                         sup = (
-#                             aln
-#                             if aln.is_supplementary or aln.is_secondary
-#                             else sup_read
-#                         )
-#                         read1 = non_sup if non_sup.is_read1 else mate
-#                         read2 = non_sup if non_sup.is_read2 else mate
-#                         found_split2 = True
-#                         break
-#                 if not found_split2:
-#                     print(sup_name, sup_pos, sup_cigar, sup_tlen)
-#                     raise NameError("split mate not found")
-
-#                 if not filter_for_pos_ori(
-#                     read1,
-#                     read2,
-#                     chrom1,
-#                     break_pos1,
-#                     chrom2,
-#                     break_pos2,
-#                     sv_type,
-#                     sv_orientation,
-#                     sup,
-#                 ):
-#                     continue
-
-#                 split_alignments.append((read1, sup, read2))
-#                 split_alignments.append((read1, sup, read2))
-
-#             elif mate.is_supplementary or mate.is_secondary or mate.has_tag("SA"):
-#                 sa_tag = (mate.get_tag("SA")).split(";")[:-1]
-#                 sa_tag = sa_tag[0]
-#                 sup_name, sup_pos, sup_strand, sup_cigar, sup_mapq, sup_tlen = (
-#                     sa_tag.split(",")
-#                 )
-#                 sup_pos = int(sup_pos)
-#                 sup_tlen = int(sup_tlen)
-
-#                 found_split2 = False
-#                 for sup_read in samfile.fetch(sup_name, sup_pos, sup_pos + 1):
-#                     if (
-#                         sup_read.query_name == mate.query_name
-#                         and sup_read.reference_name == sup_name
-#                         and (sup_read.reference_start + 1) == sup_pos
-#                         and _sh_re.sub("", sup_read.cigarstring)
-#                         == _sh_re.sub("", sup_cigar)
-#                     ):
-#                         non_sup = (
-#                             mate
-#                             if not mate.is_supplementary and not mate.is_secondary
-#                             else sup_read
-#                         )
-#                         sup = (
-#                             mate
-#                             if mate.is_supplementary or mate.is_secondary
-#                             else sup_read
-#                         )
-#                         read1 = non_sup if non_sup.is_read1 else aln
-#                         read2 = non_sup if non_sup.is_read2 else aln
-#                         found_split2 = True
-#                         break
-
-#                 if not found_split2:
-#                     print(sup_name, sup_pos, sup_cigar, sup_tlen)
-#                     raise NameError("split mate not found")
-
-#                 if not filter_for_pos_ori(
-#                     read1,
-#                     read2,
-#                     chrom1,
-#                     break_pos1,
-#                     chrom2,
-#                     break_pos2,
-#                     sv_type,
-#                     sv_orientation,
-#                     sup,
-#                 ):
-#                     continue
-
-#                 split_alignments.append((read1, sup, read2))
-#                 split_alignments.append((read1, sup, read2))
-
-#             elif not aln.is_proper_pair and aln.next_reference_name == (
-#                 chrom2 if i == 0 else chrom1
-#             ):
-#                 read1 = aln if aln.is_read1 else mate
-#                 read2 = aln if aln.is_read2 else mate
-
-#                 if not filter_for_pos_ori(
-#                     read1,
-#                     read2,
-#                     chrom1,
-#                     break_pos1,
-#                     chrom2,
-#                     break_pos2,
-#                     sv_type,
-#                     sv_orientation,
-#                 ):
-#                     continue
-
-#                 nonsplit_alignments.append((read1, read2))
-#                 nonsplit_alignments.append((read1, read2))
-
-#             elif aln.is_proper_pair:
-#                 read1 = aln if aln.is_read1 else mate
-#                 read2 = aln if aln.is_read2 else mate
-#                 nonsplit_alignments.append((read1, read2))
-
-#     return split_alignments, nonsplit_alignments
-
-
 def get_pairs(
     regions, chrom1, chrom2, break_pos1, break_pos2, sv_type, sv_orientation, args
 ):
@@ -453,9 +206,6 @@ def get_pairs(
             sup,
         )
 
-    # print(reads_by_name)
-    # print("HWI-ST1113:353:H99R3ADXX:2:1106:18680:72982" in reads_by_name)
-    # print(len(reads_by_name["HWI-ST1113:353:H99R3ADXX:2:1106:18680:72982"]))
     # 3) iterate each group (all alignments for the same query_name) and resolve pairs locally
     for qname, alns in reads_by_name.items():
         # Remove duplicates
@@ -507,15 +257,8 @@ def get_pairs(
                         split_alignments.append((read1, sup, read2))
                         split_alignments.append((read1, sup, read2))
                         continue
-                    # else:
-                    #     split_leftover_alignments.append((read1, sup, read2))
 
                 elif len(sup_or_sec) == 2:
-                    # print(qname)
-                    # print(sup_or_sec[0].reference_name, sup_or_sec[1].reference_name)
-                    # print(sup_or_sec[0].reference_start, sup_or_sec[1].reference_start)
-                    # print()
-
                     sup1, sup2 = (
                         sup_or_sec[0],
                         sup_or_sec[1]
@@ -542,19 +285,10 @@ def get_pairs(
                         split_alignments.append((read1, sup1, read2, sup2))
                         continue
                 else:
-                    # print(f"Found pair with {len(sup_or_sec)} sup")
                     sups1 = [sup for sup in sup_or_sec if sup.is_read1]
                     sups2 = [sup for sup in sup_or_sec if sup.is_read2]
                     result = tuple([read1] + sups1 + [read2] + sups2)
                     split_leftover_alignments.append(result)
-                    # print("Primaries:")
-                    # for read in primary:
-                    #     print("1" if read.is_read1 else "2")
-                    #     print(read)
-                    # print("Secondaries")
-                    # for read in sup_or_sec:
-                    #     print("1" if read.is_read1 else "2")
-                    #     print(read)
 
     return split_alignments, nonsplit_alignments, split_leftover_alignments
 
@@ -596,7 +330,6 @@ def fetch_alignments(
     """
 
     # Fetch alignments args.refine away from both positions
-    # print(chrom1, pos1, args.refine)
     region1 = list(samfile.fetch(chrom1, pos1 - args.refine, pos1 + args.refine + 1))
     region2 = list(samfile.fetch(chrom2, pos2 - args.refine, pos2 + args.refine + 1))
 
@@ -824,7 +557,6 @@ def fetch_alignments(
     split_df = pd.DataFrame(split_alignment_details)
     nonsplit_df = pd.DataFrame(nonsplit_alignment_details)
     split_leftover_df = pd.DataFrame(split_leftover_alignment_details)
-    # paired_df = pd.DataFrame(paired_alignment_details)
 
     return split_df, nonsplit_df, split_leftover_df
 
@@ -883,6 +615,12 @@ if __name__ == "__main__":
         ],
         ignore_index=True,
     )
+
+    has_homology = (
+        "homology_length" in df.columns and
+        "homology_sequence" in df.columns
+    )
+
     # Define output table
     output = pd.DataFrame()
     num_split = 0
@@ -902,10 +640,13 @@ if __name__ == "__main__":
         read_support = row.read_support
         features = row.features
         orientation = row.orientation
-        hom_len = row.homology_length
-        homology = row.homology_sequence
+        if has_homology:
+            hom_len = row.homology_length
+            homology = row.homology_sequence
+        else:
+            hom_len = None
+            homology = None
         amplicon = row.amplicon
-        # print(chrom1, pos1, chrom2, pos2)
 
         # Fetch the DataFrames for split alignments and paired alignments
         split_df, nonsplit_df, split_leftover_df = fetch_alignments(
@@ -1052,7 +793,6 @@ if __name__ == "__main__":
             & (out["query_pos"] < out["left_pos"])
         )
         drop_mask |= cond_left_plus | cond_left_minus
-        # print(drop_mask.iloc[406])
 
         right_present = out["right_pos"].notna()
         cond_right_plus = (
@@ -1062,7 +802,6 @@ if __name__ == "__main__":
             & (ori1 == "+")
             & (out["query_end"] > out["right_pos"])
         )
-        # print(cond_right_plus.iloc[406])
         cond_right_minus = (
             is_concordant
             & right_present
@@ -1070,10 +809,7 @@ if __name__ == "__main__":
             & (ori1 == "-")
             & (out["query_pos"] < out["right_pos"])
         )
-        # print(cond_right_minus.iloc[406])
-        # print(out["query_pos"].iloc[406], out["right_pos"].iloc[406])
         drop_mask |= cond_right_plus | cond_right_minus
-        # print(drop_mask.iloc[406])
     else:
         out = output
 
@@ -1159,6 +895,10 @@ if __name__ == "__main__":
         columns=["all_left_within_10", "all_right_within_10", "query_qualities"], errors="ignore"
     )
 
+    if not has_homology:
+        final_output = final_output.drop(columns=["AA_homology_len", "AA_homology_seq"], errors="ignore")
+        leftover_output = leftover_output.drop(columns=["AA_homology_len", "AA_homology_seq"], errors="ignore")
+
     final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
         sep="\t",
@@ -1173,169 +913,3 @@ if __name__ == "__main__":
     if args.verbose:
         print("Total Number of split reads:", num_split)
         print("Total Number of paired reads:", num_paired)
-
-    # df_nonsplit = pd.read_csv("alignments.tsv", sep="\t")
-    # df_nonsplit = df_nonsplit[
-    #     (df_nonsplit["split"] == False) & df_nonsplit["query_cigar"].str.contains("S")
-    # ]
-    # df_nonsplit.to_csv("special_cases.csv")
-    # pd.set_option("display.max_colwidth", None)
-    # df_nonsplit = df_nonsplit[
-    #     [
-    #         "split",
-    #         "AA_homology_seq",
-    #         "break_chrom1",
-    #         "break_pos1",
-    #         "break_chrom2",
-    #         "break_pos2",
-    #         "query_name",
-    #         "query_chrom",
-    #         "query_pos",
-    #         "query_end",
-    #         "query_orientation",
-    #         "query_cigar",
-    #         "query_aln_sub",
-    #         "query_aln_full",
-    #     ]
-    # ]
-    # df_nonsplit.query_name = df_nonsplit.query_name.apply(lambda x: x.split(":")[-1])
-    # df_nonsplit
-    # nonsplit_matches = df_nonsplit[
-    #     (df_nonsplit["break_pos1"] == df_nonsplit["query_pos"])
-    #     | (df_nonsplit["break_pos1"] == df_nonsplit["query_end"])
-    #     | (df_nonsplit["break_pos2"] == df_nonsplit["query_pos"])
-    #     | (df_nonsplit["break_pos2"] == df_nonsplit["query_end"])
-    # ]
-
-    # df_split = pd.read_csv("alignments.tsv", sep="\t")
-    # df_split = df_split[df_split["split"] == True]
-    # pd.set_option("display.max_colwidth", None)
-    # df_split = df_split[
-    #     [
-    #         "split",
-    #         "AA_homology_seq",
-    #         "break_chrom1",
-    #         "break_pos1",
-    #         "break_chrom2",
-    #         "break_pos2",
-    #         "query_name",
-    #         "query_chrom",
-    #         "query_pos",
-    #         "query_end",
-    #         "query_orientation",
-    #         "query_cigar",
-    #         "query_aln_sub",
-    #         "query_aln_full",
-    #     ]
-    # ]
-    # df_split.query_name = df_split.query_name.apply(lambda x: x.split(":")[-1])
-    # df_split
-    # half_match = df_split[
-    #     (df_split["break_pos1"] == df_split["query_pos"])
-    #     | (df_split["break_pos1"] == df_split["query_end"])
-    #     | (df_split["break_pos2"] == df_split["query_pos"])
-    #     | (df_split["break_pos2"] == df_split["query_end"])
-    # ]
-    # full_match = half_match[
-    #     half_match.groupby("query_name")["query_name"].transform("size") > 1
-    # ]
-    # full_match
-
-    # new_awesomesauce_df = pd.concat([nonsplit_matches, full_match], axis=0).sort_values(
-    #     ["AA_homology_seq", "split"]
-    # )
-    # new_awesomesauce_df["break_start"] = (
-    #     new_awesomesauce_df["break_pos1"] == new_awesomesauce_df["query_pos"]
-    # ) | (new_awesomesauce_df["break_pos2"] == new_awesomesauce_df["query_pos"])
-    # new_awesomesauce_df
-
-    # cooked_df = pd.read_csv("alignments.tsv", sep="\t")
-    # cooked_df = cooked_df[
-    #     (
-    #         (cooked_df["query_chrom"] != cooked_df["break_chrom1"])
-    #         & (cooked_df["query_chrom"] != cooked_df["break_chrom2"])
-    #     )
-    #     | (
-    #         (
-    #             (cooked_df["break_pos1"] > cooked_df["query_end"])
-    #             | (cooked_df["break_pos1"] < cooked_df["query_pos"])
-    #         )
-    #         & (
-    #             (cooked_df["break_pos2"] > cooked_df["query_end"])
-    #             | (cooked_df["break_pos2"] < cooked_df["query_pos"])
-    #         )
-    #     )
-    # ]
-    # cooked_df = cooked_df.loc[
-    #     cooked_df["query_cigar"].str.contains("S")
-    #     | cooked_df["query_cigar"].str.contains("H")
-    # ].drop(
-    #     ["break_sv_type", "break_read_support", "break_features", "query_aln_full"],
-    #     axis=1,
-    # )
-    # cooked_df.to_csv("minor_errors.tsv", sep="\t")
-
-    # def process_row(row):
-    #     if (
-    #         row["break_pos1"] == row["query_pos"]
-    #         or row["break_pos1"] == row["query_end"]
-    #     ):
-    #         if not row["break_pos1"] == row["query_pos"]:
-    #             complement = {"C": "G", "G": "C", "A": "T", "T": "A"}
-    #             return ("".join([complement[bp] for bp in row["query_aln_sub"]]))[::-1]
-    #         else:
-    #             return row["query_aln_sub"]
-    #     else:
-    #         if not row["break_pos2"] == row["query_end"]:
-    #             complement = {"C": "G", "G": "C", "A": "T", "T": "A"}
-    #             return ("".join([complement[bp] for bp in row["query_aln_sub"]]))[::-1]
-    #         else:
-    #             return row["query_aln_sub"]
-
-    # new_awesomesauce_df["new_awesomesauce_query"] = new_awesomesauce_df.apply(
-    #     process_row, axis=1
-    # )
-    # new_awesomesauce_df
-
-    # def mini_homology_inator(str_list, dir):
-    #     str_list = [i[::dir] for i in str_list]
-    #     slice = 0
-    #     for i in range(len(max(str_list, key=len))):
-    #         temp_list = [i[:slice] for i in str_list]
-    #         if not len(set(temp_list)) <= 1:
-    #             break
-    #         slice += 1
-    #     return str_list[0][: slice - 1][::dir]
-
-    # def homology_inator(first, last):
-    #     first_str = mini_homology_inator(first, 1)
-    #     last_str = mini_homology_inator(last, -1)
-    #     longest_str = ""
-    #     for i in range(min(len(first_str), len(last_str))):
-    #         if first_str[:i] == last_str[-i:]:
-    #             longest_str = first_str[:i]
-    #     print(longest_str)
-    #     return longest_str
-
-    # homology_inator(first, last)
-
-    # new_awesomesauce_df["first"] = new_awesomesauce_df.apply(lambda row: row["break_pos1"] == row["query_pos"] or row["break_pos1"] == row["query_end"], axis=1)
-    # grouped_queries = new_awesomesauce_df.groupby(["break_pos1", "first"])["new_awesomesauce_query"].agg(list)
-    # grouped_queries = grouped_queries.reset_index().pivot(index="break_pos1", columns="first", values="new_awesomesauce_query")
-    # grouped_queries.columns = ["last", "first"]
-    # grouped_queries['homology'] = grouped_queries.apply(lambda row: homology_inator(row["first"], row["last"]), axis=1)
-    # grouped_queries
-    # print(grouped_queries)
-    #
-    # grouped_queries['combined'] = grouped_queries['first'] + grouped_queries['last']
-    # temp = grouped_queries[['combined', 'homology']].explode('combined')
-    # homologies = dict(zip(temp['combined'], temp['homology']))
-    # new_awesomesauce_df['homology'] = new_awesomesauce_df['new_awesomesauce_query'].apply(lambda x: homologies[x])
-    # new_awesomesauce_df = new_awesomesauce_df[['break_chrom1', 'break_pos1', 'break_chrom2', 'break_pos2', 'AA_homology_seq', 'homology', 'query_name', 'split','query_chrom', 'query_pos', 'query_end', 'query_orientation', 'query_cigar', 'query_aln_sub', 'query_aln_full']]
-    # new_awesomesauce_df = new_awesomesauce_df.reset_index(drop=True)
-    # new_awesomesauce_df.to_csv('final.tsv', sep='\t')
-    # new_awesomesauce_df
-
-    # new_awesomesauce_df["homology_cut"] = new_awesomesauce_df.apply(lambda x: x['query_aln_sub'][:7] if x["break_start"] else x['query_aln_sub'][-7:], axis=1)
-    # new_awesomesauce_df["wrong_dog"] = new_awesomesauce_df.apply(lambda x: str(x['AA_homology_seq']) not in x['homology_cut'], axis=1)
-    # new_awesomesauce_df.loc[new_awesomesauce_df["wrong_dog"] == True]
