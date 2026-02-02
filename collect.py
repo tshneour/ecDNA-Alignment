@@ -1158,6 +1158,9 @@ if __name__ == "__main__":
     final_output = final_output.drop(
         columns=["all_left_within_10", "all_right_within_10", "query_qualities"], errors="ignore"
     )
+    leftover_output = leftover_output.drop(
+        columns=["query_qualities"], errors="ignore"
+    )
 
     final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",

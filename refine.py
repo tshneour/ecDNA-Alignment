@@ -9,6 +9,7 @@ from natsort import index_natsorted
 import numpy as np
 import marisa_trie
 import math
+import re
 
 # suppress pandas warnings
 warnings.filterwarnings("ignore")
@@ -89,10 +90,12 @@ print_cols2 = [
 ]
 
 # @profile
-def refine_step1(reads, all_reads, verbose, is_left):
+def refine_step1(reads, all_reads, leftover, verbose, is_left):
     reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
     reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
+    leftover["begin"] = leftover["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
     reads["end"] = reads["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
+    leftover["end"] = leftover["query_cigar"].str.contains(r"\d+[SH]$", regex=True)
     reads["sv_end"] = reads["query_pos"].where(reads["begin"])
     reads["sv_end"].fillna(reads["query_end"].where(reads["end"]), inplace=True)
     reads.dropna(subset=["sv_end"], inplace=True)
@@ -129,15 +132,117 @@ def refine_step1(reads, all_reads, verbose, is_left):
 
     return best, reads
 
+def in_range(test, middle, width):
+    if test >= middle - width and test <= middle + width:
+        return True
+    return False
+def cord_sort(row1, row2):
+    def map_to_int(s):
+        return 22 if s == "X" else 23 if s == "Y" else int(s)
+    row1_chr, row1_pos = row1[["query_chrom", "query_pos"]]
+    row1_chr = map_to_int(row1_chr[3:])
+    row2_chr, row2_pos = row2[["query_chrom", "query_pos"]]
+    row2_chr = map_to_int(row2_chr[3:])
+    rowL, rowR = (row1, row2)
+    if row1_chr > row2_chr:
+        rowL, rowR = (row2, row1)
+    elif row1_chr == row2_chr:
+        if row1_pos > row2_pos:
+            rowL, rowR = (row2, row1)
+    
+    return rowL, rowR
+
+def find_top_variant(left, right):
+    fr = find_longest_common_variant(left["query_aln_sub"]) if left["break_orientation"].iloc[0][0] == "-" else rev_comp(find_longest_common_variant(rev_comp_vec(left["query_aln_sub"])))
+    mask = left["query_aln_sub"].to_numpy() == fr
+    idx = np.flatnonzero(mask)[0]
+    fr = left.iloc[idx]
+
+    lr = find_longest_common_variant(right["query_aln_sub"]) if right["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rev_comp_vec(right["query_aln_sub"])))
+    mask = right["query_aln_sub"].to_numpy() == lr
+    idx = np.flatnonzero(mask)[0]
+    lr = right.iloc[idx]
+
+    l_ori = fr.break_orientation[0] if fr.begin and fr.end else ("+" if fr.end else "-")
+    r_ori = lr.break_orientation[1] if lr.begin and lr.end else ("+" if lr.end else "-")
+    
+    return fr, lr, l_ori, r_ori
+
+def find_top_insertion(left, right, seq1=None, seq2=None, ins=None):
+    c1 = find_longest_common_variant(left["rev_clipped"]) if left["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(left["clipped"])
+    mask = left["rev_clipped"].to_numpy() == c1
+    idx = np.flatnonzero(mask)[0]
+    c1 = left.iloc[idx]["rev_clipped"]
+
+    c2 = rev_comp(find_longest_common_variant(rev_comp_vec(right["clipped"]))) if right["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(right["clipped"]))
+    mask = right["rev_clipped"].to_numpy() == c2
+    idx = np.flatnonzero(mask)[0]
+    c2 = right.iloc[idx]["rev_clipped"]
+    if not ins:
+        ins = get_homology(c2, c1)
+    ilen = len(ins)
+
+    if not seq1 and not seq2:
+        fr, lr, l_ori, r_ori = find_top_variant(left, right)
+        seq1 = fr.query_aln_sub if l_ori == "+" else rev_comp(fr.query_aln_sub)
+        seq2 = lr.query_aln_sub if r_ori == "-" else rev_comp(lr.query_aln_sub)
+    
+    def check_starts(seq):
+        return seq2.startswith(seq[ilen:]) if len(seq) != 0 else True
+    def check_ends(seq):
+        return (seq1.endswith(seq[:-ilen]) if len(seq) != 0 else True) if ilen != 0 else False
+    
+    left["ins_clip_match"] = np.frompyfunc(check_starts, 1, 1)(left["rev_clipped"])
+    right["ins_clip_match"] = np.frompyfunc(check_ends, 1, 1)(right["rev_clipped"])
+
+    isum_l = left["ins_clip_match"].sum()
+    isum_r = right["ins_clip_match"].sum()
+
+    return ins, ilen, isum_l, isum_r
+
+def get_templated_ins(read_first, read_last, tst_reads):
+    template = read_first["query_aln_full"]
+    read1_offset = int(re.search(r"^\d+[M]", read_first["query_cigar"]).group(0)[:-1])
+    read2_offset = int(re.search(r"^\d+[SH]", read_last["query_cigar"]).group(0)[:-1]) if read_last["query_orientation"]==read_first["query_orientation"] else int(re.search(r"\d+[SH]$", read_last["query_cigar"]).group(0)[:-1])
+    
+    tst = template[read1_offset:read2_offset]
+    ref_cords = []
+    prev_offset = read1_offset
+    ref_start = None
+    ref_end = None
+    is_same_ori = False
+    for idx, read in tst_reads.iterrows():
+        is_same_ori = read["query_orientation"]==read_first["query_orientation"]
+        read_offset = int(re.search(r"^\d+[SH]", read["query_cigar"]).group(0)[:-1]) if is_same_ori else int(re.search(r"\d+[SH]$", read["query_cigar"]).group(0)[:-1])
+        if idx != 0:
+            if is_same_ori:
+                ref_cords.append(ref_end - (prev_offset - read_offset))
+            else:
+                ref_cords.append(ref_start + (prev_offset - read_offset))
+        ref_start, ref_end = read[["query_pos", "query_end"]]
+        ref_cords.append(read["query_chrom"])
+        if is_same_ori:
+            ref_cords.append(ref_start + (prev_offset - read_offset))
+        else:
+            ref_cords.append(ref_end - (prev_offset - read_offset))
+
+        ref_cords.append(read["query_chrom"])
+        prev_offset += len(read["query_aln_sub"]) - (prev_offset - read_offset)
+    if is_same_ori:
+        ref_cords.append(ref_end - (prev_offset - read2_offset))
+    else:
+        ref_cords.append(ref_start + (prev_offset - read2_offset))
+
+    return tst, ref_cords
+
 # @profile
 def check_overlap(left, right, leftover):
+    results = []
 
     # compute clipped sequences
-    for df in (left, right):
+    for df in (left, right, leftover):
         df["clip_len"] = df["query_aln_full"].str.len() - df["query_aln_sub"].str.len()
-        # print(df.dtypes)
-        # print(type(df["query_aln_full"]))
-        # print(df["query_aln_full"])
+
         if not df.empty:
             df["clipped"] = df.apply(
                 lambda x: (
@@ -156,14 +261,120 @@ def check_overlap(left, right, leftover):
         else:
             df["clipped"] = pd.Series(dtype=str)
 
-    print(right[["query_pos", "query_end"]])
-    if left["break_pos1"].iloc[0] in bp_to_read_idxs:
-        idxs = bp_to_read_idxs[left["break_pos1"].iloc[0]][0]
-        last_is_rev = leftover.loc[idxs[0], "query_orientation"] != leftover.loc[idxs[-1], "query_orientation"]
-        print("Possible templated insertion case")
-        print("Hypothetical SV ends", leftover.loc[idxs[0], "query_chrom"], leftover.loc[idxs[0], "query_end"], leftover.loc[idxs[-1], "query_chrom"], leftover.loc[idxs[-1], "query_end"] if last_is_rev else leftover.loc[idxs[-1], "query_pos"])
+    # # pick the longest sub-alignment from each
+    lmask = (~left["end"]).to_numpy()
+    rmask = (~right["begin"]).to_numpy()
 
-    results = []
+    left["rev_clipped"] = np.where(lmask, rev_comp_vec(left["clipped"].to_numpy().astype(str)), left["clipped"])
+    right["rev_clipped"] = np.where(rmask, rev_comp_vec(right["clipped"].to_numpy().astype(str)), right["clipped"])
+
+    cand_svs = {}
+    break_pos1 = left.iloc[0]["break_pos1"]
+    if break_pos1 in bp_to_read_idxs:
+        for tst_idxs in bp_to_read_idxs[break_pos1]:
+
+            if len(tst_idxs) < 3:
+                continue
+
+            mask = (left["break_pos1"] == break_pos1)
+            idx = np.flatnonzero(mask)[0]
+            break_pos2, break_chr1, break_chr2, break_ori = left.iloc[idx][["break_pos2", "break_chrom1", "break_chrom2", "break_orientation"]]
+            read_first = leftover.loc[tst_idxs[0]]
+            read_last = leftover.loc[tst_idxs[-1]]
+            read_l, read_r = cord_sort(read_first, read_last)
+            ori_l = "query_pos" if break_ori[0] == "-" else "query_end"
+            lv = read_l[ori_l]
+            chr_l = read_l["query_chrom"]
+            ori_r = "query_pos" if break_ori[1] == "-" else "query_end"
+            rv = read_r[ori_r]
+            chr_r = read_r["query_chrom"]
+            if chr_l != break_chr1 or chr_r != break_chr2 or not in_range(lv, break_pos1, 500) or not in_range(rv, break_pos2, 500):
+                continue
+            if (lv, rv, chr_l, chr_r) in cand_svs or (break_ori[0] == "-" and read_l["end"]) or (break_ori[0] == "+" and read_l["begin"]) or (break_ori[1] == "-" and read_r["end"]) or (break_ori[1] == "+" and read_r["begin"]):
+                continue
+            
+            lmask = (leftover["query_chrom"] == chr_l) & (leftover[ori_l] == lv)
+            rmask = (leftover["query_chrom"] == chr_r) & (leftover[ori_r] == rv)
+            leftover_left = leftover[lmask].copy()
+            leftover_right = leftover[rmask].copy()
+            lmask = (~leftover_left["end"]).to_numpy()
+            rmask = (~leftover_right["begin"]).to_numpy()
+
+            leftover_left["rev_clipped"] = np.where(lmask, rev_comp_vec(leftover_left["clipped"].to_numpy().astype(str)), leftover_left["clipped"])
+            leftover_right["rev_clipped"] = np.where(rmask, rev_comp_vec(leftover_right["clipped"].to_numpy().astype(str)), leftover_right["clipped"])
+            tst, ref_cords = get_templated_ins(read_first, read_last, leftover.loc[tst_idxs[1:-1]].reset_index(drop=True))
+            cand_svs[(lv, rv, chr_l, chr_r)] = [leftover_left, leftover_right, tst, ref_cords]
+
+        for cand_sv, value in cand_svs.items():
+            lv, rv, chr_l, chr_r = cand_sv
+            leftover_left, leftover_right, tst, ref_cords = value
+
+            left_copy = left[
+                ~left["split"]
+                | (
+                    left["split"]
+                    & left["query_name"].isin(right.loc[right["split"], "query_name"])
+                )
+            ]
+            right_copy = right[
+                ~right["split"]
+                | (
+                    right["split"]
+                    & right["query_name"].isin(left_copy.loc[left_copy["split"], "query_name"])
+                )
+            ]
+
+            lmask = (left_copy["query_chrom"] == chr_l) & (left_copy["query_pos" if break_ori[0] == "-" else "query_end"] == lv)
+            rmask = (right_copy["query_chrom"] == chr_r) & (right_copy["query_pos" if break_ori[1] == "-" else "query_end"] == rv)
+            left_copy = pd.concat([left_copy[lmask], leftover_left], join='inner')
+            right_copy = pd.concat([right_copy[rmask], leftover_right], join='inner')
+            left_copy["hom_clip_match"] = False
+            right_copy["hom_clip_match"] = False
+
+            _, _, isum_l, isum_r = find_top_insertion(left_copy, right_copy, ins=tst)
+            fr, lr, l_ori, r_ori = find_top_variant(left_copy, right_copy)
+
+            total_reads = len(left_copy) + len(right_copy)
+            num_split_reads = left_copy["split"].sum()
+
+            lmask = (~left_copy["split"])
+            rmask = (~right_copy["split"])
+
+            left_matches_ins = left_copy["ins_clip_match"].where(lmask).sum()
+            right_matches_ins = right_copy["ins_clip_match"].where(rmask).sum()
+            
+            num_left_soft_reads = (~left_copy["split"]).sum()
+            num_right_soft_reads = (~right_copy["split"]).sum()
+            results.append(
+                pd.DataFrame(
+                    {
+                        "left_sv": [lv],
+                        "right_sv": [rv],
+                        "hom_sum_left": [0],
+                        "hom_sum_right": [0],
+                        "ins_sum_left": [isum_l],
+                        "ins_sum_right": [isum_r],
+                        "homology": [""],
+                        "insertion": [tst],
+                        "tst_cords": [ref_cords],
+                        "left_len": [len(left_copy)],
+                        "right_len": [len(right_copy)],
+                        "split_support": [num_split_reads],
+                        "soft_support": [num_left_soft_reads + num_right_soft_reads],
+                        "left_soft_matches_hom": [0],
+                        "right_soft_matches_hom": [0],
+                        "left_soft_matches_ins": [left_matches_ins],
+                        "right_soft_matches_ins": [right_matches_ins],
+                        "total_reads": [total_reads],
+                        "lcommon_var": [fr["query_aln_sub"]],
+                        "rcommon_var": [lr["query_aln_sub"]],
+                        # <-- store DataFrame directly, not as tuple
+                        "left": [left_copy.copy()],
+                        "right": [right_copy.copy()],
+                    }
+                )
+            )
+
     for lv, ldf in left.groupby("sv_end"):
         for rv, rdf in right.groupby("sv_end"):
 
@@ -186,13 +397,6 @@ def check_overlap(left, right, leftover):
 
             if ldf_copy.empty or rdf.empty or len(ldf_copy) < 3 or len(rdf) < 3:
                 continue
-
-            # # pick the longest sub-alignment from each
-            lmask = (~ldf_copy["end"]).to_numpy()
-            rmask = (~rdf["begin"]).to_numpy()
-
-            ldf_copy["rev_clipped"] = np.where(lmask, rev_comp_vec(ldf_copy["clipped"].to_numpy().astype(str)), ldf_copy["clipped"])
-            rdf["rev_clipped"] = np.where(rmask, rev_comp_vec(rdf["clipped"].to_numpy().astype(str)), rdf["clipped"])
 
             fr = top3_find_longest_common_variant(ldf_copy["query_aln_sub"]) if ldf_copy["break_orientation"].iloc[0][0] == "-" else [rev_comp(x) for x in top3_find_longest_common_variant(ldf_copy["query_aln_sub"].map(rev_comp))]
             mask = np.isin(ldf_copy["query_aln_sub"].to_numpy(), fr)
@@ -237,29 +441,7 @@ def check_overlap(left, right, leftover):
                     hsum_r = rdf["hom_clip_match"].sum()
 
                     # insertion matching
-                    c1 = find_longest_common_variant(ldf_copy["rev_clipped"]) if ldf_copy["break_orientation"].iloc[0][0] == "-" else find_longest_common_variant(ldf_copy["clipped"])
-                    mask = ldf_copy["rev_clipped"].to_numpy() == c1
-                    idx = np.flatnonzero(mask)[0]
-                    c1 = ldf_copy.iloc[idx]["rev_clipped"]
-
-                    c2 = rev_comp(find_longest_common_variant(rev_comp_vec(rdf["clipped"]))) if rdf["break_orientation"].iloc[0][1] == "-" else rev_comp(find_longest_common_variant(rdf["clipped"]))
-                    mask = rdf["rev_clipped"].to_numpy() == c2
-                    idx = np.flatnonzero(mask)[0]
-                    c2 = rdf.iloc[idx]["rev_clipped"]
-
-                    ins = get_homology(c2, c1)
-                    ilen = len(ins)
-
-                    def check_starts(seq):
-                        return seq2.startswith(seq[ilen:]) if len(seq) != 0 else True
-                    def check_ends(seq):
-                        return (seq1.endswith(seq[:-ilen]) if len(seq) != 0 else True) if ilen != 0 else False
-                    
-                    ldf_copy["ins_clip_match"] = np.frompyfunc(check_starts, 1, 1)(ldf_copy["rev_clipped"])
-                    rdf["ins_clip_match"] = np.frompyfunc(check_ends, 1, 1)(rdf["rev_clipped"])
-
-                    isum_l = ldf_copy["ins_clip_match"].sum()
-                    isum_r = rdf["ins_clip_match"].sum()
+                    ins, ilen, isum_l, isum_r = find_top_insertion(ldf_copy, rdf, seq1, seq2)
 
                     if hsum_l == 0 and hsum_r == 0 and hlen != 0:
                         for df, target_no, name in (
@@ -280,18 +462,7 @@ def check_overlap(left, right, leftover):
                         hsum_r = rdf["hom_clip_match"].sum()
                         hom = ""
                         hlen = 0
-                    
-                    if lv == 47895121 and rv == 48516338:
-                        pd.set_option('display.max_colwidth', None)
-                        print(f"Homology {hom}")
-                        print(f"Insertion {ins}")
-                        print(hsum_l, hsum_r)
-                        print(seq1)
-                        print(seq2)
-                        print(f"lcommon_var: {lcommon_var}")
-                        print(f"rcommon_var: {rcommon_var}")
-                        print(ldf_copy[print_cols2].to_string())
-                        print(rdf[print_cols2].to_string())
+                
                     
                     if (hsum_l == 0 or hsum_r == 0) and (isum_l == 0 or isum_r == 0):
                         continue
@@ -338,6 +509,7 @@ def check_overlap(left, right, leftover):
                                 "ins_sum_right": [isum_r],
                                 "homology": [hom],
                                 "insertion": [ins],
+                                "tst_cords": [],
                                 "left_len": [len(ldf_copy)],
                                 "right_len": [len(rdf)],
                                 "split_support": [num_split_reads],
@@ -427,8 +599,8 @@ def run_split(args):
                 & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
             ]
 
-        _, lgrp = refine_step1(left, all_reads, args.verbose, True)
-        _, rgrp = refine_step1(right, all_reads, args.verbose, False)
+        _, lgrp = refine_step1(left, all_reads, leftover_splits, args.verbose, True)
+        _, rgrp = refine_step1(right, all_reads, leftover_splits, args.verbose, False)
 
         res = check_overlap(lgrp, rgrp, leftover_splits)
 
@@ -498,7 +670,7 @@ def run_split(args):
                 "sp_right_sv": int(top.right_sv),
                 "sp_hom_len": len(top.homology)
                 if top["hom_%"] > top["ins_%"]
-                else -len(top.insertion) if not math.isnan(top.insertion) else "N/A",
+                else -len(top.insertion) if isinstance(top.insertion, str) else "N/A",
                 "hom": top.homology if top["hom_%"] > top["ins_%"] else top.insertion,
             }
         )
