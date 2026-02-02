@@ -135,9 +135,9 @@ usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
 
   * `break_chrom1`, `break_pos1`, `break_chrom2`, `break_pos2`
   * `break_sv_type`, `break_read_support`, `break_features`, `break_orientation`
-  * `AA_homology_len`, `AA_homology_seq`
   * `query_*` (read-level alignment details)
   * `proper_pair`, `split`, `amplicon`
+  * `AA_homology_len`, `AA_homology_seq` (if present in the input SV summary TSVs)
 
 * Per-breakpoint FASTQs in `fastq/`, gzipped:
 
@@ -165,6 +165,10 @@ usage: refine.py FILE [--mode {split,scaffold,both}]
 * `split`: infer refined breakpoint positions and homology using split-read evidence only.
 * `scaffold`: perform local assembly (SPAdes) around each breakpoint and align scaffolds to the reference.
 * `both`: run scaffold refinement first, then augment with split-read results.
+
+**Notes on AA homology columns**
+
+* `refine.py` does not require `AA_homology_len` / `AA_homology_seq` to be present in the input TSV.
 
 **Outputs**
 
