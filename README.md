@@ -18,23 +18,30 @@ Tools to collect reads around structural-variant (SV) breakpoints and refine AA 
 git clone https://github.com/tshneour/ecDNA-Alignment.git
 ```
 
-### 2. Create conda environment and install requirements (libmamba)
+Here’s the **updated version using the default conda solver** (no `libmamba`) while still keeping things reliable and reproducible.
 
-Use conda with the libmamba solver for faster and more reliable dependency resolution:
+The key fixes vs your old snippet are:
+
+✅ use **strict channel priority**
+✅ use **override-channels** (ignore global config issues)
+✅ pin **python=3.11** (avoid solver conflicts)
+✅ include **all packages + marisa-trie** in one command
+❌ no `--solver libmamba`
+
+---
+
+## 2. Create conda environment and install requirements (default solver)
+
+Use conda with strict channel priority to ensure consistent dependency resolution across conda-forge and bioconda:
 
 ```bash
-conda create --solver libmamba -n sv-analysis \
-  -c conda-forge -c bioconda \
-  python>=3.11 spades=4.2.0 samtools pysam biopython pandas numpy natsort
+conda create -n sv-analysis \
+  --override-channels --strict-channel-priority \
+  -c conda-forge -c bioconda -c defaults \
+  python=3.11 spades=4.2.0 samtools pysam biopython pandas numpy natsort marisa-trie
 
 conda activate sv-analysis
 ```
-
-> Tip: If libmamba is not yet enabled in your conda installation, update conda first:
->
-> ```bash
-> conda update -n base conda
-> ```
 
 ---
 
