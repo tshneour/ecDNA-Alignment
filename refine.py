@@ -88,7 +88,7 @@ print_cols2 = [
     "query_aln_sub",
 ]
 
-def refine_step1(reads, all_reads, verbose, is_left):
+def refine_step1(reads, all_reads, leftover, verbose, is_left):
     reads = reads[reads["query_cigar"].str.contains(r"[SH]")].copy()
     reads["begin"] = reads["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
     leftover["begin"] = leftover["query_cigar"].str.contains(r"^\d+[SH]", regex=True)
