@@ -398,7 +398,7 @@ def check_overlap(left, right, leftover):
                 )
             ]
 
-            if ldf_copy.empty or rdf.empty or len(ldf_copy) < 3 or len(rdf) < 3:
+            if ldf_copy.empty or rdf.empty:
                 continue
 
             fr = top3_find_longest_common_variant(ldf_copy["query_aln_sub"]) if ldf_copy["break_orientation"].iloc[0][0] == "-" else [rev_comp(x) for x in top3_find_longest_common_variant(ldf_copy["query_aln_sub"].map(rev_comp))]
@@ -492,7 +492,6 @@ def check_overlap(left, right, leftover):
 
                         if not (((hom_left >= 0.33) and (hom_right >= 0.33)) or ((ins_left >= 0.33) and (ins_right >= 0.33))):
                             continue
-
                     results.append(
                         pd.DataFrame(
                             {
@@ -545,7 +544,6 @@ def run_split(args):
         if len(reads) > 2:
             bp_to_read_idxs.setdefault(group[0], []).append(reads.index.to_list())
     svs = all_reads.groupby(["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"])
-    print("length of svs", len(svs))
     split_log = open(args.split_log + ".txt", "w")
     summary = []
 
@@ -636,7 +634,7 @@ def run_split(args):
         top = res.iloc[0]
         summary.append(
             {
-                "break_chrom1": bc2,
+                "break_chrom1": bc1,
                 "break_pos1": bp1,
                 "break_chrom2": bc2,
                 "break_pos2": bp2,
@@ -714,6 +712,7 @@ def run_split(args):
             "sp_hom_len": "str",
         }
     )
+
     out = brk.merge(aug, on=["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"], how="left")
     out["b_chr1"] = out["break_chrom1"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
     out["b_chr2"] = out["break_chrom2"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
@@ -1201,7 +1200,7 @@ def main():
     )
     p.add_argument(
         "--out-table",
-        default="augmented_predictions.tsv",
+        default="augmented_predictions",
         help="path for augmented output TSV",
     )
     p.add_argument(

@@ -260,12 +260,17 @@ def get_pairs(
 
                 elif len(sup_or_sec) == 2:
                     sup1, sup2 = (
-                        sup_or_sec[0],
-                        sup_or_sec[1]
-                    ) if sup_or_sec[0].is_read1 else (sup_or_sec[1], sup_or_sec[0])
+                        (sup_or_sec[0], sup_or_sec[1])
+                        if sup_or_sec[0].is_read1
+                        else (sup_or_sec[1], sup_or_sec[0])
+                    )
 
                     if sup1.is_read1 == sup2.is_read1:
-                        split_leftover_alignments.append((read1, sup1, sup2, read2) if sup1.is_read1 else (read1, read2, sup1, sup2))
+                        split_leftover_alignments.append(
+                            (read1, sup1, sup2, read2)
+                            if sup1.is_read1
+                            else (read1, read2, sup1, sup2)
+                        )
                         continue
 
                     if (
@@ -275,7 +280,12 @@ def get_pairs(
                         print(
                             "Mismatch between sup and prim alignments. This shouldn't happen..."
                         )
-                        print(read1.query_name, sup1.query_name, read2.query_name, sup2.query_name)
+                        print(
+                            read1.query_name,
+                            sup1.query_name,
+                            read2.query_name,
+                            sup2.query_name,
+                        )
                         continue
 
                     if passes_pos_filter(read1, read2, sup1) and passes_pos_filter(
@@ -457,7 +467,7 @@ def fetch_alignments(
                     if features is not None:
                         record["break_features"] = features
                     split_alignment_details.append(record)
-    
+
     split_leftover_alignment_details = []
     for pair in split_leftover_alignments:
         reads = list(pair)
@@ -465,16 +475,30 @@ def fetch_alignments(
         read2all = [read for read in reads if read.is_read2]
         read1 = read1all[0]
         read2 = read2all[0]
-        read1allsorted = sorted(read1all, key= lambda read: last_match_coord(read.cigartuples[::-1] if read1.is_forward != read.is_forward else read.cigartuples))
-        read2allsorted = sorted(read2all, key= lambda read: last_match_coord(read.cigartuples[::-1] if read2.is_forward != read.is_forward else read.cigartuples))
+        read1allsorted = sorted(
+            read1all,
+            key=lambda read: last_match_coord(
+                read.cigartuples[::-1]
+                if read1.is_forward != read.is_forward
+                else read.cigartuples
+            ),
+        )
+        read2allsorted = sorted(
+            read2all,
+            key=lambda read: last_match_coord(
+                read.cigartuples[::-1]
+                if read2.is_forward != read.is_forward
+                else read.cigartuples
+            ),
+        )
         # Filter out low quality reads
-        if all(read.is_mapped and read.mapping_quality > mapq_threshold for read in reads):
+        if all(
+            read.is_mapped and read.mapping_quality > mapq_threshold for read in reads
+        ):
             for read in read1allsorted + read2allsorted:
                 query_aln_full = read.query_sequence
                 if read.is_secondary or read.is_supplementary:
-                    prim_read = (
-                        read1 if read.is_read1 else read2
-                    )
+                    prim_read = read1 if read.is_read1 else read2
                     query_aln_full = (
                         prim_read.query_sequence
                         if prim_read.is_forward == read.is_forward
@@ -564,6 +588,7 @@ def fetch_alignments(
 
     return split_df, nonsplit_df, split_leftover_df
 
+
 def last_match_coord(cigartuple):
     count = 0
     maxmatch = 0
@@ -574,6 +599,7 @@ def last_match_coord(cigartuple):
         else:
             maxmatch = count
     return maxmatch
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -629,10 +655,7 @@ if __name__ == "__main__":
         missing = [col for col in required_cols if col not in df.columns]
         raise RuntimeError(f"Missing required columns: {missing}")
 
-    has_homology = (
-        "homology_length" in df.columns and
-        "homology_sequence" in df.columns
-    )
+    has_homology = "homology_length" in df.columns and "homology_sequence" in df.columns
 
     # Define output table
     output = pd.DataFrame()
@@ -698,7 +721,36 @@ if __name__ == "__main__":
     samfile.close()
 
     output = pd.concat(output, ignore_index=True) if output else pd.DataFrame()
-    leftover_output = pd.concat(leftover_output, ignore_index=True) if leftover_output else pd.DataFrame()
+    leftover_output = (
+        pd.concat(leftover_output, ignore_index=True)
+        if leftover_output
+        else pd.DataFrame(
+            columns=[
+                "break_chrom1",
+                "break_pos1",
+                "break_chrom2",
+                "break_pos2",
+                "break_sv_type",
+                "break_orientation",
+                "homology_len",
+                "homology_seq",
+                "query_name",
+                "query_short",
+                "split",
+                "proper_pair",
+                "read_num",
+                "query_chrom",
+                "query_pos",
+                "query_end",
+                "query_orientation",
+                "query_cigar",
+                "query_aln_full",
+                "query_aln_sub",
+                "sample",
+                "query_qualities",
+            ]
+        )
+    )
 
     # Get split reads to determine how to filter concordant reads
     output_copy = output.copy()
@@ -768,7 +820,9 @@ if __name__ == "__main__":
     if output_copy.shape[0] != 0:
         df_sv = output_copy.groupby(sv_cols).apply(sv_summary).reset_index()
 
-        df_sv = df_sv[(df_sv["all_left_within_10"]) & (df_sv["all_right_within_10"])].copy()
+        df_sv = df_sv[
+            (df_sv["all_left_within_10"]) & (df_sv["all_right_within_10"])
+        ].copy()
         out = output.merge(df_sv, on=sv_cols, how="left")
 
         # Determine sv end (left or right) of split alignments
@@ -844,8 +898,10 @@ if __name__ == "__main__":
                 for idx, read in it:
                     if "H" in read["query_cigar"]:
                         continue
-                    if not output_copy.shape[0] == 0 and (read["read_num"] == "1") and (
-                        (read["prune"]) or (reads.loc[idx + 1, "prune"])
+                    if (
+                        not output_copy.shape[0] == 0
+                        and (read["read_num"] == "1")
+                        and ((read["prune"]) or (reads.loc[idx + 1, "prune"]))
                     ):
                         next(it)
                         continue
@@ -905,15 +961,18 @@ if __name__ == "__main__":
         subprocess.run(["gzip", fast2_name, "-f"])
 
     final_output = final_output.drop(
-        columns=["all_left_within_10", "all_right_within_10", "query_qualities"], errors="ignore"
+        columns=["all_left_within_10", "all_right_within_10", "query_qualities"],
+        errors="ignore",
     )
-    leftover_output = leftover_output.drop(
-        columns=["query_qualities"], errors="ignore"
-    )
+    leftover_output = leftover_output.drop(columns=["query_qualities"], errors="ignore")
 
     if not has_homology:
-        final_output = final_output.drop(columns=["homology_len", "homology_seq"], errors="ignore")
-        leftover_output = leftover_output.drop(columns=["homology_len", "homology_seq"], errors="ignore")
+        final_output = final_output.drop(
+            columns=["homology_len", "homology_seq"], errors="ignore"
+        )
+        leftover_output = leftover_output.drop(
+            columns=["homology_len", "homology_seq"], errors="ignore"
+        )
 
     final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",
@@ -921,7 +980,9 @@ if __name__ == "__main__":
         index=False,
     )
     leftover_output.to_csv(
-        args.file if args.file else args.bam.split("/")[-1].split(".")[0] + "_leftover.tsv",
+        args.file
+        if args.file
+        else args.bam.split("/")[-1].split(".")[0] + "_leftover.tsv",
         sep="\t",
         index=False,
     )
