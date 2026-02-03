@@ -307,7 +307,7 @@ def fetch_alignments(
     hom_len,
     hom,
     args,
-    amplicon,
+    sample,
     samfile,
     mapq_threshold=15,
 ):
@@ -364,36 +364,37 @@ def fetch_alignments(
                             else rev_comp(prim_read.query_sequence)
                         )
 
-                    split_alignment_details.append(
-                        {
-                            "break_chrom1": chrom1,
-                            "break_pos1": pos1 + 1,
-                            "break_chrom2": chrom2,
-                            "break_pos2": pos2 + 1,
-                            "break_sv_type": sv_type,
-                            "break_read_support": read_support,
-                            "break_features": features,
-                            "break_orientation": orientation,
-                            "AA_homology_len": hom_len,
-                            "AA_homology_seq": hom,
-                            "query_name": read.query_name,
-                            "query_short": ":".join(read.query_name.split(":")[-2:]),
-                            "split": read.has_tag("SA"),
-                            "proper_pair": (
-                                "Concordant" if read.is_proper_pair else "Discordant"
-                            ),
-                            "read_num": "1" if read.is_read1 else "2",
-                            "query_chrom": read.reference_name,
-                            "query_pos": read.reference_start + 1,
-                            "query_end": read.reference_end,
-                            "query_orientation": "+" if read.is_forward else "-",
-                            "query_cigar": read.cigarstring,
-                            "query_aln_full": query_aln_full,
-                            "query_aln_sub": read.query_alignment_sequence,
-                            "amplicon": amplicon,
-                            "query_qualities": read.query_qualities,
-                        }
-                    )
+                    record = {
+                        "break_chrom1": chrom1,
+                        "break_pos1": pos1 + 1,
+                        "break_chrom2": chrom2,
+                        "break_pos2": pos2 + 1,
+                        "break_sv_type": sv_type,
+                        "break_orientation": orientation,
+                        "homology_len": hom_len,
+                        "homology_seq": hom,
+                        "query_name": read.query_name,
+                        "query_short": ":".join(read.query_name.split(":")[-2:]),
+                        "split": read.has_tag("SA"),
+                        "proper_pair": (
+                            "Concordant" if read.is_proper_pair else "Discordant"
+                        ),
+                        "read_num": "1" if read.is_read1 else "2",
+                        "query_chrom": read.reference_name,
+                        "query_pos": read.reference_start + 1,
+                        "query_end": read.reference_end,
+                        "query_orientation": "+" if read.is_forward else "-",
+                        "query_cigar": read.cigarstring,
+                        "query_aln_full": query_aln_full,
+                        "query_aln_sub": read.query_alignment_sequence,
+                        "sample": sample,
+                        "query_qualities": read.query_qualities,
+                    }
+                    if read_support is not None:
+                        record["break_read_support"] = read_support
+                    if features is not None:
+                        record["break_features"] = features
+                    split_alignment_details.append(record)
         if len(pair) == 4:
             read1_1, read1_2, read2_1, read2_2 = pair
             if args.strict and (
@@ -425,36 +426,37 @@ def fetch_alignments(
                             else rev_comp(prim_read.query_sequence)
                         )
 
-                    split_alignment_details.append(
-                        {
-                            "break_chrom1": chrom1,
-                            "break_pos1": pos1 + 1,
-                            "break_chrom2": chrom2,
-                            "break_pos2": pos2 + 1,
-                            "break_sv_type": sv_type,
-                            "break_read_support": read_support,
-                            "break_features": features,
-                            "break_orientation": orientation,
-                            "AA_homology_len": hom_len,
-                            "AA_homology_seq": hom,
-                            "query_name": read.query_name,
-                            "query_short": ":".join(read.query_name.split(":")[-2:]),
-                            "split": read.has_tag("SA"),
-                            "proper_pair": (
-                                "Concordant" if read.is_proper_pair else "Discordant"
-                            ),
-                            "read_num": "1" if read.is_read1 else "2",
-                            "query_chrom": read.reference_name,
-                            "query_pos": read.reference_start + 1,
-                            "query_end": read.reference_end,
-                            "query_orientation": "+" if read.is_forward else "-",
-                            "query_cigar": read.cigarstring,
-                            "query_aln_full": query_aln_full,
-                            "query_aln_sub": read.query_alignment_sequence,
-                            "amplicon": amplicon,
-                            "query_qualities": read.query_qualities,
-                        }
-                    )
+                    record = {
+                        "break_chrom1": chrom1,
+                        "break_pos1": pos1 + 1,
+                        "break_chrom2": chrom2,
+                        "break_pos2": pos2 + 1,
+                        "break_sv_type": sv_type,
+                        "break_orientation": orientation,
+                        "homology_len": hom_len,
+                        "homology_seq": hom,
+                        "query_name": read.query_name,
+                        "query_short": ":".join(read.query_name.split(":")[-2:]),
+                        "split": read.has_tag("SA"),
+                        "proper_pair": (
+                            "Concordant" if read.is_proper_pair else "Discordant"
+                        ),
+                        "read_num": "1" if read.is_read1 else "2",
+                        "query_chrom": read.reference_name,
+                        "query_pos": read.reference_start + 1,
+                        "query_end": read.reference_end,
+                        "query_orientation": "+" if read.is_forward else "-",
+                        "query_cigar": read.cigarstring,
+                        "query_aln_full": query_aln_full,
+                        "query_aln_sub": read.query_alignment_sequence,
+                        "sample": sample,
+                        "query_qualities": read.query_qualities,
+                    }
+                    if read_support is not None:
+                        record["break_read_support"] = read_support
+                    if features is not None:
+                        record["break_features"] = features
+                    split_alignment_details.append(record)
     
     split_leftover_alignment_details = []
     for pair in split_leftover_alignments:
@@ -479,36 +481,37 @@ def fetch_alignments(
                         else rev_comp(prim_read.query_sequence)
                     )
 
-                split_leftover_alignment_details.append(
-                    {
-                        "break_chrom1": chrom1,
-                        "break_pos1": pos1 + 1,
-                        "break_chrom2": chrom2,
-                        "break_pos2": pos2 + 1,
-                        "break_sv_type": sv_type,
-                        "break_read_support": read_support,
-                        "break_features": features,
-                        "break_orientation": orientation,
-                        "AA_homology_len": hom_len,
-                        "AA_homology_seq": hom,
-                        "query_name": read.query_name,
-                        "query_short": ":".join(read.query_name.split(":")[-2:]),
-                        "split": read.has_tag("SA"),
-                        "proper_pair": (
-                            "Concordant" if read.is_proper_pair else "Discordant"
-                        ),
-                        "read_num": "1" if read.is_read1 else "2",
-                        "query_chrom": read.reference_name,
-                        "query_pos": read.reference_start + 1,
-                        "query_end": read.reference_end,
-                        "query_orientation": "+" if read.is_forward else "-",
-                        "query_cigar": read.cigarstring,
-                        "query_aln_full": query_aln_full,
-                        "query_aln_sub": read.query_alignment_sequence,
-                        "amplicon": amplicon,
-                        "query_qualities": read.query_qualities,
-                    }
-                )
+                record = {
+                    "break_chrom1": chrom1,
+                    "break_pos1": pos1 + 1,
+                    "break_chrom2": chrom2,
+                    "break_pos2": pos2 + 1,
+                    "break_sv_type": sv_type,
+                    "break_orientation": orientation,
+                    "homology_len": hom_len,
+                    "homology_seq": hom,
+                    "query_name": read.query_name,
+                    "query_short": ":".join(read.query_name.split(":")[-2:]),
+                    "split": read.has_tag("SA"),
+                    "proper_pair": (
+                        "Concordant" if read.is_proper_pair else "Discordant"
+                    ),
+                    "read_num": "1" if read.is_read1 else "2",
+                    "query_chrom": read.reference_name,
+                    "query_pos": read.reference_start + 1,
+                    "query_end": read.reference_end,
+                    "query_orientation": "+" if read.is_forward else "-",
+                    "query_cigar": read.cigarstring,
+                    "query_aln_full": query_aln_full,
+                    "query_aln_sub": read.query_alignment_sequence,
+                    "sample": sample,
+                    "query_qualities": read.query_qualities,
+                }
+                if read_support is not None:
+                    record["break_read_support"] = read_support
+                if features is not None:
+                    record["break_features"] = features
+                split_leftover_alignment_details.append(record)
 
     # Collect details of nonsplit alignments
     nonsplit_alignment_details = []
@@ -522,36 +525,37 @@ def fetch_alignments(
             or read2.mapping_quality > mapq_threshold
         ) or (read1.is_mapped or read2.is_mapped):
             for read in pair:
-                nonsplit_alignment_details.append(
-                    {
-                        "break_chrom1": chrom1,
-                        "break_pos1": pos1 + 1,
-                        "break_chrom2": chrom2,
-                        "break_pos2": pos2 + 1,
-                        "break_sv_type": sv_type,
-                        "break_read_support": read_support,
-                        "break_features": features,
-                        "break_orientation": orientation,
-                        "AA_homology_len": hom_len,
-                        "AA_homology_seq": hom,
-                        "query_name": read.query_name,
-                        "query_short": ":".join(read.query_name.split(":")[-2:]),
-                        "split": read.has_tag("SA"),
-                        "proper_pair": (
-                            "Concordant" if read1.is_proper_pair else "Discordant"
-                        ),
-                        "read_num": "1" if read.is_read1 else "2",
-                        "query_chrom": read.reference_name,
-                        "query_pos": read.reference_start + 1,
-                        "query_end": read.reference_end,
-                        "query_orientation": "+" if read.is_forward else "-",
-                        "query_cigar": read.cigarstring,
-                        "query_aln_full": read.query_sequence,
-                        "query_aln_sub": read.query_alignment_sequence,
-                        "amplicon": amplicon,
-                        "query_qualities": read.query_qualities,
-                    }
-                )
+                record = {
+                    "break_chrom1": chrom1,
+                    "break_pos1": pos1 + 1,
+                    "break_chrom2": chrom2,
+                    "break_pos2": pos2 + 1,
+                    "break_sv_type": sv_type,
+                    "break_orientation": orientation,
+                    "homology_len": hom_len,
+                    "homology_seq": hom,
+                    "query_name": read.query_name,
+                    "query_short": ":".join(read.query_name.split(":")[-2:]),
+                    "split": read.has_tag("SA"),
+                    "proper_pair": (
+                        "Concordant" if read1.is_proper_pair else "Discordant"
+                    ),
+                    "read_num": "1" if read.is_read1 else "2",
+                    "query_chrom": read.reference_name,
+                    "query_pos": read.reference_start + 1,
+                    "query_end": read.reference_end,
+                    "query_orientation": "+" if read.is_forward else "-",
+                    "query_cigar": read.cigarstring,
+                    "query_aln_full": read.query_sequence,
+                    "query_aln_sub": read.query_alignment_sequence,
+                    "sample": sample,
+                    "query_qualities": read.query_qualities,
+                }
+                if read_support is not None:
+                    record["break_read_support"] = read_support
+                if features is not None:
+                    record["break_features"] = features
+                nonsplit_alignment_details.append(record)
 
     # Convert details to pandas DataFrames
     split_df = pd.DataFrame(split_alignment_details)
@@ -608,13 +612,22 @@ if __name__ == "__main__":
     df = pd.concat(
         [
             pd.read_csv(os.path.join(args.sum, f), sep="\t").assign(
-                amplicon=f.split("_")[1]
+                sample=f.split("_")[1] if "amplicon" in f else f
             )
             for f in os.listdir(args.sum)
-            if ".tsv" in f
+            if f.endswith(".tsv")
         ],
         ignore_index=True,
     )
+
+    # Track which optional columns are present in the input
+    has_read_support = "read_support" in df.columns
+    has_features = "features" in df.columns
+
+    required_cols = ["chrom1", "pos1", "chrom2", "pos2", "sv_type", "orientation"]
+    if not all(col in df.columns for col in required_cols):
+        missing = [col for col in required_cols if col not in df.columns]
+        raise RuntimeError(f"Missing required columns: {missing}")
 
     has_homology = (
         "homology_length" in df.columns and
@@ -637,8 +650,8 @@ if __name__ == "__main__":
         chrom2 = row.chrom2
         pos2 = row.pos2
         sv_type = row.sv_type
-        read_support = row.read_support
-        features = row.features
+        read_support = row.read_support if has_read_support else None
+        features = row.features if has_features else None
         orientation = row.orientation
         if has_homology:
             hom_len = row.homology_length
@@ -646,7 +659,7 @@ if __name__ == "__main__":
         else:
             hom_len = None
             homology = None
-        amplicon = row.amplicon
+        sample = row.sample
 
         # Fetch the DataFrames for split alignments and paired alignments
         split_df, nonsplit_df, split_leftover_df = fetch_alignments(
@@ -662,7 +675,7 @@ if __name__ == "__main__":
             hom_len,
             homology,
             args,
-            amplicon,
+            sample,
             samfile,
         )
 
@@ -899,8 +912,8 @@ if __name__ == "__main__":
     )
 
     if not has_homology:
-        final_output = final_output.drop(columns=["AA_homology_len", "AA_homology_seq"], errors="ignore")
-        leftover_output = leftover_output.drop(columns=["AA_homology_len", "AA_homology_seq"], errors="ignore")
+        final_output = final_output.drop(columns=["homology_len", "homology_seq"], errors="ignore")
+        leftover_output = leftover_output.drop(columns=["homology_len", "homology_seq"], errors="ignore")
 
     final_output.to_csv(
         args.file if args.file else args.bam.split("/")[-1].split(".")[0] + ".tsv",

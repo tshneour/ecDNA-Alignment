@@ -1,6 +1,6 @@
 # ecDNA-Alignment
 
-Tools to collect reads around structural-variant (SV) breakpoints and refine AA (AmpliconArchitect) predictions using split-read evidence and optional de-novo scaffolds.
+Tools to collect reads around structural-variant (SV) breakpoints and refine predictions using split-read evidence and optional de-novo scaffolds.
 
 ## Prerequisites
 
@@ -17,16 +17,6 @@ Tools to collect reads around structural-variant (SV) breakpoints and refine AA 
 ```bash
 git clone https://github.com/tshneour/ecDNA-Alignment.git
 ```
-
-Here’s the **updated version using the default conda solver** (no `libmamba`) while still keeping things reliable and reproducible.
-
-The key fixes vs your old snippet are:
-
-✅ use **strict channel priority**
-✅ use **override-channels** (ignore global config issues)
-✅ pin **python=3.11** (avoid solver conflicts)
-✅ include **all packages + marisa-trie** in one command
-❌ no `--solver libmamba`
 
 ---
 
@@ -91,28 +81,35 @@ python /path/to/refine.py alignments.tsv \
 
 `collect.py` expects one or more **tab-separated (****`.tsv`****) files** describing structural-variant breakpoints with a fixed set of required columns.
 
-Each TSV in the `sum/` directory represents a collection of SV breakpoints. The filename is used only to derive an `amplicon` identifier (taken as `filename.split("_")[1]`).
+Each TSV in the `sum/` directory represents a collection of SV breakpoints which are required to be **coordinate-sorted**. The filename is used only to derive a `sample` identifier or `amplicon` (taken as `filename.split("_")[1]`) if present.
 
 #### Required columns
 
 Each input TSV **must** contain the following columns (case-sensitive):
 
-| Column name         | Type   | Description                                                                               |
-| ------------------- | ------ | ----------------------------------------------------------------------------------------- |
-| `chrom1`            | string | Chromosome of the first breakpoint end (e.g. `chr8`)                                      |
-| `pos1`              | int    | 0-based genomic coordinate of the first breakpoint                                        |
-| `chrom2`            | string | Chromosome of the second breakpoint end                                                   |
-| `pos2`              | int    | 0-based genomic coordinate of the second breakpoint                                       |
-| `sv_type`           | string | Structural variant type (e.g. `deletion`, `duplication`, `interchromosomal`, `inversion`) |
-| `read_support`      | int    | Number of reads supporting the breakpoint (used for reporting only)                       |
-| `features`          | string | Arbitrary annotation or metadata for the breakpoint                                       |
-| `orientation`       | string | Breakpoint orientation as a 2-character string (`++`, `--`, `+-`, `-+`)                   |
-| `homology_length`   | int    | Length of homology reported for the breakpoint (may be 0)                                 |
-| `homology_sequence` | string | Homology or inserted sequence (may be empty)                                              |
+| Column name         | Type   | Description                                                                                                                  |
+| ------------------- | ------ | -----------------------------------------------------------------------------------------------------------------------------|
+| `chrom1`            | string | Chromosome of the first breakpoint end (e.g. `chr8`)                                                                         |
+| `pos1`              | int    | 0-based genomic coordinate of the first breakpoint                                                                           |
+| `chrom2`            | string | Chromosome of the second breakpoint end                                                                                      |
+| `pos2`              | int    | 0-based genomic coordinate of the second breakpoint                                                                          |
+| `sv_type`           | string | Structural variant type (i.e. `deletion`, `duplication`, `interchromosomal`, `inversion`, `foldback`)                        |
+| `orientation`       | string | Breakpoint orientation as a 2-character string (`++`, `--`, `+-`, `-+`)                                                      |
 
-Coordinates in the output tables are reported as **1-based**, but the input `pos1` / `pos2` values are treated as **0-based** internally.
+Coordinates in the output tables are reported as **1-based**, but the input `pos1` / `pos2` values are treated as **0-based** internally. Note that `sv_type` is a case-sensitive field.
 
 ---
+
+#### Optional columns
+
+If provided, these columns (case-sensitive) will be included in the final output for comparison purposes.
+
+| Column name         | Type   | Description                                                                               |
+| ------------------- | ------ | ----------------------------------------------------------------------------------------- |
+| `features`          | string | Arbitrary annotation or metadata for the breakpoint                                       |
+| `read_support`      | int    | Number of reads supporting the breakpoint (used for reporting only)                       |
+| `homology_length`   | int    | Length of homology reported for the breakpoint (may be 0)                                 |
+| `homology_sequence` | string | Homology or inserted sequence (may be empty)                                              |
 
 ## Usage
 
@@ -126,7 +123,7 @@ usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
 
 **Positional arguments**
 
-* `refine` (int): Radius (bp) around each breakpoint to fetch alignments (e.g., 350).
+* `refine` (int): Radius (bp) around each breakpoint to fetch alignments (e.g., 500).
 * `sum` (path): Directory containing SV summary `.tsv` files in the format described above.
 * `bam` (path): Coordinate-sorted BAM with index (`.bai`).
 
@@ -141,10 +138,10 @@ usage: collect.py [-h] [-v] [--strict] [-f FILE] refine sum bam
 * TSV of reads (`split` and `nonsplit`) with columns including:
 
   * `break_chrom1`, `break_pos1`, `break_chrom2`, `break_pos2`
-  * `break_sv_type`, `break_read_support`, `break_features`, `break_orientation`
+  * `break_sv_type`, `break_orientation`
   * `query_*` (read-level alignment details)
   * `proper_pair`, `split`, `amplicon`
-  * `AA_homology_len`, `AA_homology_seq` (if present in the input SV summary TSVs)
+  * `break_read_support`, `break_features`, `homology_len`, `homology_seq` (if present in the input SV summary TSVs)
 
 * Per-breakpoint FASTQs in `fastq/`, gzipped:
 
@@ -173,10 +170,6 @@ usage: refine.py FILE [--mode {split,scaffold,both}]
 * `scaffold`: perform local assembly (SPAdes) around each breakpoint and align scaffolds to the reference.
 * `both`: run scaffold refinement first, then augment with split-read results.
 
-**Notes on AA homology columns**
-
-* `refine.py` does not require `AA_homology_len` / `AA_homology_seq` to be present in the input TSV.
-
 **Outputs**
 
 * **Split mode** columns added:
@@ -185,6 +178,7 @@ usage: refine.py FILE [--mode {split,scaffold,both}]
   * `sp_left_sv`, `sp_right_sv`
   * `sp_hom_len` (positive = homology, negative = insertion)
   * `hom` (homology or insertion sequence)
+  * `tst_cords` (if `hom` is a templated insertion, this will show the relevant reference coordinates)
 
 * **Scaffold mode** columns added:
 

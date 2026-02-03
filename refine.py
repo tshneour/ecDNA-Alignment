@@ -185,9 +185,9 @@ def find_top_insertion(left, right, seq1=None, seq2=None, ins=None):
         seq2 = lr.query_aln_sub if r_ori == "-" else rev_comp(lr.query_aln_sub)
     
     def check_starts(seq):
-        return seq2.startswith(seq[ilen:]) if len(seq) != 0 else True
+        return seq2.startswith(seq[ilen:]) if len(seq) > ilen else ins.startswith(seq)
     def check_ends(seq):
-        return (seq1.endswith(seq[:-ilen]) if len(seq) != 0 else True) if ilen != 0 else False
+        return (seq1.endswith(seq[:-ilen]) if len(seq) > ilen else ins.endswith(seq)) if ilen != 0 else False
     
     left["ins_clip_match"] = np.frompyfunc(check_starts, 1, 1)(left["rev_clipped"])
     right["ins_clip_match"] = np.frompyfunc(check_ends, 1, 1)(right["rev_clipped"])
@@ -234,6 +234,13 @@ def get_templated_ins(read_first, read_last, tst_reads):
 
 # @profile
 def check_overlap(left, right, leftover):
+
+    if left is None or right is None:
+        return None
+
+    if len(left) == 0 or len(right) == 0:
+        return None
+
     results = []
 
     # compute clipped sequences
@@ -497,7 +504,7 @@ def check_overlap(left, right, leftover):
                                 "ins_sum_right": [isum_r],
                                 "homology": [hom],
                                 "insertion": [ins],
-                                "tst_cords": [],
+                                "tst_cords": [[]],
                                 "left_len": [len(ldf_copy)],
                                 "right_len": [len(rdf)],
                                 "split_support": [num_split_reads],
@@ -530,20 +537,22 @@ def check_overlap(left, right, leftover):
 def run_split(args):
     all_reads = pd.read_csv(args.file, sep="\t").drop_duplicates()
     leftover_splits = pd.read_csv(args.file[:-4] + "_leftover" + ".tsv", sep="\t").drop_duplicates()
-    has_homology = ("AA_homology_len" in all_reads.columns) and ("AA_homology_seq" in all_reads.columns)
+    has_homology = ("homology_len" in all_reads.columns) and ("homology_seq" in all_reads.columns)
+    has_read_support = "break_read_support" in all_reads.columns
+    has_features = "break_features" in all_reads.columns
 
     for group, reads in leftover_splits.groupby(["break_pos1", "query_name", "read_num"]):
         if len(reads) > 2:
             bp_to_read_idxs.setdefault(group[0], []).append(reads.index.to_list())
-    svs = all_reads.groupby("break_pos1")
-
+    svs = all_reads.groupby(["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"])
+    print("length of svs", len(svs))
     split_log = open(args.split_log + ".txt", "w")
     summary = []
 
     if args.list:
         cols = ["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"]
         if has_homology:
-            cols.append("AA_homology_seq")
+            cols.append("homology_seq")
         tbl = svs[cols].first().reset_index(drop=True)
         tbl.index.name = "breakpoint_index"
         print(tbl.to_string())
@@ -551,29 +560,29 @@ def run_split(args):
 
     picks = None
     if args.breakpoints:
-        idxs = svs["break_pos1"].first().reset_index(drop=True)
+        idxs = svs.size().reset_index()["break_pos1"]
         picks = set(idxs.iloc[args.breakpoints].tolist())
 
-    for bp, sv in svs:
-        if picks and bp not in picks:
+    for (bc1, bp1, bc2, bp2), sv in svs:
+        if picks and bp1 not in picks:
             continue
 
-        if sv["break_chrom1"].iloc[0] == sv["break_chrom2"].iloc[0]:
+        if bc1 == bc2:
             left = sv[
-                (sv["query_pos"] >= bp - 500)
-                & (sv["query_end"] <= bp + 500)
-                & (sv["query_end"] < sv["break_pos2"].iloc[0] - 150)
+                (sv["query_pos"] >= bp1 - 500)
+                & (sv["query_end"] <= bp1 + 500)
+                & (sv["query_end"] < bp2 - 150)
             ]
             right = sv[
-                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 500)
-                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
-                & (sv["query_pos"] > bp + 150)
+                (sv["query_pos"] >= bp2 - 500)
+                & (sv["query_end"] <= bp2 + 500)
+                & (sv["query_pos"] > bp1 + 150)
             ]
         else:
-            left = sv[(sv["query_pos"] >= bp - 500) & (sv["query_end"] <= bp + 500)]
+            left = sv[(sv["query_pos"] >= bp1 - 500) & (sv["query_end"] <= bp1 + 500)]
             right = sv[
-                (sv["query_pos"] >= sv["break_pos2"].iloc[0] - 500)
-                & (sv["query_end"] <= sv["break_pos2"].iloc[0] + 500)
+                (sv["query_pos"] >= bp2 - 500)
+                & (sv["query_end"] <= bp2 + 500)
             ]
 
         _, lgrp = refine_step1(left, all_reads, leftover_splits, args.verbose, True)
@@ -604,7 +613,7 @@ def run_split(args):
             continue
 
         pd.set_option('display.max_colwidth', None)
-        split_log.write(f"=== Breakpoint {bp} ===\n")
+        split_log.write(f"=== Breakpoint {bc1}:{bp1}-{bc2}:{bp2} ===\n")
         for idx, row in res.iterrows():
             split_log.write(f"-- Candidate {idx} --\n")
             split_log.write(row.drop(["left", "right"]).to_string() + "\n")
@@ -627,7 +636,10 @@ def run_split(args):
         top = res.iloc[0]
         summary.append(
             {
-                "break_pos1": bp,
+                "break_chrom1": bc2,
+                "break_pos1": bp1,
+                "break_chrom2": bc2,
+                "break_pos2": bp2,
                 "split_support": top.split_support,
                 "soft_support": top.soft_support,
                 "left_soft_matches": top.left_soft_matches_hom
@@ -642,23 +654,28 @@ def run_split(args):
                 if top["hom_%"] > top["ins_%"]
                 else -len(top.insertion) if isinstance(top.insertion, str) else "N/A",
                 "hom": top.homology if top["hom_%"] > top["ins_%"] else top.insertion,
+                "tst_cords": top.tst_cords
             }
         )
 
-        if args.breakpoints and has_homology:
+        if args.breakpoints:
             orig = sv.iloc[0]
+            cols = [
+                "break_chrom1",
+                "break_pos1",
+                "break_chrom2",
+                "break_pos2",
+                "break_orientation",
+                "break_sv_type"
+            ]
+
+            # Optional columns to include if present
+            optional_cols = ["homology_seq", "break_features", "break_read_support"]
+            cols += [c for c in optional_cols if c in sv.columns]
+
             print(
-                "Original AA breakpoint:\n",
-                orig[
-                    [
-                        "break_chrom1",
-                        "break_pos1",
-                        "break_chrom2",
-                        "break_pos2",
-                        "AA_homology_seq",
-                        "break_orientation",
-                    ]
-                ].to_string(),
+                "Original input breakpoint:\n",
+                orig[cols].to_string(),
                 "\n",
             )
 
@@ -670,21 +687,24 @@ def run_split(args):
         "break_chrom2",
         "break_pos2",
         "break_sv_type",
-        "break_read_support",
-        "break_features",
         "break_orientation",
-        "amplicon",
+        "sample",
     ]
+    if has_read_support:
+        brk_cols.insert(5, "break_read_support")
+    if has_features:
+        brk_cols.insert(6 if has_read_support else 5, "break_features")
     if has_homology:
-        brk_cols.insert(8, "AA_homology_len")
-        brk_cols.insert(9, "AA_homology_seq")
+        brk_cols.insert(8, "homology_len")
+        brk_cols.insert(9, "homology_seq")
 
     brk = svs[brk_cols].first().reset_index(drop=True)
 
-    aug = pd.DataFrame(summary, columns=["break_pos1","split_support","soft_support","left_soft_matches","right_soft_matches","sp_left_sv","sp_right_sv","sp_hom_len","hom"])
+    aug = pd.DataFrame(summary, columns=["break_chrom1","break_pos1", "break_chrom2", "break_pos2", "split_support","soft_support","left_soft_matches","right_soft_matches","sp_left_sv","sp_right_sv","sp_hom_len","hom", "tst_cords"])
     aug = aug.astype(
         {
             "break_pos1": "Int64",
+            "break_pos2": "Int64",
             "split_support": "Int64",
             "soft_support": "Int64",
             "left_soft_matches": "Int64",
@@ -694,10 +714,11 @@ def run_split(args):
             "sp_hom_len": "str",
         }
     )
-    out = brk.merge(aug, on="break_pos1", how="left")
-    out["b_chr1"] = out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
-    out = out.sort_values(by=["b_chr1", "break_pos1"])
-    out = out.drop(["b_chr1"], axis=1)
+    out = brk.merge(aug, on=["break_chrom1", "break_pos1", "break_chrom2", "break_pos2"], how="left")
+    out["b_chr1"] = out["break_chrom1"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
+    out["b_chr2"] = out["break_chrom2"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
+    out = out.sort_values(by=["b_chr1", "break_pos1", "b_chr2", "break_pos2"])
+    out = out.drop(["b_chr1", "b_chr2"], axis=1)
     print(f"Augmented SV predictions written to {args.out_table}")
     return out
 
@@ -896,7 +917,9 @@ def aln_err_density(alns):
 
 def run_scaffold(args):
     df_all = pd.read_csv(args.file, sep="\t")
-    has_homology = ("AA_homology_len" in df_all.columns) and ("AA_homology_seq" in df_all.columns)
+    has_homology = ("homology_len" in df_all.columns) and ("homology_seq" in df_all.columns)
+    has_read_support = "break_read_support" in df_all.columns
+    has_features = "break_features" in df_all.columns
 
     cols = [
         "break_chrom1",
@@ -904,14 +927,16 @@ def run_scaffold(args):
         "break_chrom2",
         "break_pos2",
         "break_sv_type",
-        "break_read_support",
-        "break_features",
         "break_orientation",
-        "amplicon",
+        "sample",
     ]
+    if has_read_support:
+        cols.insert(5, "break_read_support")
+    if has_features:
+        cols.insert(6 if has_read_support else 5, "break_features")
     if has_homology:
-        cols.insert(8, "AA_homology_len")
-        cols.insert(9, "AA_homology_seq")
+        cols.insert(len(cols), "homology_len")
+        cols.insert(len(cols), "homology_seq")
 
     df = df_all[cols].drop_duplicates().reset_index()
     df["ref1"] = (
@@ -1140,23 +1165,26 @@ def run_scaffold(args):
         "break_chrom2",
         "break_pos2",
         "break_sv_type",
-        "break_read_support",
-        "break_features",
         "break_orientation",
-        "amplicon",
+        "sample",
     ]
+    if has_read_support:
+        base_cols.insert(5, "break_read_support")
+    if has_features:
+        base_cols.insert(6 if has_read_support else 5, "break_features")
     if has_homology:
-        base_cols.insert(8, "AA_homology_len")
-        base_cols.insert(9, "AA_homology_seq")
+        base_cols.insert(len(base_cols), "homology_len")
+        base_cols.insert(len(base_cols), "homology_seq")
 
     base = df[base_cols]
     aug = pd.DataFrame(summary)
     out = pd.concat([base.reset_index(drop=True), aug], axis=1)
     out["sc_hom_len"] = out["sc_hom_len"].replace("", np.nan)
     out["sc_hom_len"] = out["sc_hom_len"].astype(float).astype("Int64")
-    out["b_chr1"] = out["break_chrom1"].apply(lambda x: x[3:]).astype("Int64")
-    out = out.sort_values(by=["b_chr1", "break_pos1"])
-    out = out.drop(["b_chr1"], axis=1)
+    out["b_chr1"] = out["break_chrom1"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
+    out["b_chr2"] = out["break_chrom2"].str[3:].replace({'X': 22, 'Y': 23}).pipe(pd.to_numeric, errors="raise").astype("Int64")
+    out = out.sort_values(by=["b_chr1", "break_pos1", "b_chr2", "break_pos2"])
+    out = out.drop(["b_chr1", "b_chr2"], axis=1)
     print(f"Augmented scaffold predictions written to {args.out_table}")
     return out
 
@@ -1238,6 +1266,7 @@ def main():
                         "sp_right_sv",
                         "sp_hom_len",
                         "hom",
+                        "tst_cords"
                     ]
                 ].reset_index(drop=True),
             ],
